@@ -1,0 +1,294 @@
+// Imports a custom shared library named 'shared-lib'.
+// This allows the pipeline to use reusable functions like terraformApply, buildDockerImage, etc.,
+// promoting DRY (Don't Repeat Yourself) principles.
+@Library('shared-lib') _
+
+pipeline {
+  // Defines parameters that can be set when the pipeline is manually triggered.
+  parameters {
+    // A boolean parameter to switch the pipeline's mode between deploying and destroying.
+    // This provides a safe, integrated way to manage the infrastructure's lifecycle.
+    booleanParam(name: 'DESTROY', defaultValue: false, description: 'Destroy the entire EKS stack instead of deploying')
+  }
+
+  // Specifies that the pipeline can run on any available Jenkins agent.
+  agent any
+
+  // Defines environment variables available to all stages of the pipeline.
+  environment {
+    // Standard configuration for AWS and application deployment.
+    AWS_REGION  = 'us-east-1'
+    ACCOUNT_ID  = '679349556244'
+    ECR_REPO    = 'sample-node-app'
+    AWS_PROFILE = 'terraform-assume-role'
+
+    // The KUBECONFIG path is set within the workspace to ensure it's isolated to this job.
+    KUBECONFIG  = "${env.WORKSPACE}/.kubeconfig"
+
+    // Variables for the application's Helm chart.
+    CHART_DIR   = 'helm-chart'
+    RELEASE     = 'sample-node-app'
+
+    // Securely loads the database password from the Jenkins credential store.
+    // This prevents storing secrets directly in the Jenkinsfile.
+    // The 'db-pass-secret' is the ID of the credential in Jenkins.
+    DB_PASSWORD = credentials('db-pass-secret')
+  }
+
+  stages {
+    // The first stage ensures a clean environment by deleting the workspace from previous runs.
+    stage('Cleanup workspace') {
+      steps {
+        cleanWs()
+      }
+    }
+
+    // Checks out the source code from the configured SCM (Source Code Management), like Git.
+    stage('Checkout') {
+      steps {
+        checkout scm
+      }
+    }
+
+    /* ================= Infrastructure Destroy ================= */
+
+    // This block contains stages for tearing down the infrastructure.
+    // It only runs if the 'DESTROY' parameter is set to true.
+    stage('Destroy stack') {
+      when { expression { params.DESTROY } }
+      steps {
+        // Calls a shared library function to run 'terraform destroy' and clean up resources.
+        destroyStack(env.RELEASE, env.KUBECONFIG, env.AWS_REGION)
+      }
+    }
+
+    // This stage provides a clear confirmation message after the destroy process is complete.
+    stage('Stop after Destroy') {
+      when { expression { params.DESTROY } }
+      steps {
+        echo 'Stack destroyed, finishing pipeline.'
+      }
+    }
+
+    /* ================= Build & Push Image ================= */
+
+    // This block contains stages for the standard build and deploy workflow.
+    // It only runs if the 'DESTROY' parameter is false.
+    stage('Set Image Tag') {
+      when { not { expression { params.DESTROY } } }
+      steps {
+        script {
+          // Generates a unique image tag using a timestamp and the build number.
+          // This ensures every image is traceable and immutable.
+          def ts        = sh(script: 'date +%Y%m%d%H%M%S', returnStdout: true).trim()
+          env.IMAGE_TAG = "build-${BUILD_NUMBER}-${ts}"
+          env.ECR_URI   = "${ACCOUNT_ID}.dkr.ecr.${AWS_REGION}.amazonaws.com/${ECR_REPO}"
+          env.FULL_IMAGE= "${env.ECR_URI}:${env.IMAGE_TAG}"
+          echo "Image to build →  ${env.FULL_IMAGE}"
+        }
+      }
+    }
+
+    // Provisions the infrastructure using Terraform.
+    stage('Terraform Apply') {
+      when { not { expression { params.DESTROY } } }
+      steps {
+        // Calls a shared library function that encapsulates 'terraform init' and 'terraform apply'.
+        // in prod we can use just plan and then insert an approval input.
+        terraformApply('terraform', 'dev.tfvars')
+      }
+    }
+
+    // A quality gate stage to run static analysis and tests on the Helm chart.
+    stage('Lint & Test') {
+      when { not { expression { params.DESTROY } } }
+      steps {
+        // Calls a shared library function, likely wrapping 'helm lint' and 'helm test'.
+        lintAndTest(env.CHART_DIR)
+      }
+    }
+
+    // Builds the application's Docker image using the Dockerfile in the 'app' directory.
+    stage('Build Image') {
+      when { not { expression { params.DESTROY } } }
+      steps {
+        // Calls a shared library function that encapsulates the 'docker build' command.
+        buildDockerImage('app', env.FULL_IMAGE)
+      }
+    }
+
+    // Pushes the newly built Docker image to Amazon Elastic Container Registry (ECR).
+    stage('Push to ECR') {
+      when { not { expression { params.DESTROY } } }
+      steps {
+        // Calls a shared library function to handle ECR login and 'docker push'.
+        pushDockerImage(env.ECR_URI, env.FULL_IMAGE, env.AWS_REGION)
+      }
+    }
+
+    // Configures kubectl on the Jenkins agent to communicate with the new EKS cluster.
+    stage('Configure kubectl') {
+      when { not { expression { params.DESTROY } } }
+      steps {
+        // This shared library function likely runs 'aws eks update-kubeconfig'.
+        configureKubectl(env.AWS_REGION, env.KUBECONFIG)
+      }
+    }
+
+    /* ================= Enabling EKS for Github runners by means of ARC controller ================= */
+
+    // Installs cert-manager to automatically provide and manage TLS certificates.
+    // These certificates are required to secure the admission webhooks for the Actions Runner Controller (ARC).
+    stage('Install cert-manager') {
+      when { not { expression { params.DESTROY } } }
+      steps {
+        sh '''
+          set -euo pipefail
+
+          # First, apply the Custom Resource Definitions (CRDs). This is a prerequisite for installing
+          # the Helm chart, as it teaches the Kubernetes API about cert-manager's resources.
+          # Version is pinned for reproducibility.
+          kubectl apply -f https://github.com/cert-manager/cert-manager/releases/download/v1.18.1/cert-manager.crds.yaml
+
+          # Add the official cert-manager Helm repository and update the local cache.
+          helm repo add jetstack https://charts.jetstack.io || true
+          helm repo update
+
+          # Install or upgrade cert-manager using Helm.
+          # --create-namespace creates the namespace if it doesn't exist.
+          # --wait tells Helm to wait for the deployment to complete.
+          helm upgrade --install cert-manager jetstack/cert-manager \
+            --namespace cert-manager \
+            --create-namespace \
+            --version v1.18.1 \
+            --wait --timeout 5m
+
+          # Wait for the rollout of each cert-manager deployment to complete. This ensures
+          # all components are fully running before the pipeline proceeds.
+          kubectl rollout status deployment/cert-manager -n cert-manager --timeout=120s
+          kubectl rollout status deployment/cert-manager-webhook -n cert-manager --timeout=120s
+          kubectl rollout status deployment/cert-manager-cainjector -n cert-manager --timeout=120s
+        '''
+      }
+    }
+
+    // Installs the Actions Runner Controller (ARC) to enable self-hosted GitHub Actions runners.
+    stage('Install Actions Runner Controller (Unified)') {
+      when { not { expression { params.DESTROY } } }
+      steps {
+        // Securely loads the GitHub App credentials from the Jenkins credential store.
+        // 'file' is used for the PEM key to avoid formatting issues with copy-paste.
+        // The variable 'GITHUB_APP_PEM_PATH' will contain the path to the temporary secret file.
+        withCredentials([
+          file  (credentialsId: 'GITHUB_APP_PRIVATE_KEY',        variable: 'GITHUB_APP_PEM_PATH'),
+          string(credentialsId: 'github_app_id',                 variable: 'GITHUB_APP_ID'),
+          string(credentialsId: 'github_app_installation_id',    variable: 'GITHUB_APP_INSTALLATION_ID')
+        ]) {
+          sh '''
+            set -euo pipefail
+
+            # Create the namespace for ARC idempotently (it won't fail if it already exists).
+            kubectl create namespace actions-runner-system --dry-run=client -o yaml | kubectl apply -f -
+
+            # Add and update the official ARC Helm repository.
+            helm repo add actions-runner-controller https://actions-runner-controller.github.io/actions-runner-controller || true
+            helm repo update
+
+            # Install or upgrade ARC using the unified Helm chart, which manages CRDs and the controller together.
+            # --set-file is used here as a secure and direct way to pass the private key content
+            # without needing to manually base64 encode it. Helm reads the file content directly.
+            helm upgrade --install arc actions-runner-controller/actions-runner-controller \
+              --namespace actions-runner-system \
+              --create-namespace \
+              --version 0.23.7 \
+              --wait \
+              --set authSecret.create=true \
+              --set authSecret.github_app_id=${GITHUB_APP_ID} \
+              --set authSecret.github_app_installation_id=${GITHUB_APP_INSTALLATION_ID} \
+              --set-file authSecret.github_app_private_key=${GITHUB_APP_PEM_PATH}
+
+            # Wait for the controller's deployment to be fully rolled out and ready.
+            kubectl rollout status deployment/arc-actions-runner-controller -n actions-runner-system --timeout=180s
+          '''
+        }
+      }
+    }
+
+    // Applies a Kubernetes manifest to create the self-hosted runner pool.
+    stage('Create GitHub RunnerDeployment') {
+      when { not { expression { params.DESTROY } } }
+      steps {
+        sh '''
+          set -euo pipefail
+
+          # Using a "heredoc" (cat <<EOF) to create the YAML manifest inline.
+          # This manifest defines a RunnerScaleSet, which automatically scales runners
+          # up and down based on demand from GitHub Actions workflows.
+          cat <<EOF > runner-scaleset.yaml
+          apiVersion: actions.github.com/v1alpha1
+          kind: RunnerScaleSet
+          metadata:
+            name: gha-runners
+            namespace: actions-runner-system
+          spec:
+            githubConfigUrl: https://github.com/pabloperfer/nodejs_microservice
+            # This references the secret created by the Helm chart for authentication.
+            githubConfigSecret: controller-manager
+            template:
+              spec:
+                containers:
+                - name: runner
+                  image: ghcr.io/actions/runner:latest
+                serviceAccountName: default
+            minRunners: 1
+            maxRunners: 1
+          EOF
+
+          echo "--- Applying GitHub RunnerScaleSet manifest: ---"
+          cat runner-scaleset.yaml
+          echo "------------------------------------"
+
+          # Apply the manifest to the cluster.
+          kubectl apply -f runner-scaleset.yaml
+        '''
+      }
+    }
+    
+    /* ================= Application Deploy ================= */
+
+    // Deploys the main application using its Helm chart.
+    stage('Helm Deploy') {
+      when { not { expression { params.DESTROY } } }
+      steps {
+        // Calls the shared library function to handle the application's Helm deployment.
+        // It passes the credential ID for the database password, which is the secure way to handle secrets.
+        // The shared library function will use 'withCredentials' to inject it safely.
+        helmDeploy(
+          env.RELEASE,
+          env.CHART_DIR,
+          env.ECR_URI,
+          env.IMAGE_TAG,
+          env.KUBECONFIG,
+          'db-pass-secret' // Pass the credential ID, not the secret value itself.
+        )
+      }
+    }
+  }
+
+  /* ================= Notifications & Cleanup ================= */
+
+  // The 'post' block defines actions that run at the end of the pipeline.
+  post {
+    // 'always' runs regardless of the pipeline's success or failure.
+    // It's used here for guaranteed workspace cleanup.
+    always {
+      cleanWs(deleteDirs: true)
+      echo 'Pipeline finished.'
+    }
+    // 'failure' runs only if any stage in the pipeline fails.
+    failure {
+      // The workspace is already cleaned by 'always', but this provides a clear failure message.
+      echo 'Pipeline failed – check logs!'
+    }
+  }
+}

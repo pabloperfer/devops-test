@@ -1,0 +1,76 @@
+ ./deploy.sh          
+=> Starting minikube (docker driver)...
+😄  minikube v1.36.0 on Darwin 15.5 (arm64)
+    ▪ KUBECONFIG=/Users/pabloperez/lab/k3s_kubeconfig.yaml
+✨  Using the docker driver based on user configuration
+📌  Using Docker Desktop driver with root privileges
+👍  Starting "minikube" primary control-plane node in "minikube" cluster
+🚜  Pulling base image v0.0.47 ...
+💾  Downloading Kubernetes v1.33.1 preload ...
+    > preloaded-images-k8s-v18-v1...:  327.15 MiB / 327.15 MiB  100.00% 10.05 M
+    > gcr.io/k8s-minikube/kicbase...:  463.69 MiB / 463.69 MiB  100.00% 14.34 M
+🔥  Creating docker container (CPUs=2, Memory=4000MB) ...
+🐳  Preparing Kubernetes v1.33.1 on Docker 28.1.1 ...
+    ▪ Generating certificates and keys ...
+    ▪ Booting up control plane ...| ^[[1;
+    ▪ Configuring RBAC rules ...
+🔗  Configuring bridge CNI (Container Networking Interface) ...
+🔎  Verifying Kubernetes components...
+    ▪ Using image gcr.io/k8s-minikube/storage-provisioner:v5
+🌟  Enabled addons: default-storageclass, storage-provisioner
+🏄  Done! kubectl is now configured to use "minikube" cluster and "default" namespace by default
+=> Configuring Docker to build inside minikube...
+=> Building image sample-node-app:local into minikube...
+[+] Building 11.6s (10/10) FINISHED                                                                                                                                                  docker:default
+ => [internal] load build definition from Dockerfile                                                                                                                                           0.0s
+ => => transferring dockerfile: 461B                                                                                                                                                           0.0s
+ => [internal] load metadata for docker.io/library/node:18-alpine                                                                                                                              2.2s
+ => [internal] load .dockerignore                                                                                                                                                              0.0s
+ => => transferring context: 2B                                                                                                                                                                0.0s
+ => [1/5] FROM docker.io/library/node:18-alpine@sha256:8d6421d663b4c28fd3ebc498332f249011d118945588d0a35cb9bc4b8ca09d9e                                                                        3.2s
+ => => resolve docker.io/library/node:18-alpine@sha256:8d6421d663b4c28fd3ebc498332f249011d118945588d0a35cb9bc4b8ca09d9e                                                                        0.0s
+ => => sha256:8d6421d663b4c28fd3ebc498332f249011d118945588d0a35cb9bc4b8ca09d9e 7.67kB / 7.67kB                                                                                                 0.0s
+ => => sha256:929b04d7c782f04f615cf785488fed452b6569f87c73ff666ad553a7554f0006 1.72kB / 1.72kB                                                                                                 0.0s
+ => => sha256:ee77c6cd7c1886ecc802ad6cedef3a8ec1ea27d1fb96162bf03dd3710839b8da 6.18kB / 6.18kB                                                                                                 0.0s
+ => => sha256:f18232174bc91741fdf3da96d85011092101a032a93a388b79e99e69c2d5c870 3.64MB / 3.64MB                                                                                                 0.5s
+ => => sha256:dd71dde834b5c203d162902e6b8994cb2309ae049a0eabc4efea161b2b5a3d0e 40.01MB / 40.01MB                                                                                               2.1s
+ => => sha256:1e5a4c89cee5c0826c540ab06d4b6b491c96eda01837f430bd47f0d26702d6e3 1.26MB / 1.26MB                                                                                                 1.0s
+ => => extracting sha256:f18232174bc91741fdf3da96d85011092101a032a93a388b79e99e69c2d5c870                                                                                                      0.1s
+ => => sha256:25ff2da83641908f65c3a74d80409d6b1b62ccfaab220b9ea70b80df5a2e0549 446B / 446B                                                                                                     0.8s
+ => => extracting sha256:dd71dde834b5c203d162902e6b8994cb2309ae049a0eabc4efea161b2b5a3d0e                                                                                                      1.0s
+ => => extracting sha256:1e5a4c89cee5c0826c540ab06d4b6b491c96eda01837f430bd47f0d26702d6e3                                                                                                      0.0s
+ => => extracting sha256:25ff2da83641908f65c3a74d80409d6b1b62ccfaab220b9ea70b80df5a2e0549                                                                                                      0.0s
+ => [internal] load build context                                                                                                                                                              0.0s
+ => => transferring context: 1.08kB                                                                                                                                                            0.0s
+ => [2/5] WORKDIR /app                                                                                                                                                                         0.2s
+ => [3/5] COPY package*.json ./                                                                                                                                                                0.0s
+ => [4/5] RUN npm install                                                                                                                                                                      5.8s
+ => [5/5] COPY . .                                                                                                                                                                             0.0s
+ => exporting to image                                                                                                                                                                         0.1s
+ => => exporting layers                                                                                                                                                                        0.1s
+ => => writing image sha256:20a3956770b4d56039dea30a32aa92df7265155d791069e3a9bfc7028a82e92b                                                                                                   0.0s
+ => => naming to docker.io/library/sample-node-app:local                                                                                                                                       0.0s
+=> Deploying Helm release 'sample-node-app'...
+Release "sample-node-app" does not exist. Installing it now.
+NAME: sample-node-app
+LAST DEPLOYED: Tue Jun 17 22:26:46 2025
+NAMESPACE: default
+STATUS: deployed
+REVISION: 1
+TEST SUITE: None
+=> Deployment ready. Pods:
+NAME                               READY   STATUS    RESTARTS   AGE
+sample-node-app-65bb797647-qxxp5   1/1     Running   0          3s
+sample-node-app-65bb797647-sr9d4   1/1     Running   0          3s
+sample-node-app-65bb797647-tht8l   1/1     Running   0          3s
+
+Test locally:
+
+  kubectl -n default port-forward svc/sample-node-app 8080:80
+  open http://localhost:8080/
+
+➜  scripts git:(main) ✗ kubectl -n default port-forward svc/sample-node-app 8080:80 
+Forwarding from 127.0.0.1:8080 -> 3000
+Forwarding from [::1]:8080 -> 3000
+Handling connection for 8080
+Handling connection for 8080

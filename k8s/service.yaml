@@ -1,0 +1,13 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: sample-node-app
+  labels:
+    app: sample-node-app
+spec:
+  selector:
+    app: sample-node-app
+  ports:
+    - port: 80
+      targetPort: 3000
+  type: ClusterIP

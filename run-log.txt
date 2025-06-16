@@ -1,0 +1,151 @@
+deploy	Set up job	﻿2025-06-28T19:30:21.2002642Z Current runner version: '2.325.0'
+deploy	Set up job	2025-06-28T19:30:21.2037261Z ##[group]Runner Image Provisioner
+deploy	Set up job	2025-06-28T19:30:21.2038566Z Hosted Compute Agent
+deploy	Set up job	2025-06-28T19:30:21.2039411Z Version: 20250620.352
+deploy	Set up job	2025-06-28T19:30:21.2040573Z Commit: f262f3aba23b10ea191b2a62bdee1ca4c3d344da
+deploy	Set up job	2025-06-28T19:30:21.2041924Z Build Date: 2025-06-20T19:27:17Z
+deploy	Set up job	2025-06-28T19:30:21.2042940Z ##[endgroup]
+deploy	Set up job	2025-06-28T19:30:21.2043749Z ##[group]Operating System
+deploy	Set up job	2025-06-28T19:30:21.2044718Z Ubuntu
+deploy	Set up job	2025-06-28T19:30:21.2045538Z 24.04.2
+deploy	Set up job	2025-06-28T19:30:21.2046424Z LTS
+deploy	Set up job	2025-06-28T19:30:21.2047314Z ##[endgroup]
+deploy	Set up job	2025-06-28T19:30:21.2048171Z ##[group]Runner Image
+deploy	Set up job	2025-06-28T19:30:21.2049238Z Image: ubuntu-24.04
+deploy	Set up job	2025-06-28T19:30:21.2050416Z Version: 20250622.1.0
+deploy	Set up job	2025-06-28T19:30:21.2052223Z Included Software: https://github.com/actions/runner-images/blob/ubuntu24/20250622.1/images/ubuntu/Ubuntu2404-Readme.md
+deploy	Set up job	2025-06-28T19:30:21.2054800Z Image Release: https://github.com/actions/runner-images/releases/tag/ubuntu24%2F20250622.1
+deploy	Set up job	2025-06-28T19:30:21.2056903Z ##[endgroup]
+deploy	Set up job	2025-06-28T19:30:21.2058667Z ##[group]GITHUB_TOKEN Permissions
+deploy	Set up job	2025-06-28T19:30:21.2061484Z Contents: read
+deploy	Set up job	2025-06-28T19:30:21.2062482Z Metadata: read
+deploy	Set up job	2025-06-28T19:30:21.2063313Z Packages: read
+deploy	Set up job	2025-06-28T19:30:21.2064120Z ##[endgroup]
+deploy	Set up job	2025-06-28T19:30:21.2067223Z Secret source: Actions
+deploy	Set up job	2025-06-28T19:30:21.2068300Z Prepare workflow directory
+deploy	Set up job	2025-06-28T19:30:21.2666500Z Prepare all required actions
+deploy	Set up job	2025-06-28T19:30:21.2724632Z Getting action download info
+deploy	Set up job	2025-06-28T19:30:21.4921525Z ##[group]Download immutable action package 'actions/checkout@v4'
+deploy	Set up job	2025-06-28T19:30:21.4922676Z Version: 4.2.2
+deploy	Set up job	2025-06-28T19:30:21.4923620Z Digest: sha256:ccb2698953eaebd21c7bf6268a94f9c26518a7e38e27e0b83c1fe1ad049819b1
+deploy	Set up job	2025-06-28T19:30:21.4924734Z Source commit SHA: 11bd71901bbe5b1630ceea73d27597364c9af683
+deploy	Set up job	2025-06-28T19:30:21.4925534Z ##[endgroup]
+deploy	Set up job	2025-06-28T19:30:21.5740555Z Download action repository 'aws-actions/configure-aws-credentials@v4' (SHA:e3dd6a429d7300a6a4c196c26e071d42e0343502)
+deploy	Set up job	2025-06-28T19:30:21.9326256Z Complete job name: deploy
+deploy	Checkout repo	﻿2025-06-28T19:30:21.9996391Z ##[group]Run actions/checkout@v4
+deploy	Checkout repo	2025-06-28T19:30:21.9997546Z with:
+deploy	Checkout repo	2025-06-28T19:30:21.9998009Z   repository: pabloperfer/nodejs_microservice
+deploy	Checkout repo	2025-06-28T19:30:21.9998686Z   token: ***
+deploy	Checkout repo	2025-06-28T19:30:21.9999054Z   ssh-strict: true
+deploy	Checkout repo	2025-06-28T19:30:21.9999437Z   ssh-user: git
+deploy	Checkout repo	2025-06-28T19:30:21.9999978Z   persist-credentials: true
+deploy	Checkout repo	2025-06-28T19:30:22.0000436Z   clean: true
+deploy	Checkout repo	2025-06-28T19:30:22.0000826Z   sparse-checkout-cone-mode: true
+deploy	Checkout repo	2025-06-28T19:30:22.0001293Z   fetch-depth: 1
+deploy	Checkout repo	2025-06-28T19:30:22.0001674Z   fetch-tags: false
+deploy	Checkout repo	2025-06-28T19:30:22.0002058Z   show-progress: true
+deploy	Checkout repo	2025-06-28T19:30:22.0002457Z   lfs: false
+deploy	Checkout repo	2025-06-28T19:30:22.0002810Z   submodules: false
+deploy	Checkout repo	2025-06-28T19:30:22.0003208Z   set-safe-directory: true
+deploy	Checkout repo	2025-06-28T19:30:22.0003898Z env:
+deploy	Checkout repo	2025-06-28T19:30:22.0004268Z   AWS_REGION: us-east-1
+deploy	Checkout repo	2025-06-28T19:30:22.0004667Z   ACCOUNT_ID: 679349556244
+deploy	Checkout repo	2025-06-28T19:30:22.0005092Z   ECR_REPO: sample-node-app
+deploy	Checkout repo	2025-06-28T19:30:22.0005557Z   AWS_PROFILE: terraform-assume-role
+deploy	Checkout repo	2025-06-28T19:30:22.0006056Z   CHART_DIR: helm-chart
+deploy	Checkout repo	2025-06-28T19:30:22.0006471Z   RELEASE: sample-node-app
+deploy	Checkout repo	2025-06-28T19:30:22.0006879Z ##[endgroup]
+deploy	Checkout repo	2025-06-28T19:30:22.1057657Z Syncing repository: pabloperfer/nodejs_microservice
+deploy	Checkout repo	2025-06-28T19:30:22.1059580Z ##[group]Getting Git version info
+deploy	Checkout repo	2025-06-28T19:30:22.1060700Z Working directory is '/home/runner/work/nodejs_microservice/nodejs_microservice'
+deploy	Checkout repo	2025-06-28T19:30:22.1061757Z [command]/usr/bin/git version
+deploy	Checkout repo	2025-06-28T19:30:22.1085113Z git version 2.49.0
+deploy	Checkout repo	2025-06-28T19:30:22.1110971Z ##[endgroup]
+deploy	Checkout repo	2025-06-28T19:30:22.1124798Z Temporarily overriding HOME='/home/runner/work/_temp/bb1303b2-fb13-4662-9639-7d6921ff9dac' before making global git config changes
+deploy	Checkout repo	2025-06-28T19:30:22.1127166Z Adding repository directory to the temporary git global config as a safe directory
+deploy	Checkout repo	2025-06-28T19:30:22.1138611Z [command]/usr/bin/git config --global --add safe.directory /home/runner/work/nodejs_microservice/nodejs_microservice
+deploy	Checkout repo	2025-06-28T19:30:22.1172513Z Deleting the contents of '/home/runner/work/nodejs_microservice/nodejs_microservice'
+deploy	Checkout repo	2025-06-28T19:30:22.1176083Z ##[group]Initializing the repository
+deploy	Checkout repo	2025-06-28T19:30:22.1180980Z [command]/usr/bin/git init /home/runner/work/nodejs_microservice/nodejs_microservice
+deploy	Checkout repo	2025-06-28T19:30:22.1240632Z hint: Using 'master' as the name for the initial branch. This default branch name
+deploy	Checkout repo	2025-06-28T19:30:22.1241944Z hint: is subject to change. To configure the initial branch name to use in all
+deploy	Checkout repo	2025-06-28T19:30:22.1242894Z hint: of your new repositories, which will suppress this warning, call:
+deploy	Checkout repo	2025-06-28T19:30:22.1244052Z hint:
+deploy	Checkout repo	2025-06-28T19:30:22.1244582Z hint: 	git config --global init.defaultBranch <name>
+deploy	Checkout repo	2025-06-28T19:30:22.1245312Z hint:
+deploy	Checkout repo	2025-06-28T19:30:22.1246288Z hint: Names commonly chosen instead of 'master' are 'main', 'trunk' and
+deploy	Checkout repo	2025-06-28T19:30:22.1247883Z hint: 'development'. The just-created branch can be renamed via this command:
+deploy	Checkout repo	2025-06-28T19:30:22.1249168Z hint:
+deploy	Checkout repo	2025-06-28T19:30:22.1250062Z hint: 	git branch -m <name>
+deploy	Checkout repo	2025-06-28T19:30:22.1251594Z Initialized empty Git repository in /home/runner/work/nodejs_microservice/nodejs_microservice/.git/
+deploy	Checkout repo	2025-06-28T19:30:22.1257866Z [command]/usr/bin/git remote add origin https://github.com/pabloperfer/nodejs_microservice
+deploy	Checkout repo	2025-06-28T19:30:22.1289332Z ##[endgroup]
+deploy	Checkout repo	2025-06-28T19:30:22.1290740Z ##[group]Disabling automatic garbage collection
+deploy	Checkout repo	2025-06-28T19:30:22.1294586Z [command]/usr/bin/git config --local gc.auto 0
+deploy	Checkout repo	2025-06-28T19:30:22.1323930Z ##[endgroup]
+deploy	Checkout repo	2025-06-28T19:30:22.1325119Z ##[group]Setting up auth
+deploy	Checkout repo	2025-06-28T19:30:22.1331479Z [command]/usr/bin/git config --local --name-only --get-regexp core\.sshCommand
+deploy	Checkout repo	2025-06-28T19:30:22.1363123Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'core\.sshCommand' && git config --local --unset-all 'core.sshCommand' || :"
+deploy	Checkout repo	2025-06-28T19:30:22.1659529Z [command]/usr/bin/git config --local --name-only --get-regexp http\.https\:\/\/github\.com\/\.extraheader
+deploy	Checkout repo	2025-06-28T19:30:22.1690269Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'http\.https\:\/\/github\.com\/\.extraheader' && git config --local --unset-all 'http.https://github.com/.extraheader' || :"
+deploy	Checkout repo	2025-06-28T19:30:22.1918187Z [command]/usr/bin/git config --local http.https://github.com/.extraheader AUTHORIZATION: basic ***
+deploy	Checkout repo	2025-06-28T19:30:22.1953621Z ##[endgroup]
+deploy	Checkout repo	2025-06-28T19:30:22.1954829Z ##[group]Fetching the repository
+deploy	Checkout repo	2025-06-28T19:30:22.1972996Z [command]/usr/bin/git -c protocol.version=2 fetch --no-tags --prune --no-recurse-submodules --depth=1 origin +76ea313b3bec186dc6e33c6c2ac96b89de404d34:refs/remotes/origin/main
+deploy	Checkout repo	2025-06-28T19:30:22.4836704Z From https://github.com/pabloperfer/nodejs_microservice
+deploy	Checkout repo	2025-06-28T19:30:22.4837804Z  * [new ref]         76ea313b3bec186dc6e33c6c2ac96b89de404d34 -> origin/main
+deploy	Checkout repo	2025-06-28T19:30:22.4863882Z ##[endgroup]
+deploy	Checkout repo	2025-06-28T19:30:22.4865037Z ##[group]Determining the checkout info
+deploy	Checkout repo	2025-06-28T19:30:22.4866696Z ##[endgroup]
+deploy	Checkout repo	2025-06-28T19:30:22.4872515Z [command]/usr/bin/git sparse-checkout disable
+deploy	Checkout repo	2025-06-28T19:30:22.4914328Z [command]/usr/bin/git config --local --unset-all extensions.worktreeConfig
+deploy	Checkout repo	2025-06-28T19:30:22.4941761Z ##[group]Checking out the ref
+deploy	Checkout repo	2025-06-28T19:30:22.4945968Z [command]/usr/bin/git checkout --progress --force -B main refs/remotes/origin/main
+deploy	Checkout repo	2025-06-28T19:30:22.5050275Z Switched to a new branch 'main'
+deploy	Checkout repo	2025-06-28T19:30:22.5053282Z branch 'main' set up to track 'origin/main'.
+deploy	Checkout repo	2025-06-28T19:30:22.5059050Z ##[endgroup]
+deploy	Checkout repo	2025-06-28T19:30:22.5092571Z [command]/usr/bin/git log -1 --format=%H
+deploy	Checkout repo	2025-06-28T19:30:22.5114146Z 76ea313b3bec186dc6e33c6c2ac96b89de404d34
+deploy	Configure AWS credentials	﻿2025-06-28T19:30:22.5338936Z ##[group]Run aws-actions/configure-aws-credentials@v4
+deploy	Configure AWS credentials	2025-06-28T19:30:22.5339560Z with:
+deploy	Configure AWS credentials	2025-06-28T19:30:22.5340509Z   role-to-assume: arn:aws:iam::679349556244:role/terraformdeploymentrole
+deploy	Configure AWS credentials	2025-06-28T19:30:22.5341307Z   aws-region: us-east-1
+deploy	Configure AWS credentials	2025-06-28T19:30:22.5341727Z   audience: sts.amazonaws.com
+deploy	Configure AWS credentials	2025-06-28T19:30:22.5342389Z env:
+deploy	Configure AWS credentials	2025-06-28T19:30:22.5342735Z   AWS_REGION: us-east-1
+deploy	Configure AWS credentials	2025-06-28T19:30:22.5343128Z   ACCOUNT_ID: 679349556244
+deploy	Configure AWS credentials	2025-06-28T19:30:22.5343551Z   ECR_REPO: sample-node-app
+deploy	Configure AWS credentials	2025-06-28T19:30:22.5343985Z   AWS_PROFILE: terraform-assume-role
+deploy	Configure AWS credentials	2025-06-28T19:30:22.5344451Z   CHART_DIR: helm-chart
+deploy	Configure AWS credentials	2025-06-28T19:30:22.5344851Z   RELEASE: sample-node-app
+deploy	Configure AWS credentials	2025-06-28T19:30:22.5345261Z ##[endgroup]
+deploy	Configure AWS credentials	2025-06-28T19:30:22.6465286Z It looks like you might be trying to authenticate with OIDC. Did you mean to set the `id-token` permission? If you are not trying to authenticate with OIDC and the action is working successfully, you can ignore this message.
+deploy	Configure AWS credentials	2025-06-28T19:30:22.6837277Z ##[error]Credentials could not be loaded, please check your action inputs: Could not load credentials from any providers
+deploy	Cleanup workspace	﻿2025-06-28T19:30:22.6987629Z ##[group]Run echo "Cleaning up..."
+deploy	Cleanup workspace	2025-06-28T19:30:22.6988227Z [36;1mecho "Cleaning up..."[0m
+deploy	Cleanup workspace	2025-06-28T19:30:22.6988724Z [36;1mrm -rf .terraform .kubeconfig[0m
+deploy	Cleanup workspace	2025-06-28T19:30:22.7082596Z shell: /usr/bin/bash --noprofile --norc -e -o pipefail {0}
+deploy	Cleanup workspace	2025-06-28T19:30:22.7083223Z env:
+deploy	Cleanup workspace	2025-06-28T19:30:22.7083575Z   AWS_REGION: us-east-1
+deploy	Cleanup workspace	2025-06-28T19:30:22.7083969Z   ACCOUNT_ID: 679349556244
+deploy	Cleanup workspace	2025-06-28T19:30:22.7084404Z   ECR_REPO: sample-node-app
+deploy	Cleanup workspace	2025-06-28T19:30:22.7084859Z   AWS_PROFILE: terraform-assume-role
+deploy	Cleanup workspace	2025-06-28T19:30:22.7085327Z   CHART_DIR: helm-chart
+deploy	Cleanup workspace	2025-06-28T19:30:22.7085731Z   RELEASE: sample-node-app
+deploy	Cleanup workspace	2025-06-28T19:30:22.7086156Z   AWS_DEFAULT_REGION: us-east-1
+deploy	Cleanup workspace	2025-06-28T19:30:22.7086596Z ##[endgroup]
+deploy	Cleanup workspace	2025-06-28T19:30:22.7183593Z Cleaning up...
+deploy	Post Configure AWS credentials	﻿2025-06-28T19:30:22.7347873Z Post job cleanup.
+deploy	Post Checkout repo	﻿2025-06-28T19:30:22.8569684Z Post job cleanup.
+deploy	Post Checkout repo	2025-06-28T19:30:22.9495385Z [command]/usr/bin/git version
+deploy	Post Checkout repo	2025-06-28T19:30:22.9531021Z git version 2.49.0
+deploy	Post Checkout repo	2025-06-28T19:30:22.9575532Z Temporarily overriding HOME='/home/runner/work/_temp/47466934-352f-4adc-80ea-275908846417' before making global git config changes
+deploy	Post Checkout repo	2025-06-28T19:30:22.9577892Z Adding repository directory to the temporary git global config as a safe directory
+deploy	Post Checkout repo	2025-06-28T19:30:22.9582707Z [command]/usr/bin/git config --global --add safe.directory /home/runner/work/nodejs_microservice/nodejs_microservice
+deploy	Post Checkout repo	2025-06-28T19:30:22.9618848Z [command]/usr/bin/git config --local --name-only --get-regexp core\.sshCommand
+deploy	Post Checkout repo	2025-06-28T19:30:22.9653122Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'core\.sshCommand' && git config --local --unset-all 'core.sshCommand' || :"
+deploy	Post Checkout repo	2025-06-28T19:30:22.9874729Z [command]/usr/bin/git config --local --name-only --get-regexp http\.https\:\/\/github\.com\/\.extraheader
+deploy	Post Checkout repo	2025-06-28T19:30:22.9894458Z http.https://github.com/.extraheader
+deploy	Post Checkout repo	2025-06-28T19:30:22.9907589Z [command]/usr/bin/git config --local --unset-all http.https://github.com/.extraheader
+deploy	Post Checkout repo	2025-06-28T19:30:22.9938828Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'http\.https\:\/\/github\.com\/\.extraheader' && git config --local --unset-all 'http.https://github.com/.extraheader' || :"
+deploy	Complete job	﻿2025-06-28T19:30:23.0257964Z Cleaning up orphan processes

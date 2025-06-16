@@ -1,0 +1,137 @@
+# .github/workflows/main.yml
+name: Deploy to EKS
+
+on:
+  workflow_dispatch:
+    inputs:
+      destroy:
+        type: boolean
+        description: "Destroy the entire EKS stack instead of deploying"
+        required: false
+        default: false
+permissions:
+  id-token: write
+  contents: read
+
+env:
+  AWS_REGION: us-east-1
+  ACCOUNT_ID: 679349556244
+  ECR_REPO: sample-node-app
+  AWS_PROFILE: terraform-assume-role
+  CHART_DIR: helm-chart
+  RELEASE: sample-node-app
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    permissions:
+      id-token: write
+      contents: read
+    defaults:
+      run:
+        shell: bash
+
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v4
+
+      - name: Dump OIDC claims
+        shell: bash
+        run: |
+          echo "Solicitando token OIDC…"
+          TOKEN=$(curl -sSL -H "Authorization: Bearer $ACTIONS_ID_TOKEN_REQUEST_TOKEN" \
+            "${ACTIONS_ID_TOKEN_REQUEST_URL}&audience=sts.amazonaws.com" | jq -r .value)
+          echo "===== Claims del token OIDC ====="
+          echo "$TOKEN" | cut -d '.' -f2 | base64 -d | jq .
+
+      - name: Set environment variables
+        run: |
+          TIMESTAMP=$(date +%Y%m%d%H%M%S)
+          IMAGE_TAG="build-${{ github.run_number }}-${TIMESTAMP}"
+          ECR_URI="${ACCOUNT_ID}.dkr.ecr.${AWS_REGION}.amazonaws.com/${ECR_REPO}"
+          FULL_IMAGE="${ECR_URI}:${IMAGE_TAG}"
+
+          echo "IMAGE_TAG=${IMAGE_TAG}" >> $GITHUB_ENV
+          echo "ECR_URI=${ECR_URI}" >> $GITHUB_ENV
+          echo "FULL_IMAGE=${FULL_IMAGE}" >> $GITHUB_ENV
+
+      - name: Destroy stack (Terraform + Helm)
+        if: ${{ github.event.inputs.destroy == 'true' }}
+        run: |
+          aws eks update-kubeconfig \
+            --region $AWS_REGION \
+            --name devops-eks-cluster \
+            --kubeconfig .kubeconfig || true
+
+          helm uninstall $RELEASE -n default || true
+
+          cd terraform
+          terraform init
+          terraform destroy -auto-approve -var-file=dev.tfvars
+
+      - name: Stop after destroy
+        if: ${{ github.event.inputs.destroy == 'true' }}
+        run: echo "Stack destroyed, finishing pipeline."
+
+      - name: Terraform Apply
+        if: ${{ github.event.inputs.destroy != 'true' }}
+        run: |
+          cd terraform
+          terraform init
+          terraform plan -var-file=dev.tfvars
+          terraform apply -auto-approve -var-file=dev.tfvars
+
+      - name: Lint and Test
+        if: ${{ github.event.inputs.destroy != 'true' }}
+        run: |
+          yamllint $CHART_DIR
+          cd app
+          npm install
+          npm test
+          cd ..
+          helm lint $CHART_DIR
+
+      - name: Build Docker Image
+        if: ${{ github.event.inputs.destroy != 'true' }}
+        run: |
+          cd app
+          docker build --build-arg BUILDKIT_INLINE_CACHE=1 \
+                       --platform linux/amd64 \
+                       --provenance=false \
+                       -t $FULL_IMAGE .
+
+      - name: Push to ECR
+        if: ${{ github.event.inputs.destroy != 'true' }}
+        run: |
+          aws ecr get-login-password --region $AWS_REGION | \
+            docker login --username AWS --password-stdin $ECR_URI
+
+          docker push $FULL_IMAGE
+
+      - name: Configure kubectl
+        if: ${{ github.event.inputs.destroy != 'true' }}
+        run: |
+          aws eks update-kubeconfig \
+            --region $AWS_REGION \
+            --name devops-eks-cluster \
+            --kubeconfig .kubeconfig
+
+      - name: Helm Deploy
+        if: ${{ github.event.inputs.destroy != 'true' }}
+        env:
+          DB_PASSWORD: ${{ secrets.DB_PASS_SECRET }}
+        run: |
+          helm dependency update $CHART_DIR || true
+
+          helm upgrade --install $RELEASE $CHART_DIR \
+            --namespace default --create-namespace \
+            --set image.repository=$ECR_URI \
+            --set image.tag=$IMAGE_TAG \
+            --set secret.DB_PASSWORD=$DB_PASSWORD \
+            --wait --timeout 5m --atomic
+
+      - name: Cleanup workspace
+        if: always()
+        run: |
+          echo "Cleaning up..."
+          rm -rf .terraform .kubeconfig
