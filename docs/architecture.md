@@ -6,7 +6,8 @@
 > For demonstration purposes *all automation resides in a single Jenkins
 > pipeline* (`jenkins/Jenkinsfile`).  
 > In production I would separate concerns—infra, CI, and CD—into distinct
-> repositories and pipelines, adopt GitOps (Argo CD / Flux) for release
+> repositories and pipelines(either multibranch pipeline or different 
+> standalone pipelines), adopt GitOps (Argo CD / Flux) for release
 > management, and handle secrets exclusively with AWS Secrets Manager.
 
 ---

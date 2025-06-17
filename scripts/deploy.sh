@@ -1,75 +1,72 @@
 #!/usr/bin/env bash
 #
-# Local one-liner deploy
-# ----------------------
-# * Builds the sample image locally (no AWS/ECR)
-# * Creates a kind cluster if kubectl has no current context
-# * Installs / upgrades the Helm chart so pods use that local image
-# * Prints a port-forward command you can curl
+# Local deployment helper (Minikube)
+# ----------------------------------
+#  • Builds the Docker image into Minikube’s Docker daemon
+#  • Starts Minikube on the Docker driver if no context exists
+#  • Deploys/upgrades the Helm chart (with local image & no ALB)
+#  • Prints a port‐forward snippet for testing
 #
-# Requirements: docker, kubectl, helm   (kind is optional)
-
 set -euo pipefail
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 ROOT_DIR="$(dirname "$SCRIPT_DIR")"
 
-APP_NAME="sample-node-app"
-IMAGE_TAG="local"
-FULL_IMAGE="${APP_NAME}:${IMAGE_TAG}"
-
+APP="sample-node-app"
+TAG="local"
+IMAGE="${APP}:${TAG}"
 CHART_DIR="${ROOT_DIR}/helm-chart"
-RELEASE="${APP_NAME}"
-NAMESPACE="default"
+NS="default"
 
-log() { printf '[INFO] %s\n' "$*"; }
-err() { printf '[ERROR] %s\n' "$*" >&2; exit 1; }
+# simple logger
+log() { printf '=> %s\n' "$*"; }
 
-# 1) Verify required tools
-for bin in docker helm kubectl; do
-  command -v "$bin" >/dev/null 2>&1 || err "'$bin' not found in PATH."
+# 1) Check prerequisites
+for bin in docker minikube kubectl helm; do
+  command -v "$bin" >/dev/null 2>&1 || {
+    echo "ERROR: '$bin' not in PATH"; exit 1; }
 done
 
-# 2) Create a kind cluster if kubectl has no context
-if ! kubectl config current-context >/dev/null 2>&1; then
-  if command -v kind >/dev/null 2>&1; then
-    log "No kube-context detected; creating kind cluster 'dev'"
-    kind create cluster --name dev
-  else
-    err "kubectl not configured and 'kind' not installed."
-  fi
+# 2) Ensure a Minikube context
+CTX="$(kubectl config current-context 2>/dev/null || true)"
+if [[ "$CTX" != "minikube" ]]; then
+  log "Starting minikube (docker driver)..."
+  minikube start --driver=docker
 fi
 
-# 3) Build the Docker image
-log "Building Docker image ${FULL_IMAGE}"
-docker build --platform linux/amd64 -t "$FULL_IMAGE" "${ROOT_DIR}/app"
+# 3) Use Minikube’s Docker daemon
+log "Configuring Docker to build inside minikube..."
+eval "$(minikube docker-env)"
 
-# 4) If using kind, load the image into the cluster
-if kubectl config current-context | grep -q '^kind-'; then
-  KIND_NAME="$(kubectl config current-context | cut -d'-' -f2-)"
-  log "Loading image into kind node '${KIND_NAME}'"
-  kind load docker-image "$FULL_IMAGE" --name "$KIND_NAME"
-fi
+# 4) Build the image
+log "Building image ${IMAGE} into minikube..."
+docker build --platform linux/amd64 \
+  -t "${IMAGE}" "${ROOT_DIR}/app"
 
-# 5) Helm install / upgrade
-log "Installing or upgrading Helm release '${RELEASE}'"
-helm dependency update "$CHART_DIR" >/dev/null || true
+# 5) Helm deploy (disable ingress, use local pull policy)
+HELM_ARGS=(
+  --namespace "${NS}" --create-namespace
+  --set image.repository="${APP}"
+  --set image.tag="${TAG}"
+  --set image.pullPolicy=IfNotPresent
+  --set ingress.enabled=false
+)
 
-helm upgrade --install "$RELEASE" "$CHART_DIR" \
-  --namespace "$NAMESPACE" --create-namespace \
-  --set image.repository="$APP_NAME" \
-  --set image.tag="$IMAGE_TAG" \
+log "Deploying Helm release '${APP}'..."
+helm dependency update "${CHART_DIR}" >/dev/null || true
+helm upgrade --install "${APP}" "${CHART_DIR}" \
+  "${HELM_ARGS[@]}" \
   --wait --timeout 5m --atomic
 
-# 6) Show result & how to test
-log "Deployment ready:"
-kubectl -n "$NAMESPACE" get deploy "$RELEASE" -o wide
+# 6) Success!
+log "Deployment ready. Pods:"
+kubectl -n "${NS}" get pods -l app.kubernetes.io/instance="${APP}"
 
 cat <<EOF
 
-To hit the service locally, run in another terminal:
+Test locally:
 
-  kubectl -n $NAMESPACE port-forward svc/$RELEASE 8080:80
-  curl http://localhost:8080/
+  kubectl -n ${NS} port-forward svc/${APP} 8080:80
+  open http://localhost:8080/
 
 EOF

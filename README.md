@@ -8,43 +8,42 @@ service.
   Jenkins pipeline that orchestrates **Terraform → ECR → EKS → Helm**
 
 ---
-
 ## 1 Local deployment with kind (optional)
 
 Skip this section if you only need the AWS/Jenkins flow.
 
 ### 1.1 Requirements
 
-| Tool   | Tested version |
-|--------|----------------|
-| Docker | 24.x           |
-| kind   | latest (`go install sigs.k8s.io/kind@latest`) |
-| kubectl| 1.29           |
-| Helm   | ≥ 3.14         |
+| Tool    | Tested version                                 |
+|---------|-------------------------------------------------|
+| Docker  | 24.x                                            |
+| kind    | latest (`go install sigs.k8s.io/kind@latest`)  |
+| kubectl | 1.29                                            |
+| Helm    | ≥ 3.14                                          |
 
 ### 1.2 Steps
 
+1. **Create a local cluster** (if you don’t have one already):
 
-# 1 Create a local cluster (if you don’t have one already)
-kind create cluster --name dev
+   kind create cluster --name dev
 
-# 2 Run the helper script – it will:
-#  • build the Docker image
-#  • load it into kind
-#  • install / upgrade the Helm chart
-./scripts/deploy.sh
+2. **Run the helper script** – it will:
+   - build the Docker image  
+   - load it into kind  
+   - install / upgrade the Helm chart
 
+   ./scripts/deploy.sh
 
-Verify locally:
+3. **Verify locally:**
 
+   - Forward the service:
 
-# Forward the service
-kubectl -n default port-forward svc/sample-node-app 8080:80
+     kubectl -n default port-forward svc/sample-node-app 8080:80
 
-# Call it
-curl http://localhost:8080/
-# → Hello from the Node.js app!
+   - Call it:
 
+     curl http://localhost:8080/
+     # → Hello from the Node.js app!
 
 ---
 
