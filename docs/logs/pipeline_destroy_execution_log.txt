@@ -1,0 +1,1733 @@
+Started by user admin
+Obtained jenkins/Jenkinsfile from git https://github.com/pabloperfer/devops-test.git
+[Pipeline] Start of Pipeline
+[Pipeline] node
+Running on Jenkins in /Users/pabloperez/.jenkins/workspace/devops-pipeline
+[Pipeline] {
+[Pipeline] stage
+[Pipeline] { (Declarative: Checkout SCM)
+[Pipeline] checkout
+Selected Git installation does not exist. Using Default
+The recommended git tool is: NONE
+No credentials specified
+Cloning the remote Git repository
+Cloning repository https://github.com/pabloperfer/devops-test.git
+ > git init /Users/pabloperez/.jenkins/workspace/devops-pipeline # timeout=10
+Fetching upstream changes from https://github.com/pabloperfer/devops-test.git
+ > git --version # timeout=10
+ > git --version # 'git version 2.39.5 (Apple Git-154)'
+ > git fetch --tags --force --progress -- https://github.com/pabloperfer/devops-test.git +refs/heads/*:refs/remotes/origin/* # timeout=10
+ > git config remote.origin.url https://github.com/pabloperfer/devops-test.git # timeout=10
+ > git config --add remote.origin.fetch +refs/heads/*:refs/remotes/origin/* # timeout=10
+Avoid second fetch
+ > git rev-parse refs/remotes/origin/main^{commit} # timeout=10
+Checking out Revision 268c93b08056a7f4496bb9eaf926ebf2270b8658 (refs/remotes/origin/main)
+ > git config core.sparsecheckout # timeout=10
+ > git checkout -f 268c93b08056a7f4496bb9eaf926ebf2270b8658 # timeout=10
+Commit message: "alb2"
+ > git rev-list --no-walk 268c93b08056a7f4496bb9eaf926ebf2270b8658 # timeout=10
+[Pipeline] }
+[Pipeline] // stage
+[Pipeline] withEnv
+[Pipeline] {
+[Pipeline] withEnv
+[Pipeline] {
+[Pipeline] stage
+[Pipeline] { (Cleanup workspace)
+[Pipeline] cleanWs
+[WS-CLEANUP] Deleting project workspace...
+[WS-CLEANUP] Deferred wipeout is used...
+[WS-CLEANUP] done
+[Pipeline] }
+[Pipeline] // stage
+[Pipeline] stage
+[Pipeline] { (Checkout)
+[Pipeline] checkout
+Selected Git installation does not exist. Using Default
+The recommended git tool is: NONE
+No credentials specified
+Cloning the remote Git repository
+Cloning repository https://github.com/pabloperfer/devops-test.git
+ > git init /Users/pabloperez/.jenkins/workspace/devops-pipeline # timeout=10
+Fetching upstream changes from https://github.com/pabloperfer/devops-test.git
+ > git --version # timeout=10
+ > git --version # 'git version 2.39.5 (Apple Git-154)'
+ > git fetch --tags --force --progress -- https://github.com/pabloperfer/devops-test.git +refs/heads/*:refs/remotes/origin/* # timeout=10
+ > git config remote.origin.url https://github.com/pabloperfer/devops-test.git # timeout=10
+ > git config --add remote.origin.fetch +refs/heads/*:refs/remotes/origin/* # timeout=10
+Avoid second fetch
+ > git rev-parse refs/remotes/origin/main^{commit} # timeout=10
+Checking out Revision 268c93b08056a7f4496bb9eaf926ebf2270b8658 (refs/remotes/origin/main)
+ > git config core.sparsecheckout # timeout=10
+ > git checkout -f 268c93b08056a7f4496bb9eaf926ebf2270b8658 # timeout=10
+Commit message: "alb2"
+[Pipeline] }
+[Pipeline] // stage
+[Pipeline] stage
+[Pipeline] { (Destroy stack (Helm + Terraform))
+[Pipeline] withEnv
+[Pipeline] {
+[Pipeline] sh
++ aws eks update-kubeconfig --region us-east-1 --name devops-eks-cluster --kubeconfig /Users/pabloperez/.jenkins/workspace/devops-pipeline/.kubeconfig
+Added new context arn:aws:eks:us-east-1:679349556244:cluster/devops-eks-cluster to /Users/pabloperez/.jenkins/workspace/devops-pipeline/.kubeconfig
++ helm uninstall sample-node-app -n default
+release "sample-node-app" uninstalled
+[Pipeline] dir
+Running in /Users/pabloperez/.jenkins/workspace/devops-pipeline/terraform
+[Pipeline] {
+[Pipeline] sh
++ terraform init
+[0m[1mInitializing the backend...[0m
+[0m[32m
+Successfully configured the backend "s3"! Terraform will automatically
+use this backend unless the backend configuration changes.[0m
+[0m[1mInitializing modules...[0m
+- aws_lb_controller in modules/aws_lb_controller
+- ecr in modules/ecr
+- eks in modules/eks
+Downloading registry.terraform.io/terraform-aws-modules/eks/aws 20.37.0 for eks.eks_cluster...
+- eks.eks_cluster in .terraform/modules/eks.eks_cluster
+- eks.eks_cluster.eks_managed_node_group in .terraform/modules/eks.eks_cluster/modules/eks-managed-node-group
+- eks.eks_cluster.eks_managed_node_group.user_data in .terraform/modules/eks.eks_cluster/modules/_user_data
+- eks.eks_cluster.fargate_profile in .terraform/modules/eks.eks_cluster/modules/fargate-profile
+Downloading registry.terraform.io/terraform-aws-modules/kms/aws 2.1.0 for eks.eks_cluster.kms...
+- eks.eks_cluster.kms in .terraform/modules/eks.eks_cluster.kms
+- eks.eks_cluster.self_managed_node_group in .terraform/modules/eks.eks_cluster/modules/self-managed-node-group
+- eks.eks_cluster.self_managed_node_group.user_data in .terraform/modules/eks.eks_cluster/modules/_user_data
+[0m[1mInitializing provider plugins...[0m
+- Finding hashicorp/helm versions matching "~> 2.0"...
+- Reusing previous version of hashicorp/aws from the dependency lock file
+- Finding hashicorp/kubernetes versions matching "~> 2.0"...
+- Reusing previous version of hashicorp/time from the dependency lock file
+- Reusing previous version of hashicorp/tls from the dependency lock file
+- Reusing previous version of hashicorp/null from the dependency lock file
+- Reusing previous version of hashicorp/cloudinit from the dependency lock file
+- Installing hashicorp/null v3.2.4...
+- Installed hashicorp/null v3.2.4 (signed by HashiCorp)
+- Installing hashicorp/cloudinit v2.3.7...
+- Installed hashicorp/cloudinit v2.3.7 (signed by HashiCorp)
+- Installing hashicorp/helm v2.17.0...
+- Installed hashicorp/helm v2.17.0 (signed by HashiCorp)
+- Installing hashicorp/aws v5.100.0...
+- Installed hashicorp/aws v5.100.0 (signed by HashiCorp)
+- Installing hashicorp/kubernetes v2.37.1...
+- Installed hashicorp/kubernetes v2.37.1 (signed by HashiCorp)
+- Installing hashicorp/time v0.13.1...
+- Installed hashicorp/time v0.13.1 (signed by HashiCorp)
+- Installing hashicorp/tls v4.1.0...
+- Installed hashicorp/tls v4.1.0 (signed by HashiCorp)
+Terraform has made some changes to the provider dependency selections recorded
+in the .terraform.lock.hcl file. Review those changes and commit them to your
+version control system if they represent changes you intended to make.
+
+[0m[1m[32mTerraform has been successfully initialized![0m[32m[0m
+[0m[32m
+You may now begin working with Terraform. Try running "terraform plan" to see
+any changes that are required for your infrastructure. All Terraform commands
+should now work.
+
+If you ever set or change modules or backend configuration for Terraform,
+rerun this command to reinitialize your working directory. If you forget, other
+commands will detect it and remind you to do so if necessary.[0m
+[Pipeline] sh
++ terraform destroy -auto-approve -var-file=dev.tfvars
+[0m[1mmodule.eks.module.eks_cluster.module.eks_managed_node_group["default"].data.aws_partition.current: Reading...[0m[0m
+[0m[1mmodule.eks.module.eks_cluster.module.kms.data.aws_partition.current[0]: Reading...[0m[0m
+[0m[1mmodule.eks.module.eks_cluster.module.eks_managed_node_group["default"].data.aws_iam_policy_document.assume_role_policy[0]: Reading...[0m[0m
+[0m[1mmodule.eks.module.eks_cluster.data.aws_partition.current[0]: Reading...[0m[0m
+[0m[1mmodule.eks.module.eks_cluster.data.aws_caller_identity.current[0]: Reading...[0m[0m
+[0m[1mmodule.aws_lb_controller.aws_iam_policy.lb_controller_policy: Refreshing state... [id=arn:aws:iam::679349556244:policy/AWSLoadBalancerControllerIAMPolicy][0m
+[0m[1mmodule.eks.module.eks_cluster.data.aws_iam_policy_document.assume_role_policy[0]: Reading...[0m[0m
+[0m[1mmodule.ecr.aws_ecr_repository.app: Refreshing state... [id=sample-node-app][0m
+[0m[1mmodule.eks.module.eks_cluster.aws_security_group.cluster[0]: Refreshing state... [id=sg-02dbf0750d596a95f][0m
+[0m[1mmodule.eks.module.eks_cluster.module.eks_managed_node_group["default"].data.aws_partition.current: Read complete after 0s [id=aws][0m
+[0m[1mmodule.eks.module.eks_cluster.data.aws_partition.current[0]: Read complete after 0s [id=aws][0m
+[0m[1mmodule.eks.module.eks_cluster.module.kms.data.aws_partition.current[0]: Read complete after 0s [id=aws][0m
+[0m[1mmodule.eks.module.eks_cluster.data.aws_iam_policy_document.assume_role_policy[0]: Read complete after 0s [id=2830595799][0m
+[0m[1mmodule.eks.module.eks_cluster.module.eks_managed_node_group["default"].data.aws_iam_policy_document.assume_role_policy[0]: Read complete after 0s [id=2560088296][0m
+[0m[1mmodule.eks.module.eks_cluster.aws_cloudwatch_log_group.this[0]: Refreshing state... [id=/aws/eks/devops-eks-cluster/cluster][0m
+[0m[1mmodule.eks.module.eks_cluster.module.eks_managed_node_group["default"].data.aws_caller_identity.current: Reading...[0m[0m
+[0m[1mmodule.eks.module.eks_cluster.module.kms.data.aws_caller_identity.current[0]: Reading...[0m[0m
+[0m[1mmodule.eks.module.eks_cluster.aws_iam_role.this[0]: Refreshing state... [id=devops-eks-cluster-cluster-20250617030837119400000004][0m
+[0m[1mmodule.eks.module.eks_cluster.module.eks_managed_node_group["default"].aws_iam_role.this[0]: Refreshing state... [id=default-eks-node-group-20250617030837119200000002][0m
+[0m[1mmodule.eks.module.eks_cluster.aws_security_group.node[0]: Refreshing state... [id=sg-01a7b99636b07353e][0m
+[0m[1mmodule.eks.module.eks_cluster.data.aws_caller_identity.current[0]: Read complete after 0s [id=679349556244][0m
+[0m[1mmodule.eks.module.eks_cluster.data.aws_iam_policy_document.custom[0]: Reading...[0m[0m
+[0m[1mmodule.eks.module.eks_cluster.data.aws_iam_policy_document.custom[0]: Read complete after 0s [id=513122117][0m
+[0m[1mmodule.eks.module.eks_cluster.data.aws_iam_session_context.current[0]: Reading...[0m[0m
+[0m[1mmodule.eks.module.eks_cluster.module.kms.data.aws_caller_identity.current[0]: Read complete after 0s [id=679349556244][0m
+[0m[1mmodule.eks.module.eks_cluster.aws_iam_policy.custom[0]: Refreshing state... [id=arn:aws:iam::679349556244:policy/devops-eks-cluster-cluster-20250617030837119500000005][0m
+[0m[1mmodule.eks.module.eks_cluster.module.eks_managed_node_group["default"].data.aws_caller_identity.current: Read complete after 0s [id=679349556244][0m
+[0m[1mmodule.eks.module.eks_cluster.data.aws_iam_session_context.current[0]: Read complete after 0s [id=arn:aws:sts::679349556244:assumed-role/TerraformDeploymentRole/aws-go-sdk-1750186012710672000][0m
+[0m[1mmodule.ecr.aws_ecr_lifecycle_policy.expire_untagged: Refreshing state... [id=sample-node-app][0m
+[0m[1mmodule.eks.module.eks_cluster.aws_security_group_rule.node["ingress_nodes_ephemeral"]: Refreshing state... [id=sgrule-4067186750][0m
+[0m[1mmodule.eks.module.eks_cluster.aws_security_group_rule.node["ingress_cluster_6443_webhook"]: Refreshing state... [id=sgrule-1432981428][0m
+[0m[1mmodule.eks.module.eks_cluster.aws_security_group_rule.node["ingress_self_coredns_udp"]: Refreshing state... [id=sgrule-3943653714][0m
+[0m[1mmodule.eks.module.eks_cluster.aws_security_group_rule.node["ingress_cluster_443"]: Refreshing state... [id=sgrule-1001587068][0m
+[0m[1mmodule.eks.module.eks_cluster.aws_security_group_rule.node["ingress_self_coredns_tcp"]: Refreshing state... [id=sgrule-1330692797][0m
+[0m[1mmodule.eks.module.eks_cluster.aws_security_group_rule.node["ingress_cluster_kubelet"]: Refreshing state... [id=sgrule-3668161074][0m
+[0m[1mmodule.eks.module.eks_cluster.aws_security_group_rule.node["ingress_cluster_8443_webhook"]: Refreshing state... [id=sgrule-1177924501][0m
+[0m[1mmodule.eks.module.eks_cluster.aws_security_group_rule.node["ingress_cluster_4443_webhook"]: Refreshing state... [id=sgrule-2620123170][0m
+[0m[1mmodule.eks.module.eks_cluster.aws_security_group_rule.node["egress_all"]: Refreshing state... [id=sgrule-3345504949][0m
+[0m[1mmodule.eks.module.eks_cluster.aws_security_group_rule.node["ingress_cluster_9443_webhook"]: Refreshing state... [id=sgrule-580157534][0m
+[0m[1mmodule.eks.module.eks_cluster.aws_security_group_rule.cluster["ingress_nodes_443"]: Refreshing state... [id=sgrule-3063195394][0m
+[0m[1mmodule.eks.module.eks_cluster.module.eks_managed_node_group["default"].aws_iam_role_policy_attachment.this["AmazonEKSWorkerNodePolicy"]: Refreshing state... [id=default-eks-node-group-20250617030837119200000002-20250617030838093600000008][0m
+[0m[1mmodule.eks.module.eks_cluster.module.eks_managed_node_group["default"].aws_iam_role_policy_attachment.this["AmazonEKS_CNI_Policy"]: Refreshing state... [id=default-eks-node-group-20250617030837119200000002-20250617030838050200000006][0m
+[0m[1mmodule.eks.module.eks_cluster.module.eks_managed_node_group["default"].aws_iam_role_policy_attachment.this["AmazonEC2ContainerRegistryReadOnly"]: Refreshing state... [id=default-eks-node-group-20250617030837119200000002-20250617030838069400000007][0m
+[0m[1mmodule.eks.module.eks_cluster.aws_iam_role_policy_attachment.custom[0]: Refreshing state... [id=devops-eks-cluster-cluster-20250617030837119400000004-2025061703083823490000000a][0m
+[0m[1mmodule.eks.module.eks_cluster.aws_iam_role_policy_attachment.this["AmazonEKSClusterPolicy"]: Refreshing state... [id=devops-eks-cluster-cluster-20250617030837119400000004-2025061703083825380000000b][0m
+[0m[1mmodule.eks.module.eks_cluster.aws_iam_role_policy_attachment.this["AmazonEKSVPCResourceController"]: Refreshing state... [id=devops-eks-cluster-cluster-20250617030837119400000004-20250617030838203600000009][0m
+[0m[1mmodule.eks.module.eks_cluster.module.kms.data.aws_iam_policy_document.this[0]: Reading...[0m[0m
+[0m[1mmodule.eks.module.eks_cluster.module.kms.data.aws_iam_policy_document.this[0]: Read complete after 0s [id=3059696038][0m
+[0m[1mmodule.eks.module.eks_cluster.module.kms.aws_kms_key.this[0]: Refreshing state... [id=38eae03f-136a-4cd3-9de3-ce1cb31aab4f][0m
+[0m[1mmodule.eks.module.eks_cluster.module.kms.aws_kms_alias.this["cluster"]: Refreshing state... [id=alias/eks/devops-eks-cluster][0m
+[0m[1mmodule.eks.module.eks_cluster.aws_iam_policy.cluster_encryption[0]: Refreshing state... [id=arn:aws:iam::679349556244:policy/devops-eks-cluster-cluster-ClusterEncryption2025061703090074450000000c][0m
+[0m[1mmodule.eks.module.eks_cluster.aws_eks_cluster.this[0]: Refreshing state... [id=devops-eks-cluster][0m
+[0m[1mmodule.eks.module.eks_cluster.aws_iam_role_policy_attachment.cluster_encryption[0]: Refreshing state... [id=devops-eks-cluster-cluster-20250617030837119400000004-2025061703090128120000000d][0m
+[0m[1mmodule.eks.module.eks_cluster.aws_eks_access_entry.this["pablo_user"]: Refreshing state... [id=devops-eks-cluster:arn:aws:iam::679349556244:user/pablo][0m
+[0m[1mmodule.eks.module.eks_cluster.aws_eks_access_entry.this["cluster_creator"]: Refreshing state... [id=devops-eks-cluster:arn:aws:iam::679349556244:role/TerraformDeploymentRole][0m
+[0m[1mmodule.eks.module.eks_cluster.time_sleep.this[0]: Refreshing state... [id=2025-06-17T03:19:20Z][0m
+[0m[1mmodule.eks.module.eks_cluster.data.tls_certificate.this[0]: Reading...[0m[0m
+[0m[1mmodule.eks.module.eks_cluster.module.eks_managed_node_group["default"].module.user_data.null_resource.validate_cluster_service_cidr: Refreshing state... [id=33728445465314180][0m
+[0m[1mmodule.eks.module.eks_cluster.module.eks_managed_node_group["default"].aws_launch_template.this[0]: Refreshing state... [id=lt-00c3c08353d58ebed][0m
+[0m[1mmodule.eks.module.eks_cluster.module.eks_managed_node_group["default"].aws_eks_node_group.this[0]: Refreshing state... [id=devops-eks-cluster:default-20250617031927135700000010][0m
+[0m[1mmodule.eks.module.eks_cluster.data.tls_certificate.this[0]: Read complete after 0s [id=922877a0975ad078a65b8ff11ebc47b8311945c7][0m
+[0m[1mmodule.eks.module.eks_cluster.aws_iam_openid_connect_provider.oidc_provider[0]: Refreshing state... [id=arn:aws:iam::679349556244:oidc-provider/oidc.eks.us-east-1.amazonaws.com/id/FC49AAE7A7CFA542937387B2BEF92E22][0m
+[0m[1mmodule.eks.module.eks_cluster.aws_eks_access_policy_association.this["pablo_user_admin"]: Refreshing state... [id=devops-eks-cluster#arn:aws:iam::679349556244:user/pablo#arn:aws:eks::aws:cluster-access-policy/AmazonEKSClusterAdminPolicy][0m
+[0m[1mmodule.eks.module.eks_cluster.aws_eks_access_policy_association.this["cluster_creator_admin"]: Refreshing state... [id=devops-eks-cluster#arn:aws:iam::679349556244:role/TerraformDeploymentRole#arn:aws:eks::aws:cluster-access-policy/AmazonEKSClusterAdminPolicy][0m
+[0m[1mmodule.aws_lb_controller.aws_iam_role.lb_controller_irsa: Refreshing state... [id=eks-lb-controller-irsa][0m
+[0m[1mmodule.aws_lb_controller.aws_iam_role_policy_attachment.lb_controller_attach: Refreshing state... [id=eks-lb-controller-irsa-20250617120107755000000001][0m
+[0m[1mdata.aws_eks_cluster_auth.default: Reading...[0m[0m
+[0m[1mdata.aws_eks_cluster_auth.default: Read complete after 0s [id=devops-eks-cluster][0m
+[0m[1mdata.aws_eks_cluster.default: Reading...[0m[0m
+[0m[1mmodule.aws_lb_controller.kubernetes_service_account.aws_lb_controller: Refreshing state... [id=kube-system/aws-load-balancer-controller][0m
+[0m[1mdata.aws_eks_cluster.default: Read complete after 0s [id=devops-eks-cluster][0m
+[0m[1mmodule.aws_lb_controller.helm_release.aws_lb_controller: Refreshing state... [id=aws-load-balancer-controller][0m
+
+Terraform used the selected providers to generate the following execution
+plan. Resource actions are indicated with the following symbols:
+  [31m-[0m destroy[0m
+
+Terraform will perform the following actions:
+
+[1m  # module.aws_lb_controller.aws_iam_policy.lb_controller_policy[0m will be [1m[31mdestroyed[0m
+[0m  [31m-[0m[0m resource "aws_iam_policy" "lb_controller_policy" {
+      [31m-[0m[0m arn              = "arn:aws:iam::679349556244:policy/AWSLoadBalancerControllerIAMPolicy" [90m-> null[0m[0m
+      [31m-[0m[0m attachment_count = 1 [90m-> null[0m[0m
+      [31m-[0m[0m id               = "arn:aws:iam::679349556244:policy/AWSLoadBalancerControllerIAMPolicy" [90m-> null[0m[0m
+      [31m-[0m[0m name             = "AWSLoadBalancerControllerIAMPolicy" [90m-> null[0m[0m
+      [31m-[0m[0m path             = "/" [90m-> null[0m[0m
+      [31m-[0m[0m policy           = jsonencode(
+            {
+              [31m-[0m[0m Statement = [
+                  [31m-[0m[0m {
+                      [31m-[0m[0m Action   = [
+                          [31m-[0m[0m "acm:DescribeCertificate",
+                          [31m-[0m[0m "acm:ListCertificates",
+                          [31m-[0m[0m "acm:GetCertificate",
+                          [31m-[0m[0m "ec2:AuthorizeSecurityGroupIngress",
+                          [31m-[0m[0m "ec2:CreateSecurityGroup",
+                          [31m-[0m[0m "ec2:CreateTags",
+                          [31m-[0m[0m "ec2:DeleteTags",
+                          [31m-[0m[0m "ec2:DeleteSecurityGroup",
+                          [31m-[0m[0m "ec2:Describe*",
+                          [31m-[0m[0m "ec2:ModifyInstanceAttribute",
+                          [31m-[0m[0m "ec2:ModifyNetworkInterfaceAttribute",
+                          [31m-[0m[0m "ec2:RevokeSecurityGroupIngress",
+                          [31m-[0m[0m "elasticloadbalancing:AddListenerCertificates",
+                          [31m-[0m[0m "elasticloadbalancing:AddTags",
+                          [31m-[0m[0m "elasticloadbalancing:CreateListener",
+                          [31m-[0m[0m "elasticloadbalancing:CreateLoadBalancer",
+                          [31m-[0m[0m "elasticloadbalancing:CreateRule",
+                          [31m-[0m[0m "elasticloadbalancing:CreateTargetGroup",
+                          [31m-[0m[0m "elasticloadbalancing:DeleteListener",
+                          [31m-[0m[0m "elasticloadbalancing:DeleteLoadBalancer",
+                          [31m-[0m[0m "elasticloadbalancing:DeleteRule",
+                          [31m-[0m[0m "elasticloadbalancing:DeleteTargetGroup",
+                          [31m-[0m[0m "elasticloadbalancing:DeregisterTargets",
+                          [31m-[0m[0m "elasticloadbalancing:Describe*",
+                          [31m-[0m[0m "elasticloadbalancing:ModifyListener",
+                          [31m-[0m[0m "elasticloadbalancing:ModifyLoadBalancerAttributes",
+                          [31m-[0m[0m "elasticloadbalancing:ModifyRule",
+                          [31m-[0m[0m "elasticloadbalancing:ModifyTargetGroup",
+                          [31m-[0m[0m "elasticloadbalancing:ModifyTargetGroupAttributes",
+                          [31m-[0m[0m "elasticloadbalancing:RegisterTargets",
+                          [31m-[0m[0m "elasticloadbalancing:RemoveListenerCertificates",
+                          [31m-[0m[0m "elasticloadbalancing:RemoveTags",
+                          [31m-[0m[0m "elasticloadbalancing:SetIpAddressType",
+                          [31m-[0m[0m "elasticloadbalancing:SetSecurityGroups",
+                          [31m-[0m[0m "elasticloadbalancing:SetSubnets",
+                          [31m-[0m[0m "elasticloadbalancing:SetWebAcl",
+                          [31m-[0m[0m "iam:CreateServiceLinkedRole",
+                          [31m-[0m[0m "iam:GetServerCertificate",
+                          [31m-[0m[0m "iam:ListServerCertificates",
+                          [31m-[0m[0m "cognito-idp:DescribeUserPoolClient",
+                          [31m-[0m[0m "waf-regional:GetWebACLForResource",
+                          [31m-[0m[0m "waf-regional:GetWebACL",
+                          [31m-[0m[0m "waf-regional:AssociateWebACL",
+                          [31m-[0m[0m "waf-regional:DisassociateWebACL",
+                          [31m-[0m[0m "wafv2:GetWebACLForResource",
+                          [31m-[0m[0m "wafv2:GetWebACL",
+                          [31m-[0m[0m "wafv2:AssociateWebACL",
+                          [31m-[0m[0m "wafv2:DisassociateWebACL",
+                          [31m-[0m[0m "shield:DescribeProtection",
+                          [31m-[0m[0m "shield:GetSubscriptionState",
+                          [31m-[0m[0m "shield:DeleteProtection",
+                          [31m-[0m[0m "shield:CreateProtection",
+                          [31m-[0m[0m "shield:DescribeSubscription",
+                          [31m-[0m[0m "shield:ListProtections",
+                        ]
+                      [31m-[0m[0m Effect   = "Allow"
+                      [31m-[0m[0m Resource = "*"
+                    },
+                ]
+              [31m-[0m[0m Version   = "2012-10-17"
+            }
+        ) [90m-> null[0m[0m
+      [31m-[0m[0m policy_id        = "ANPAZ4LDDSQKDYQYNSQYZ" [90m-> null[0m[0m
+      [31m-[0m[0m tags             = {} [90m-> null[0m[0m
+      [31m-[0m[0m tags_all         = {} [90m-> null[0m[0m
+        [90m# (2 unchanged attributes hidden)[0m[0m
+    }
+
+[1m  # module.aws_lb_controller.aws_iam_role.lb_controller_irsa[0m will be [1m[31mdestroyed[0m
+[0m  [31m-[0m[0m resource "aws_iam_role" "lb_controller_irsa" {
+      [31m-[0m[0m arn                   = "arn:aws:iam::679349556244:role/eks-lb-controller-irsa" [90m-> null[0m[0m
+      [31m-[0m[0m assume_role_policy    = jsonencode(
+            {
+              [31m-[0m[0m Statement = [
+                  [31m-[0m[0m {
+                      [31m-[0m[0m Action    = "sts:AssumeRoleWithWebIdentity"
+                      [31m-[0m[0m Condition = {
+                          [31m-[0m[0m StringEquals = {
+                              [31m-[0m[0m "oidc.eks.us-east-1.amazonaws.com/id/FC49AAE7A7CFA542937387B2BEF92E22:sub" = "system:serviceaccount:kube-system:aws-load-balancer-controller"
+                            }
+                        }
+                      [31m-[0m[0m Effect    = "Allow"
+                      [31m-[0m[0m Principal = {
+                          [31m-[0m[0m Federated = "arn:aws:iam::679349556244:oidc-provider/oidc.eks.us-east-1.amazonaws.com/id/FC49AAE7A7CFA542937387B2BEF92E22"
+                        }
+                    },
+                ]
+              [31m-[0m[0m Version   = "2012-10-17"
+            }
+        ) [90m-> null[0m[0m
+      [31m-[0m[0m create_date           = "2025-06-17T12:01:07Z" [90m-> null[0m[0m
+      [31m-[0m[0m force_detach_policies = false [90m-> null[0m[0m
+      [31m-[0m[0m id                    = "eks-lb-controller-irsa" [90m-> null[0m[0m
+      [31m-[0m[0m managed_policy_arns   = [
+          [31m-[0m[0m "arn:aws:iam::679349556244:policy/AWSLoadBalancerControllerIAMPolicy",
+        ] [90m-> null[0m[0m
+      [31m-[0m[0m max_session_duration  = 3600 [90m-> null[0m[0m
+      [31m-[0m[0m name                  = "eks-lb-controller-irsa" [90m-> null[0m[0m
+      [31m-[0m[0m path                  = "/" [90m-> null[0m[0m
+      [31m-[0m[0m tags                  = {} [90m-> null[0m[0m
+      [31m-[0m[0m tags_all              = {} [90m-> null[0m[0m
+      [31m-[0m[0m unique_id             = "AROAZ4LDDSQKIP4APLNUG" [90m-> null[0m[0m
+        [90m# (3 unchanged attributes hidden)[0m[0m
+    }
+
+[1m  # module.aws_lb_controller.aws_iam_role_policy_attachment.lb_controller_attach[0m will be [1m[31mdestroyed[0m
+[0m  [31m-[0m[0m resource "aws_iam_role_policy_attachment" "lb_controller_attach" {
+      [31m-[0m[0m id         = "eks-lb-controller-irsa-20250617120107755000000001" [90m-> null[0m[0m
+      [31m-[0m[0m policy_arn = "arn:aws:iam::679349556244:policy/AWSLoadBalancerControllerIAMPolicy" [90m-> null[0m[0m
+      [31m-[0m[0m role       = "eks-lb-controller-irsa" [90m-> null[0m[0m
+    }
+
+[1m  # module.aws_lb_controller.helm_release.aws_lb_controller[0m will be [1m[31mdestroyed[0m
+[0m  [31m-[0m[0m resource "helm_release" "aws_lb_controller" {
+      [31m-[0m[0m atomic                     = false [90m-> null[0m[0m
+      [31m-[0m[0m chart                      = "aws-load-balancer-controller" [90m-> null[0m[0m
+      [31m-[0m[0m cleanup_on_fail            = false [90m-> null[0m[0m
+      [31m-[0m[0m create_namespace           = false [90m-> null[0m[0m
+      [31m-[0m[0m dependency_update          = false [90m-> null[0m[0m
+      [31m-[0m[0m disable_crd_hooks          = false [90m-> null[0m[0m
+      [31m-[0m[0m disable_openapi_validation = false [90m-> null[0m[0m
+      [31m-[0m[0m disable_webhooks           = false [90m-> null[0m[0m
+      [31m-[0m[0m force_update               = false [90m-> null[0m[0m
+      [31m-[0m[0m id                         = "aws-load-balancer-controller" [90m-> null[0m[0m
+      [31m-[0m[0m lint                       = false [90m-> null[0m[0m
+      [31m-[0m[0m max_history                = 0 [90m-> null[0m[0m
+      [31m-[0m[0m metadata                   = [
+          [31m-[0m[0m {
+              [31m-[0m[0m app_version    = "v2.12.0"
+              [31m-[0m[0m chart          = "aws-load-balancer-controller"
+              [31m-[0m[0m first_deployed = 1750161998
+              [31m-[0m[0m last_deployed  = 1750161998
+              [31m-[0m[0m name           = "aws-load-balancer-controller"
+              [31m-[0m[0m namespace      = "kube-system"
+              [31m-[0m[0m notes          = <<-EOT
+                    AWS Load Balancer controller installed!
+                EOT
+              [31m-[0m[0m revision       = 1
+              [31m-[0m[0m values         = jsonencode(
+                    {
+                      [31m-[0m[0m clusterName                 = "devops-eks-cluster"
+                      [31m-[0m[0m enableServiceMutatorWebhook = true
+                      [31m-[0m[0m region                      = "us-east-1"
+                      [31m-[0m[0m serviceAccount              = {
+                          [31m-[0m[0m create = false
+                          [31m-[0m[0m name   = "aws-load-balancer-controller"
+                        }
+                      [31m-[0m[0m vpcId                       = "vpc-022e0e62d40626eca"
+                    }
+                )
+              [31m-[0m[0m version        = "1.12.0"
+            },
+        ] [90m-> null[0m[0m
+      [31m-[0m[0m name                       = "aws-load-balancer-controller" [90m-> null[0m[0m
+      [31m-[0m[0m namespace                  = "kube-system" [90m-> null[0m[0m
+      [31m-[0m[0m pass_credentials           = false [90m-> null[0m[0m
+      [31m-[0m[0m recreate_pods              = false [90m-> null[0m[0m
+      [31m-[0m[0m render_subchart_notes      = true [90m-> null[0m[0m
+      [31m-[0m[0m replace                    = false [90m-> null[0m[0m
+      [31m-[0m[0m repository                 = "https://aws.github.io/eks-charts" [90m-> null[0m[0m
+      [31m-[0m[0m reset_values               = false [90m-> null[0m[0m
+      [31m-[0m[0m reuse_values               = false [90m-> null[0m[0m
+      [31m-[0m[0m skip_crds                  = false [90m-> null[0m[0m
+      [31m-[0m[0m status                     = "deployed" [90m-> null[0m[0m
+      [31m-[0m[0m timeout                    = 300 [90m-> null[0m[0m
+      [31m-[0m[0m values                     = [
+          [31m-[0m[0m <<-EOT
+                "clusterName": "devops-eks-cluster"
+                "enableServiceMutatorWebhook": true
+                "region": "us-east-1"
+                "serviceAccount":
+                  "create": false
+                  "name": "aws-load-balancer-controller"
+                "vpcId": "vpc-022e0e62d40626eca"
+            EOT,
+        ] [90m-> null[0m[0m
+      [31m-[0m[0m verify                     = false [90m-> null[0m[0m
+      [31m-[0m[0m version                    = "1.12.0" [90m-> null[0m[0m
+      [31m-[0m[0m wait                       = true [90m-> null[0m[0m
+      [31m-[0m[0m wait_for_jobs              = false [90m-> null[0m[0m
+    }
+
+[1m  # module.aws_lb_controller.kubernetes_service_account.aws_lb_controller[0m will be [1m[31mdestroyed[0m
+[0m  [31m-[0m[0m resource "kubernetes_service_account" "aws_lb_controller" {
+      [31m-[0m[0m automount_service_account_token = true [90m-> null[0m[0m
+      [31m-[0m[0m id                              = "kube-system/aws-load-balancer-controller" [90m-> null[0m[0m
+        [90m# (1 unchanged attribute hidden)[0m[0m
+
+      [31m-[0m[0m metadata {
+          [31m-[0m[0m annotations      = {
+              [31m-[0m[0m "eks.amazonaws.com/role-arn" = "arn:aws:iam::679349556244:role/eks-lb-controller-irsa"
+            } [90m-> null[0m[0m
+          [31m-[0m[0m generation       = 0 [90m-> null[0m[0m
+          [31m-[0m[0m labels           = {} [90m-> null[0m[0m
+          [31m-[0m[0m name             = "aws-load-balancer-controller" [90m-> null[0m[0m
+          [31m-[0m[0m namespace        = "kube-system" [90m-> null[0m[0m
+          [31m-[0m[0m resource_version = "84717" [90m-> null[0m[0m
+          [31m-[0m[0m uid              = "2a62b6dc-3b92-4b64-82bc-ebff6d425c23" [90m-> null[0m[0m
+            [90m# (1 unchanged attribute hidden)[0m[0m
+        }
+    }
+
+[1m  # module.ecr.aws_ecr_lifecycle_policy.expire_untagged[0m will be [1m[31mdestroyed[0m
+[0m  [31m-[0m[0m resource "aws_ecr_lifecycle_policy" "expire_untagged" {
+      [31m-[0m[0m id          = "sample-node-app" [90m-> null[0m[0m
+      [31m-[0m[0m policy      = jsonencode(
+            {
+              [31m-[0m[0m rules = [
+                  [31m-[0m[0m {
+                      [31m-[0m[0m action       = {
+                          [31m-[0m[0m type = "expire"
+                        }
+                      [31m-[0m[0m description  = "Expire untagged images after 7 days"
+                      [31m-[0m[0m rulePriority = 1
+                      [31m-[0m[0m selection    = {
+                          [31m-[0m[0m countNumber = 7
+                          [31m-[0m[0m countType   = "sinceImagePushed"
+                          [31m-[0m[0m countUnit   = "days"
+                          [31m-[0m[0m tagStatus   = "untagged"
+                        }
+                    },
+                ]
+            }
+        ) [90m-> null[0m[0m
+      [31m-[0m[0m registry_id = "679349556244" [90m-> null[0m[0m
+      [31m-[0m[0m repository  = "sample-node-app" [90m-> null[0m[0m
+    }
+
+[1m  # module.ecr.aws_ecr_repository.app[0m will be [1m[31mdestroyed[0m
+[0m  [31m-[0m[0m resource "aws_ecr_repository" "app" {
+      [31m-[0m[0m arn                  = "arn:aws:ecr:us-east-1:679349556244:repository/sample-node-app" [90m-> null[0m[0m
+      [31m-[0m[0m force_delete         = true [90m-> null[0m[0m
+      [31m-[0m[0m id                   = "sample-node-app" [90m-> null[0m[0m
+      [31m-[0m[0m image_tag_mutability = "IMMUTABLE" [90m-> null[0m[0m
+      [31m-[0m[0m name                 = "sample-node-app" [90m-> null[0m[0m
+      [31m-[0m[0m registry_id          = "679349556244" [90m-> null[0m[0m
+      [31m-[0m[0m repository_url       = "679349556244.dkr.ecr.us-east-1.amazonaws.com/sample-node-app" [90m-> null[0m[0m
+      [31m-[0m[0m tags                 = {
+          [31m-[0m[0m "Environment" = "production"
+          [31m-[0m[0m "Project"     = "devops-test"
+        } [90m-> null[0m[0m
+      [31m-[0m[0m tags_all             = {
+          [31m-[0m[0m "Environment" = "production"
+          [31m-[0m[0m "Project"     = "devops-test"
+        } [90m-> null[0m[0m
+
+      [31m-[0m[0m encryption_configuration {
+          [31m-[0m[0m encryption_type = "AES256" [90m-> null[0m[0m
+            [90m# (1 unchanged attribute hidden)[0m[0m
+        }
+
+      [31m-[0m[0m image_scanning_configuration {
+          [31m-[0m[0m scan_on_push = false [90m-> null[0m[0m
+        }
+    }
+
+[1m  # module.eks.module.eks_cluster.aws_cloudwatch_log_group.this[0][0m will be [1m[31mdestroyed[0m
+[0m  [31m-[0m[0m resource "aws_cloudwatch_log_group" "this" {
+      [31m-[0m[0m arn               = "arn:aws:logs:us-east-1:679349556244:log-group:/aws/eks/devops-eks-cluster/cluster" [90m-> null[0m[0m
+      [31m-[0m[0m id                = "/aws/eks/devops-eks-cluster/cluster" [90m-> null[0m[0m
+      [31m-[0m[0m log_group_class   = "STANDARD" [90m-> null[0m[0m
+      [31m-[0m[0m name              = "/aws/eks/devops-eks-cluster/cluster" [90m-> null[0m[0m
+      [31m-[0m[0m retention_in_days = 90 [90m-> null[0m[0m
+      [31m-[0m[0m skip_destroy      = false [90m-> null[0m[0m
+      [31m-[0m[0m tags              = {
+          [31m-[0m[0m "Name" = "/aws/eks/devops-eks-cluster/cluster"
+        } [90m-> null[0m[0m
+      [31m-[0m[0m tags_all          = {
+          [31m-[0m[0m "Name" = "/aws/eks/devops-eks-cluster/cluster"
+        } [90m-> null[0m[0m
+        [90m# (2 unchanged attributes hidden)[0m[0m
+    }
+
+[1m  # module.eks.module.eks_cluster.aws_eks_access_entry.this["cluster_creator"][0m will be [1m[31mdestroyed[0m
+[0m  [31m-[0m[0m resource "aws_eks_access_entry" "this" {
+      [31m-[0m[0m access_entry_arn  = "arn:aws:eks:us-east-1:679349556244:access-entry/devops-eks-cluster/role/679349556244/TerraformDeploymentRole/4ecbbdf2-c5aa-32cc-6e4b-5d3d8d7fb81c" [90m-> null[0m[0m
+      [31m-[0m[0m cluster_name      = "devops-eks-cluster" [90m-> null[0m[0m
+      [31m-[0m[0m created_at        = "2025-06-17T03:18:50Z" [90m-> null[0m[0m
+      [31m-[0m[0m id                = "devops-eks-cluster:arn:aws:iam::679349556244:role/TerraformDeploymentRole" [90m-> null[0m[0m
+      [31m-[0m[0m kubernetes_groups = [] [90m-> null[0m[0m
+      [31m-[0m[0m modified_at       = "2025-06-17T03:18:50Z" [90m-> null[0m[0m
+      [31m-[0m[0m principal_arn     = "arn:aws:iam::679349556244:role/TerraformDeploymentRole" [90m-> null[0m[0m
+      [31m-[0m[0m tags              = {} [90m-> null[0m[0m
+      [31m-[0m[0m tags_all          = {} [90m-> null[0m[0m
+      [31m-[0m[0m type              = "STANDARD" [90m-> null[0m[0m
+      [31m-[0m[0m user_name         = "arn:aws:sts::679349556244:assumed-role/TerraformDeploymentRole/{{SessionName}}" [90m-> null[0m[0m
+    }
+
+[1m  # module.eks.module.eks_cluster.aws_eks_access_entry.this["pablo_user"][0m will be [1m[31mdestroyed[0m
+[0m  [31m-[0m[0m resource "aws_eks_access_entry" "this" {
+      [31m-[0m[0m access_entry_arn  = "arn:aws:eks:us-east-1:679349556244:access-entry/devops-eks-cluster/user/679349556244/pablo/24cbbee7-c9e4-f4f5-14b1-4d626edc0d97" [90m-> null[0m[0m
+      [31m-[0m[0m cluster_name      = "devops-eks-cluster" [90m-> null[0m[0m
+      [31m-[0m[0m created_at        = "2025-06-17T12:14:05Z" [90m-> null[0m[0m
+      [31m-[0m[0m id                = "devops-eks-cluster:arn:aws:iam::679349556244:user/pablo" [90m-> null[0m[0m
+      [31m-[0m[0m kubernetes_groups = [] [90m-> null[0m[0m
+      [31m-[0m[0m modified_at       = "2025-06-17T12:14:05Z" [90m-> null[0m[0m
+      [31m-[0m[0m principal_arn     = "arn:aws:iam::679349556244:user/pablo" [90m-> null[0m[0m
+      [31m-[0m[0m tags              = {} [90m-> null[0m[0m
+      [31m-[0m[0m tags_all          = {} [90m-> null[0m[0m
+      [31m-[0m[0m type              = "STANDARD" [90m-> null[0m[0m
+      [31m-[0m[0m user_name         = "arn:aws:iam::679349556244:user/pablo" [90m-> null[0m[0m
+    }
+
+[1m  # module.eks.module.eks_cluster.aws_eks_access_policy_association.this["cluster_creator_admin"][0m will be [1m[31mdestroyed[0m
+[0m  [31m-[0m[0m resource "aws_eks_access_policy_association" "this" {
+      [31m-[0m[0m associated_at = "2025-06-17 03:29:49.349 +0000 UTC" [90m-> null[0m[0m
+      [31m-[0m[0m cluster_name  = "devops-eks-cluster" [90m-> null[0m[0m
+      [31m-[0m[0m id            = "devops-eks-cluster#arn:aws:iam::679349556244:role/TerraformDeploymentRole#arn:aws:eks::aws:cluster-access-policy/AmazonEKSClusterAdminPolicy" [90m-> null[0m[0m
+      [31m-[0m[0m modified_at   = "2025-06-17 03:29:49.349 +0000 UTC" [90m-> null[0m[0m
+      [31m-[0m[0m policy_arn    = "arn:aws:eks::aws:cluster-access-policy/AmazonEKSClusterAdminPolicy" [90m-> null[0m[0m
+      [31m-[0m[0m principal_arn = "arn:aws:iam::679349556244:role/TerraformDeploymentRole" [90m-> null[0m[0m
+
+      [31m-[0m[0m access_scope {
+          [31m-[0m[0m namespaces = [] [90m-> null[0m[0m
+          [31m-[0m[0m type       = "cluster" [90m-> null[0m[0m
+        }
+    }
+
+[1m  # module.eks.module.eks_cluster.aws_eks_access_policy_association.this["pablo_user_admin"][0m will be [1m[31mdestroyed[0m
+[0m  [31m-[0m[0m resource "aws_eks_access_policy_association" "this" {
+      [31m-[0m[0m associated_at = "2025-06-17 12:14:06.106 +0000 UTC" [90m-> null[0m[0m
+      [31m-[0m[0m cluster_name  = "devops-eks-cluster" [90m-> null[0m[0m
+      [31m-[0m[0m id            = "devops-eks-cluster#arn:aws:iam::679349556244:user/pablo#arn:aws:eks::aws:cluster-access-policy/AmazonEKSClusterAdminPolicy" [90m-> null[0m[0m
+      [31m-[0m[0m modified_at   = "2025-06-17 12:14:06.106 +0000 UTC" [90m-> null[0m[0m
+      [31m-[0m[0m policy_arn    = "arn:aws:eks::aws:cluster-access-policy/AmazonEKSClusterAdminPolicy" [90m-> null[0m[0m
+      [31m-[0m[0m principal_arn = "arn:aws:iam::679349556244:user/pablo" [90m-> null[0m[0m
+
+      [31m-[0m[0m access_scope {
+          [31m-[0m[0m namespaces = [] [90m-> null[0m[0m
+          [31m-[0m[0m type       = "cluster" [90m-> null[0m[0m
+        }
+    }
+
+[1m  # module.eks.module.eks_cluster.aws_eks_cluster.this[0][0m will be [1m[31mdestroyed[0m
+[0m  [31m-[0m[0m resource "aws_eks_cluster" "this" {
+      [31m-[0m[0m arn                           = "arn:aws:eks:us-east-1:679349556244:cluster/devops-eks-cluster" [90m-> null[0m[0m
+      [31m-[0m[0m bootstrap_self_managed_addons = true [90m-> null[0m[0m
+      [31m-[0m[0m certificate_authority         = [
+          [31m-[0m[0m {
+              [31m-[0m[0m data = "LS0tLS1CRUdJTiBDRVJUSUZJQ0FURS0tLS0tCk1JSURCVENDQWUyZ0F3SUJBZ0lJTlM4RzlpUEhHMm93RFFZSktvWklodmNOQVFFTEJRQXdGVEVUTUJFR0ExVUUKQXhNS2EzVmlaWEp1WlhSbGN6QWVGdzB5TlRBMk1UY3dNekE0TlRaYUZ3MHpOVEEyTVRVd016RXpOVFphTUJVeApFekFSQmdOVkJBTVRDbXQxWW1WeWJtVjBaWE13Z2dFaU1BMEdDU3FHU0liM0RRRUJBUVVBQTRJQkR3QXdnZ0VLCkFvSUJBUUNmVEhZaStUbWRIWVRmQkpUQnloU3R2MGorL1JwaldYbmJKR2lnOW12dm51RGRpc3l4Mkl2WGhWQTgKbHhXUk5qejhsODhKN2JGL3JqUG5rM213OWJ6MlFONTNEZFI3UmI2NUZCS0JDckhrTnkrSkxwZE1NV216cUdyWApFK3F4SEFKcEFBMnY4YXdqd2twTmJkQUFWbU5sUUkxZ0ZlcmNpV0xUaExzMW1KQldZQzBkbXVMZS9iR0tRU3hwCnVrejl6R0VLWjNUaTNidFVWaERLa2JMWDV2OUdSTU1TN3hESEZJSEZNcERsdHBrZEFKNTZVUnZXczNwM29mci8KZXNaQi9aNWs2WVJzb0VLV1pNSS9kRTFYTUVtbUtWcFp0NzQzdFlOaTVEVzVCb2lvcWc5TDhaazk5TWNtRmhuQQp5UWVSVEIvZEErTEVjbVNpaVl6MnRHTVlrREVMQWdNQkFBR2pXVEJYTUE0R0ExVWREd0VCL3dRRUF3SUNwREFQCkJnTlZIUk1CQWY4RUJUQURBUUgvTUIwR0ExVWREZ1FXQkJRR2t6WS9WOVZNTTA2aVRRTWJXKzRSa2lIenZqQVYKQmdOVkhSRUVEakFNZ2dwcmRXSmxjbTVsZEdWek1BMEdDU3FHU0liM0RRRUJDd1VBQTRJQkFRQWdZU3ZDRnRCcwpxZS9XZmh6Yk5sNXZydWU2djZqTjh6N0E4T3pqMjJ0RDU5Wk9EZ242WllUZHhxSTgxSkRyR09wYTJjSzlacDAzCmc2Vlo0WTN4SEN1NXRnUkJKYXdmMVk5THdkR294ajMxKzBEY0FaVmpuNVZYQmRmSE4vVEZ3T3JidzRUNVRGdEUKVWxYUVdHelpBN2tLQWNZM25pQS80a0x4b1VJejc3bnBJVlF0QkkxTUFCZ01WZkFNVDdkOG82eXVXclNEYkMxdgpvNlZibVJsVnZqbG13Nlhma3JwdGNKNEM3b1o4emRtY0NQU2FFMEFETGNOQ25hdStCNHdZNjBrZjR2QXdoL1R4CmlzYTRMZGVkYXYyKzdpb2xoNGY4OHhIaEhCVTNDL0p4aXZQZHJBOTl3dXNneXcrRGpQTWVYZmJiYmQ5MkRsWHkKNUhDWjVvS1lMSkxLCi0tLS0tRU5EIENFUlRJRklDQVRFLS0tLS0K"
+            },
+        ] [90m-> null[0m[0m
+      [31m-[0m[0m created_at                    = "2025-06-17T03:09:02Z" [90m-> null[0m[0m
+      [31m-[0m[0m enabled_cluster_log_types     = [
+          [31m-[0m[0m "api",
+          [31m-[0m[0m "audit",
+          [31m-[0m[0m "authenticator",
+        ] [90m-> null[0m[0m
+      [31m-[0m[0m endpoint                      = "https://FC49AAE7A7CFA542937387B2BEF92E22.gr7.us-east-1.eks.amazonaws.com" [90m-> null[0m[0m
+      [31m-[0m[0m id                            = "devops-eks-cluster" [90m-> null[0m[0m
+      [31m-[0m[0m identity                      = [
+          [31m-[0m[0m {
+              [31m-[0m[0m oidc = [
+                  [31m-[0m[0m {
+                      [31m-[0m[0m issuer = "https://oidc.eks.us-east-1.amazonaws.com/id/FC49AAE7A7CFA542937387B2BEF92E22"
+                    },
+                ]
+            },
+        ] [90m-> null[0m[0m
+      [31m-[0m[0m name                          = "devops-eks-cluster" [90m-> null[0m[0m
+      [31m-[0m[0m platform_version              = "eks.39" [90m-> null[0m[0m
+      [31m-[0m[0m role_arn                      = "arn:aws:iam::679349556244:role/devops-eks-cluster-cluster-20250617030837119400000004" [90m-> null[0m[0m
+      [31m-[0m[0m status                        = "ACTIVE" [90m-> null[0m[0m
+      [31m-[0m[0m tags                          = {
+          [31m-[0m[0m "terraform-aws-modules" = "eks"
+        } [90m-> null[0m[0m
+      [31m-[0m[0m tags_all                      = {
+          [31m-[0m[0m "terraform-aws-modules" = "eks"
+        } [90m-> null[0m[0m
+      [31m-[0m[0m version                       = "1.29" [90m-> null[0m[0m
+
+      [31m-[0m[0m access_config {
+          [31m-[0m[0m authentication_mode                         = "API_AND_CONFIG_MAP" [90m-> null[0m[0m
+          [31m-[0m[0m bootstrap_cluster_creator_admin_permissions = false [90m-> null[0m[0m
+        }
+
+      [31m-[0m[0m encryption_config {
+          [31m-[0m[0m resources = [
+              [31m-[0m[0m "secrets",
+            ] [90m-> null[0m[0m
+
+          [31m-[0m[0m provider {
+              [31m-[0m[0m key_arn = "arn:aws:kms:us-east-1:679349556244:key/38eae03f-136a-4cd3-9de3-ce1cb31aab4f" [90m-> null[0m[0m
+            }
+        }
+
+      [31m-[0m[0m kubernetes_network_config {
+          [31m-[0m[0m ip_family         = "ipv4" [90m-> null[0m[0m
+          [31m-[0m[0m service_ipv4_cidr = "10.100.0.0/16" [90m-> null[0m[0m
+            [90m# (1 unchanged attribute hidden)[0m[0m
+
+          [31m-[0m[0m elastic_load_balancing {
+              [31m-[0m[0m enabled = false [90m-> null[0m[0m
+            }
+        }
+
+      [31m-[0m[0m timeouts {}
+
+      [31m-[0m[0m upgrade_policy {
+          [31m-[0m[0m support_type = "EXTENDED" [90m-> null[0m[0m
+        }
+
+      [31m-[0m[0m vpc_config {
+          [31m-[0m[0m cluster_security_group_id = "sg-0d69b39b79817f617" [90m-> null[0m[0m
+          [31m-[0m[0m endpoint_private_access   = true [90m-> null[0m[0m
+          [31m-[0m[0m endpoint_public_access    = true [90m-> null[0m[0m
+          [31m-[0m[0m public_access_cidrs       = [
+              [31m-[0m[0m "0.0.0.0/0",
+            ] [90m-> null[0m[0m
+          [31m-[0m[0m security_group_ids        = [
+              [31m-[0m[0m "sg-02dbf0750d596a95f",
+            ] [90m-> null[0m[0m
+          [31m-[0m[0m subnet_ids                = [
+              [31m-[0m[0m "subnet-05388a2336534239f",
+              [31m-[0m[0m "subnet-0658ce955d8b30f64",
+              [31m-[0m[0m "subnet-06623675610abd37e",
+              [31m-[0m[0m "subnet-07dd6a30d288be705",
+              [31m-[0m[0m "subnet-0c371828f6ba359fb",
+            ] [90m-> null[0m[0m
+          [31m-[0m[0m vpc_id                    = "vpc-022e0e62d40626eca" [90m-> null[0m[0m
+        }
+    }
+
+[1m  # module.eks.module.eks_cluster.aws_iam_openid_connect_provider.oidc_provider[0][0m will be [1m[31mdestroyed[0m
+[0m  [31m-[0m[0m resource "aws_iam_openid_connect_provider" "oidc_provider" {
+      [31m-[0m[0m arn             = "arn:aws:iam::679349556244:oidc-provider/oidc.eks.us-east-1.amazonaws.com/id/FC49AAE7A7CFA542937387B2BEF92E22" [90m-> null[0m[0m
+      [31m-[0m[0m client_id_list  = [
+          [31m-[0m[0m "sts.amazonaws.com",
+        ] [90m-> null[0m[0m
+      [31m-[0m[0m id              = "arn:aws:iam::679349556244:oidc-provider/oidc.eks.us-east-1.amazonaws.com/id/FC49AAE7A7CFA542937387B2BEF92E22" [90m-> null[0m[0m
+      [31m-[0m[0m tags            = {
+          [31m-[0m[0m "Name" = "devops-eks-cluster-eks-irsa"
+        } [90m-> null[0m[0m
+      [31m-[0m[0m tags_all        = {
+          [31m-[0m[0m "Name" = "devops-eks-cluster-eks-irsa"
+        } [90m-> null[0m[0m
+      [31m-[0m[0m thumbprint_list = [
+          [31m-[0m[0m "9e99a48a9960b14926bb7f3b02e22da2b0ab7280",
+        ] [90m-> null[0m[0m
+      [31m-[0m[0m url             = "oidc.eks.us-east-1.amazonaws.com/id/FC49AAE7A7CFA542937387B2BEF92E22" [90m-> null[0m[0m
+    }
+
+[1m  # module.eks.module.eks_cluster.aws_iam_policy.cluster_encryption[0][0m will be [1m[31mdestroyed[0m
+[0m  [31m-[0m[0m resource "aws_iam_policy" "cluster_encryption" {
+      [31m-[0m[0m arn              = "arn:aws:iam::679349556244:policy/devops-eks-cluster-cluster-ClusterEncryption2025061703090074450000000c" [90m-> null[0m[0m
+      [31m-[0m[0m attachment_count = 1 [90m-> null[0m[0m
+      [31m-[0m[0m description      = "Cluster encryption policy to allow cluster role to utilize CMK provided" [90m-> null[0m[0m
+      [31m-[0m[0m id               = "arn:aws:iam::679349556244:policy/devops-eks-cluster-cluster-ClusterEncryption2025061703090074450000000c" [90m-> null[0m[0m
+      [31m-[0m[0m name             = "devops-eks-cluster-cluster-ClusterEncryption2025061703090074450000000c" [90m-> null[0m[0m
+      [31m-[0m[0m name_prefix      = "devops-eks-cluster-cluster-ClusterEncryption" [90m-> null[0m[0m
+      [31m-[0m[0m path             = "/" [90m-> null[0m[0m
+      [31m-[0m[0m policy           = jsonencode(
+            {
+              [31m-[0m[0m Statement = [
+                  [31m-[0m[0m {
+                      [31m-[0m[0m Action   = [
+                          [31m-[0m[0m "kms:Encrypt",
+                          [31m-[0m[0m "kms:Decrypt",
+                          [31m-[0m[0m "kms:ListGrants",
+                          [31m-[0m[0m "kms:DescribeKey",
+                        ]
+                      [31m-[0m[0m Effect   = "Allow"
+                      [31m-[0m[0m Resource = "arn:aws:kms:us-east-1:679349556244:key/38eae03f-136a-4cd3-9de3-ce1cb31aab4f"
+                    },
+                ]
+              [31m-[0m[0m Version   = "2012-10-17"
+            }
+        ) [90m-> null[0m[0m
+      [31m-[0m[0m policy_id        = "ANPAZ4LDDSQKK4YJQ3SV3" [90m-> null[0m[0m
+      [31m-[0m[0m tags             = {} [90m-> null[0m[0m
+      [31m-[0m[0m tags_all         = {} [90m-> null[0m[0m
+    }
+
+[1m  # module.eks.module.eks_cluster.aws_iam_policy.custom[0][0m will be [1m[31mdestroyed[0m
+[0m  [31m-[0m[0m resource "aws_iam_policy" "custom" {
+      [31m-[0m[0m arn              = "arn:aws:iam::679349556244:policy/devops-eks-cluster-cluster-20250617030837119500000005" [90m-> null[0m[0m
+      [31m-[0m[0m attachment_count = 1 [90m-> null[0m[0m
+      [31m-[0m[0m id               = "arn:aws:iam::679349556244:policy/devops-eks-cluster-cluster-20250617030837119500000005" [90m-> null[0m[0m
+      [31m-[0m[0m name             = "devops-eks-cluster-cluster-20250617030837119500000005" [90m-> null[0m[0m
+      [31m-[0m[0m name_prefix      = "devops-eks-cluster-cluster-" [90m-> null[0m[0m
+      [31m-[0m[0m path             = "/" [90m-> null[0m[0m
+      [31m-[0m[0m policy           = jsonencode(
+            {
+              [31m-[0m[0m Statement = [
+                  [31m-[0m[0m {
+                      [31m-[0m[0m Action    = [
+                          [31m-[0m[0m "ec2:RunInstances",
+                          [31m-[0m[0m "ec2:CreateLaunchTemplate",
+                          [31m-[0m[0m "ec2:CreateFleet",
+                        ]
+                      [31m-[0m[0m Condition = {
+                          [31m-[0m[0m StringEquals = {
+                              [31m-[0m[0m "aws:RequestTag/eks:eks-cluster-name" = "${aws:PrincipalTag/eks:eks-cluster-name}"
+                            }
+                          [31m-[0m[0m StringLike   = {
+                              [31m-[0m[0m "aws:RequestTag/eks:kubernetes-node-class-name" = "*"
+                              [31m-[0m[0m "aws:RequestTag/eks:kubernetes-node-pool-name"  = "*"
+                            }
+                        }
+                      [31m-[0m[0m Effect    = "Allow"
+                      [31m-[0m[0m Resource  = "*"
+                      [31m-[0m[0m Sid       = "Compute"
+                    },
+                  [31m-[0m[0m {
+                      [31m-[0m[0m Action    = [
+                          [31m-[0m[0m "ec2:CreateVolume",
+                          [31m-[0m[0m "ec2:CreateSnapshot",
+                        ]
+                      [31m-[0m[0m Condition = {
+                          [31m-[0m[0m StringEquals = {
+                              [31m-[0m[0m "aws:RequestTag/eks:eks-cluster-name" = "${aws:PrincipalTag/eks:eks-cluster-name}"
+                            }
+                        }
+                      [31m-[0m[0m Effect    = "Allow"
+                      [31m-[0m[0m Resource  = [
+                          [31m-[0m[0m "arn:aws:ec2:*:*:volume/*",
+                          [31m-[0m[0m "arn:aws:ec2:*:*:snapshot/*",
+                        ]
+                      [31m-[0m[0m Sid       = "Storage"
+                    },
+                  [31m-[0m[0m {
+                      [31m-[0m[0m Action    = "ec2:CreateNetworkInterface"
+                      [31m-[0m[0m Condition = {
+                          [31m-[0m[0m StringEquals = {
+                              [31m-[0m[0m "aws:RequestTag/eks:eks-cluster-name"         = "${aws:PrincipalTag/eks:eks-cluster-name}"
+                              [31m-[0m[0m "aws:RequestTag/eks:kubernetes-cni-node-name" = "*"
+                            }
+                        }
+                      [31m-[0m[0m Effect    = "Allow"
+                      [31m-[0m[0m Resource  = "*"
+                      [31m-[0m[0m Sid       = "Networking"
+                    },
+                  [31m-[0m[0m {
+                      [31m-[0m[0m Action    = [
+                          [31m-[0m[0m "elasticloadbalancing:CreateTargetGroup",
+                          [31m-[0m[0m "elasticloadbalancing:CreateRule",
+                          [31m-[0m[0m "elasticloadbalancing:CreateLoadBalancer",
+                          [31m-[0m[0m "elasticloadbalancing:CreateListener",
+                          [31m-[0m[0m "ec2:CreateSecurityGroup",
+                        ]
+                      [31m-[0m[0m Condition = {
+                          [31m-[0m[0m StringEquals = {
+                              [31m-[0m[0m "aws:RequestTag/eks:eks-cluster-name" = "${aws:PrincipalTag/eks:eks-cluster-name}"
+                            }
+                        }
+                      [31m-[0m[0m Effect    = "Allow"
+                      [31m-[0m[0m Resource  = "*"
+                      [31m-[0m[0m Sid       = "LoadBalancer"
+                    },
+                  [31m-[0m[0m {
+                      [31m-[0m[0m Action    = "shield:CreateProtection"
+                      [31m-[0m[0m Condition = {
+                          [31m-[0m[0m StringEquals = {
+                              [31m-[0m[0m "aws:RequestTag/eks:eks-cluster-name" = "${aws:PrincipalTag/eks:eks-cluster-name}"
+                            }
+                        }
+                      [31m-[0m[0m Effect    = "Allow"
+                      [31m-[0m[0m Resource  = "*"
+                      [31m-[0m[0m Sid       = "ShieldProtection"
+                    },
+                  [31m-[0m[0m {
+                      [31m-[0m[0m Action    = "shield:TagResource"
+                      [31m-[0m[0m Condition = {
+                          [31m-[0m[0m StringEquals = {
+                              [31m-[0m[0m "aws:RequestTag/eks:eks-cluster-name" = "${aws:PrincipalTag/eks:eks-cluster-name}"
+                            }
+                        }
+                      [31m-[0m[0m Effect    = "Allow"
+                      [31m-[0m[0m Resource  = "arn:aws:shield::*:protection/*"
+                      [31m-[0m[0m Sid       = "ShieldTagResource"
+                    },
+                ]
+              [31m-[0m[0m Version   = "2012-10-17"
+            }
+        ) [90m-> null[0m[0m
+      [31m-[0m[0m policy_id        = "ANPAZ4LDDSQKIJTCJ5AZI" [90m-> null[0m[0m
+      [31m-[0m[0m tags             = {} [90m-> null[0m[0m
+      [31m-[0m[0m tags_all         = {} [90m-> null[0m[0m
+        [90m# (1 unchanged attribute hidden)[0m[0m
+    }
+
+[1m  # module.eks.module.eks_cluster.aws_iam_role.this[0][0m will be [1m[31mdestroyed[0m
+[0m  [31m-[0m[0m resource "aws_iam_role" "this" {
+      [31m-[0m[0m arn                   = "arn:aws:iam::679349556244:role/devops-eks-cluster-cluster-20250617030837119400000004" [90m-> null[0m[0m
+      [31m-[0m[0m assume_role_policy    = jsonencode(
+            {
+              [31m-[0m[0m Statement = [
+                  [31m-[0m[0m {
+                      [31m-[0m[0m Action    = [
+                          [31m-[0m[0m "sts:TagSession",
+                          [31m-[0m[0m "sts:AssumeRole",
+                        ]
+                      [31m-[0m[0m Effect    = "Allow"
+                      [31m-[0m[0m Principal = {
+                          [31m-[0m[0m Service = "eks.amazonaws.com"
+                        }
+                      [31m-[0m[0m Sid       = "EKSClusterAssumeRole"
+                    },
+                ]
+              [31m-[0m[0m Version   = "2012-10-17"
+            }
+        ) [90m-> null[0m[0m
+      [31m-[0m[0m create_date           = "2025-06-17T03:08:37Z" [90m-> null[0m[0m
+      [31m-[0m[0m force_detach_policies = true [90m-> null[0m[0m
+      [31m-[0m[0m id                    = "devops-eks-cluster-cluster-20250617030837119400000004" [90m-> null[0m[0m
+      [31m-[0m[0m managed_policy_arns   = [
+          [31m-[0m[0m "arn:aws:iam::679349556244:policy/devops-eks-cluster-cluster-20250617030837119500000005",
+          [31m-[0m[0m "arn:aws:iam::679349556244:policy/devops-eks-cluster-cluster-ClusterEncryption2025061703090074450000000c",
+          [31m-[0m[0m "arn:aws:iam::aws:policy/AmazonEKSClusterPolicy",
+          [31m-[0m[0m "arn:aws:iam::aws:policy/AmazonEKSVPCResourceController",
+        ] [90m-> null[0m[0m
+      [31m-[0m[0m max_session_duration  = 3600 [90m-> null[0m[0m
+      [31m-[0m[0m name                  = "devops-eks-cluster-cluster-20250617030837119400000004" [90m-> null[0m[0m
+      [31m-[0m[0m name_prefix           = "devops-eks-cluster-cluster-" [90m-> null[0m[0m
+      [31m-[0m[0m path                  = "/" [90m-> null[0m[0m
+      [31m-[0m[0m tags                  = {} [90m-> null[0m[0m
+      [31m-[0m[0m tags_all              = {} [90m-> null[0m[0m
+      [31m-[0m[0m unique_id             = "AROAZ4LDDSQKNR7A25FJR" [90m-> null[0m[0m
+        [90m# (2 unchanged attributes hidden)[0m[0m
+    }
+
+[1m  # module.eks.module.eks_cluster.aws_iam_role_policy_attachment.cluster_encryption[0][0m will be [1m[31mdestroyed[0m
+[0m  [31m-[0m[0m resource "aws_iam_role_policy_attachment" "cluster_encryption" {
+      [31m-[0m[0m id         = "devops-eks-cluster-cluster-20250617030837119400000004-2025061703090128120000000d" [90m-> null[0m[0m
+      [31m-[0m[0m policy_arn = "arn:aws:iam::679349556244:policy/devops-eks-cluster-cluster-ClusterEncryption2025061703090074450000000c" [90m-> null[0m[0m
+      [31m-[0m[0m role       = "devops-eks-cluster-cluster-20250617030837119400000004" [90m-> null[0m[0m
+    }
+
+[1m  # module.eks.module.eks_cluster.aws_iam_role_policy_attachment.custom[0][0m will be [1m[31mdestroyed[0m
+[0m  [31m-[0m[0m resource "aws_iam_role_policy_attachment" "custom" {
+      [31m-[0m[0m id         = "devops-eks-cluster-cluster-20250617030837119400000004-2025061703083823490000000a" [90m-> null[0m[0m
+      [31m-[0m[0m policy_arn = "arn:aws:iam::679349556244:policy/devops-eks-cluster-cluster-20250617030837119500000005" [90m-> null[0m[0m
+      [31m-[0m[0m role       = "devops-eks-cluster-cluster-20250617030837119400000004" [90m-> null[0m[0m
+    }
+
+[1m  # module.eks.module.eks_cluster.aws_iam_role_policy_attachment.this["AmazonEKSClusterPolicy"][0m will be [1m[31mdestroyed[0m
+[0m  [31m-[0m[0m resource "aws_iam_role_policy_attachment" "this" {
+      [31m-[0m[0m id         = "devops-eks-cluster-cluster-20250617030837119400000004-2025061703083825380000000b" [90m-> null[0m[0m
+      [31m-[0m[0m policy_arn = "arn:aws:iam::aws:policy/AmazonEKSClusterPolicy" [90m-> null[0m[0m
+      [31m-[0m[0m role       = "devops-eks-cluster-cluster-20250617030837119400000004" [90m-> null[0m[0m
+    }
+
+[1m  # module.eks.module.eks_cluster.aws_iam_role_policy_attachment.this["AmazonEKSVPCResourceController"][0m will be [1m[31mdestroyed[0m
+[0m  [31m-[0m[0m resource "aws_iam_role_policy_attachment" "this" {
+      [31m-[0m[0m id         = "devops-eks-cluster-cluster-20250617030837119400000004-20250617030838203600000009" [90m-> null[0m[0m
+      [31m-[0m[0m policy_arn = "arn:aws:iam::aws:policy/AmazonEKSVPCResourceController" [90m-> null[0m[0m
+      [31m-[0m[0m role       = "devops-eks-cluster-cluster-20250617030837119400000004" [90m-> null[0m[0m
+    }
+
+[1m  # module.eks.module.eks_cluster.aws_security_group.cluster[0][0m will be [1m[31mdestroyed[0m
+[0m  [31m-[0m[0m resource "aws_security_group" "cluster" {
+      [31m-[0m[0m arn                    = "arn:aws:ec2:us-east-1:679349556244:security-group/sg-02dbf0750d596a95f" [90m-> null[0m[0m
+      [31m-[0m[0m description            = "EKS cluster security group" [90m-> null[0m[0m
+      [31m-[0m[0m egress                 = [] [90m-> null[0m[0m
+      [31m-[0m[0m id                     = "sg-02dbf0750d596a95f" [90m-> null[0m[0m
+      [31m-[0m[0m ingress                = [
+          [31m-[0m[0m {
+              [31m-[0m[0m cidr_blocks      = []
+              [31m-[0m[0m description      = "Node groups to cluster API"
+              [31m-[0m[0m from_port        = 443
+              [31m-[0m[0m ipv6_cidr_blocks = []
+              [31m-[0m[0m prefix_list_ids  = []
+              [31m-[0m[0m protocol         = "tcp"
+              [31m-[0m[0m security_groups  = [
+                  [31m-[0m[0m "sg-01a7b99636b07353e",
+                ]
+              [31m-[0m[0m self             = false
+              [31m-[0m[0m to_port          = 443
+            },
+        ] [90m-> null[0m[0m
+      [31m-[0m[0m name                   = "devops-eks-cluster-cluster-20250617030837118600000001" [90m-> null[0m[0m
+      [31m-[0m[0m name_prefix            = "devops-eks-cluster-cluster-" [90m-> null[0m[0m
+      [31m-[0m[0m owner_id               = "679349556244" [90m-> null[0m[0m
+      [31m-[0m[0m revoke_rules_on_delete = false [90m-> null[0m[0m
+      [31m-[0m[0m tags                   = {
+          [31m-[0m[0m "Name" = "devops-eks-cluster-cluster"
+        } [90m-> null[0m[0m
+      [31m-[0m[0m tags_all               = {
+          [31m-[0m[0m "Name" = "devops-eks-cluster-cluster"
+        } [90m-> null[0m[0m
+      [31m-[0m[0m vpc_id                 = "vpc-022e0e62d40626eca" [90m-> null[0m[0m
+    }
+
+[1m  # module.eks.module.eks_cluster.aws_security_group.node[0][0m will be [1m[31mdestroyed[0m
+[0m  [31m-[0m[0m resource "aws_security_group" "node" {
+      [31m-[0m[0m arn                    = "arn:aws:ec2:us-east-1:679349556244:security-group/sg-01a7b99636b07353e" [90m-> null[0m[0m
+      [31m-[0m[0m description            = "EKS node shared security group" [90m-> null[0m[0m
+      [31m-[0m[0m egress                 = [
+          [31m-[0m[0m {
+              [31m-[0m[0m cidr_blocks      = [
+                  [31m-[0m[0m "0.0.0.0/0",
+                ]
+              [31m-[0m[0m description      = "Allow all egress"
+              [31m-[0m[0m from_port        = 0
+              [31m-[0m[0m ipv6_cidr_blocks = []
+              [31m-[0m[0m prefix_list_ids  = []
+              [31m-[0m[0m protocol         = "-1"
+              [31m-[0m[0m security_groups  = []
+              [31m-[0m[0m self             = false
+              [31m-[0m[0m to_port          = 0
+            },
+        ] [90m-> null[0m[0m
+      [31m-[0m[0m id                     = "sg-01a7b99636b07353e" [90m-> null[0m[0m
+      [31m-[0m[0m ingress                = [
+          [31m-[0m[0m {
+              [31m-[0m[0m cidr_blocks      = []
+              [31m-[0m[0m description      = "Cluster API to node 4443/tcp webhook"
+              [31m-[0m[0m from_port        = 4443
+              [31m-[0m[0m ipv6_cidr_blocks = []
+              [31m-[0m[0m prefix_list_ids  = []
+              [31m-[0m[0m protocol         = "tcp"
+              [31m-[0m[0m security_groups  = [
+                  [31m-[0m[0m "sg-02dbf0750d596a95f",
+                ]
+              [31m-[0m[0m self             = false
+              [31m-[0m[0m to_port          = 4443
+            },
+          [31m-[0m[0m {
+              [31m-[0m[0m cidr_blocks      = []
+              [31m-[0m[0m description      = "Cluster API to node 6443/tcp webhook"
+              [31m-[0m[0m from_port        = 6443
+              [31m-[0m[0m ipv6_cidr_blocks = []
+              [31m-[0m[0m prefix_list_ids  = []
+              [31m-[0m[0m protocol         = "tcp"
+              [31m-[0m[0m security_groups  = [
+                  [31m-[0m[0m "sg-02dbf0750d596a95f",
+                ]
+              [31m-[0m[0m self             = false
+              [31m-[0m[0m to_port          = 6443
+            },
+          [31m-[0m[0m {
+              [31m-[0m[0m cidr_blocks      = []
+              [31m-[0m[0m description      = "Cluster API to node 8443/tcp webhook"
+              [31m-[0m[0m from_port        = 8443
+              [31m-[0m[0m ipv6_cidr_blocks = []
+              [31m-[0m[0m prefix_list_ids  = []
+              [31m-[0m[0m protocol         = "tcp"
+              [31m-[0m[0m security_groups  = [
+                  [31m-[0m[0m "sg-02dbf0750d596a95f",
+                ]
+              [31m-[0m[0m self             = false
+              [31m-[0m[0m to_port          = 8443
+            },
+          [31m-[0m[0m {
+              [31m-[0m[0m cidr_blocks      = []
+              [31m-[0m[0m description      = "Cluster API to node 9443/tcp webhook"
+              [31m-[0m[0m from_port        = 9443
+              [31m-[0m[0m ipv6_cidr_blocks = []
+              [31m-[0m[0m prefix_list_ids  = []
+              [31m-[0m[0m protocol         = "tcp"
+              [31m-[0m[0m security_groups  = [
+                  [31m-[0m[0m "sg-02dbf0750d596a95f",
+                ]
+              [31m-[0m[0m self             = false
+              [31m-[0m[0m to_port          = 9443
+            },
+          [31m-[0m[0m {
+              [31m-[0m[0m cidr_blocks      = []
+              [31m-[0m[0m description      = "Cluster API to node groups"
+              [31m-[0m[0m from_port        = 443
+              [31m-[0m[0m ipv6_cidr_blocks = []
+              [31m-[0m[0m prefix_list_ids  = []
+              [31m-[0m[0m protocol         = "tcp"
+              [31m-[0m[0m security_groups  = [
+                  [31m-[0m[0m "sg-02dbf0750d596a95f",
+                ]
+              [31m-[0m[0m self             = false
+              [31m-[0m[0m to_port          = 443
+            },
+          [31m-[0m[0m {
+              [31m-[0m[0m cidr_blocks      = []
+              [31m-[0m[0m description      = "Cluster API to node kubelets"
+              [31m-[0m[0m from_port        = 10250
+              [31m-[0m[0m ipv6_cidr_blocks = []
+              [31m-[0m[0m prefix_list_ids  = []
+              [31m-[0m[0m protocol         = "tcp"
+              [31m-[0m[0m security_groups  = [
+                  [31m-[0m[0m "sg-02dbf0750d596a95f",
+                ]
+              [31m-[0m[0m self             = false
+              [31m-[0m[0m to_port          = 10250
+            },
+          [31m-[0m[0m {
+              [31m-[0m[0m cidr_blocks      = []
+              [31m-[0m[0m description      = "Node to node CoreDNS UDP"
+              [31m-[0m[0m from_port        = 53
+              [31m-[0m[0m ipv6_cidr_blocks = []
+              [31m-[0m[0m prefix_list_ids  = []
+              [31m-[0m[0m protocol         = "udp"
+              [31m-[0m[0m security_groups  = []
+              [31m-[0m[0m self             = true
+              [31m-[0m[0m to_port          = 53
+            },
+          [31m-[0m[0m {
+              [31m-[0m[0m cidr_blocks      = []
+              [31m-[0m[0m description      = "Node to node CoreDNS"
+              [31m-[0m[0m from_port        = 53
+              [31m-[0m[0m ipv6_cidr_blocks = []
+              [31m-[0m[0m prefix_list_ids  = []
+              [31m-[0m[0m protocol         = "tcp"
+              [31m-[0m[0m security_groups  = []
+              [31m-[0m[0m self             = true
+              [31m-[0m[0m to_port          = 53
+            },
+          [31m-[0m[0m {
+              [31m-[0m[0m cidr_blocks      = []
+              [31m-[0m[0m description      = "Node to node ingress on ephemeral ports"
+              [31m-[0m[0m from_port        = 1025
+              [31m-[0m[0m ipv6_cidr_blocks = []
+              [31m-[0m[0m prefix_list_ids  = []
+              [31m-[0m[0m protocol         = "tcp"
+              [31m-[0m[0m security_groups  = []
+              [31m-[0m[0m self             = true
+              [31m-[0m[0m to_port          = 65535
+            },
+        ] [90m-> null[0m[0m
+      [31m-[0m[0m name                   = "devops-eks-cluster-node-20250617030837119400000003" [90m-> null[0m[0m
+      [31m-[0m[0m name_prefix            = "devops-eks-cluster-node-" [90m-> null[0m[0m
+      [31m-[0m[0m owner_id               = "679349556244" [90m-> null[0m[0m
+      [31m-[0m[0m revoke_rules_on_delete = false [90m-> null[0m[0m
+      [31m-[0m[0m tags                   = {
+          [31m-[0m[0m "Name"                                     = "devops-eks-cluster-node"
+          [31m-[0m[0m "kubernetes.io/cluster/devops-eks-cluster" = "owned"
+        } [90m-> null[0m[0m
+      [31m-[0m[0m tags_all               = {
+          [31m-[0m[0m "Name"                                     = "devops-eks-cluster-node"
+          [31m-[0m[0m "kubernetes.io/cluster/devops-eks-cluster" = "owned"
+        } [90m-> null[0m[0m
+      [31m-[0m[0m vpc_id                 = "vpc-022e0e62d40626eca" [90m-> null[0m[0m
+    }
+
+[1m  # module.eks.module.eks_cluster.aws_security_group_rule.cluster["ingress_nodes_443"][0m will be [1m[31mdestroyed[0m
+[0m  [31m-[0m[0m resource "aws_security_group_rule" "cluster" {
+      [31m-[0m[0m description              = "Node groups to cluster API" [90m-> null[0m[0m
+      [31m-[0m[0m from_port                = 443 [90m-> null[0m[0m
+      [31m-[0m[0m id                       = "sgrule-3063195394" [90m-> null[0m[0m
+      [31m-[0m[0m protocol                 = "tcp" [90m-> null[0m[0m
+      [31m-[0m[0m security_group_id        = "sg-02dbf0750d596a95f" [90m-> null[0m[0m
+      [31m-[0m[0m security_group_rule_id   = "sgr-05d84e69a350e9c24" [90m-> null[0m[0m
+      [31m-[0m[0m self                     = false [90m-> null[0m[0m
+      [31m-[0m[0m source_security_group_id = "sg-01a7b99636b07353e" [90m-> null[0m[0m
+      [31m-[0m[0m to_port                  = 443 [90m-> null[0m[0m
+      [31m-[0m[0m type                     = "ingress" [90m-> null[0m[0m
+    }
+
+[1m  # module.eks.module.eks_cluster.aws_security_group_rule.node["egress_all"][0m will be [1m[31mdestroyed[0m
+[0m  [31m-[0m[0m resource "aws_security_group_rule" "node" {
+      [31m-[0m[0m cidr_blocks            = [
+          [31m-[0m[0m "0.0.0.0/0",
+        ] [90m-> null[0m[0m
+      [31m-[0m[0m description            = "Allow all egress" [90m-> null[0m[0m
+      [31m-[0m[0m from_port              = 0 [90m-> null[0m[0m
+      [31m-[0m[0m id                     = "sgrule-3345504949" [90m-> null[0m[0m
+      [31m-[0m[0m prefix_list_ids        = [] [90m-> null[0m[0m
+      [31m-[0m[0m protocol               = "-1" [90m-> null[0m[0m
+      [31m-[0m[0m security_group_id      = "sg-01a7b99636b07353e" [90m-> null[0m[0m
+      [31m-[0m[0m security_group_rule_id = "sgr-094850c712a97d8a7" [90m-> null[0m[0m
+      [31m-[0m[0m self                   = false [90m-> null[0m[0m
+      [31m-[0m[0m to_port                = 0 [90m-> null[0m[0m
+      [31m-[0m[0m type                   = "egress" [90m-> null[0m[0m
+    }
+
+[1m  # module.eks.module.eks_cluster.aws_security_group_rule.node["ingress_cluster_443"][0m will be [1m[31mdestroyed[0m
+[0m  [31m-[0m[0m resource "aws_security_group_rule" "node" {
+      [31m-[0m[0m description              = "Cluster API to node groups" [90m-> null[0m[0m
+      [31m-[0m[0m from_port                = 443 [90m-> null[0m[0m
+      [31m-[0m[0m id                       = "sgrule-1001587068" [90m-> null[0m[0m
+      [31m-[0m[0m prefix_list_ids          = [] [90m-> null[0m[0m
+      [31m-[0m[0m protocol                 = "tcp" [90m-> null[0m[0m
+      [31m-[0m[0m security_group_id        = "sg-01a7b99636b07353e" [90m-> null[0m[0m
+      [31m-[0m[0m security_group_rule_id   = "sgr-0c5592e1f15061243" [90m-> null[0m[0m
+      [31m-[0m[0m self                     = false [90m-> null[0m[0m
+      [31m-[0m[0m source_security_group_id = "sg-02dbf0750d596a95f" [90m-> null[0m[0m
+      [31m-[0m[0m to_port                  = 443 [90m-> null[0m[0m
+      [31m-[0m[0m type                     = "ingress" [90m-> null[0m[0m
+    }
+
+[1m  # module.eks.module.eks_cluster.aws_security_group_rule.node["ingress_cluster_4443_webhook"][0m will be [1m[31mdestroyed[0m
+[0m  [31m-[0m[0m resource "aws_security_group_rule" "node" {
+      [31m-[0m[0m description              = "Cluster API to node 4443/tcp webhook" [90m-> null[0m[0m
+      [31m-[0m[0m from_port                = 4443 [90m-> null[0m[0m
+      [31m-[0m[0m id                       = "sgrule-2620123170" [90m-> null[0m[0m
+      [31m-[0m[0m prefix_list_ids          = [] [90m-> null[0m[0m
+      [31m-[0m[0m protocol                 = "tcp" [90m-> null[0m[0m
+      [31m-[0m[0m security_group_id        = "sg-01a7b99636b07353e" [90m-> null[0m[0m
+      [31m-[0m[0m security_group_rule_id   = "sgr-0284bc40c9c564c51" [90m-> null[0m[0m
+      [31m-[0m[0m self                     = false [90m-> null[0m[0m
+      [31m-[0m[0m source_security_group_id = "sg-02dbf0750d596a95f" [90m-> null[0m[0m
+      [31m-[0m[0m to_port                  = 4443 [90m-> null[0m[0m
+      [31m-[0m[0m type                     = "ingress" [90m-> null[0m[0m
+    }
+
+[1m  # module.eks.module.eks_cluster.aws_security_group_rule.node["ingress_cluster_6443_webhook"][0m will be [1m[31mdestroyed[0m
+[0m  [31m-[0m[0m resource "aws_security_group_rule" "node" {
+      [31m-[0m[0m description              = "Cluster API to node 6443/tcp webhook" [90m-> null[0m[0m
+      [31m-[0m[0m from_port                = 6443 [90m-> null[0m[0m
+      [31m-[0m[0m id                       = "sgrule-1432981428" [90m-> null[0m[0m
+      [31m-[0m[0m prefix_list_ids          = [] [90m-> null[0m[0m
+      [31m-[0m[0m protocol                 = "tcp" [90m-> null[0m[0m
+      [31m-[0m[0m security_group_id        = "sg-01a7b99636b07353e" [90m-> null[0m[0m
+      [31m-[0m[0m security_group_rule_id   = "sgr-0c898728921c10bfa" [90m-> null[0m[0m
+      [31m-[0m[0m self                     = false [90m-> null[0m[0m
+      [31m-[0m[0m source_security_group_id = "sg-02dbf0750d596a95f" [90m-> null[0m[0m
+      [31m-[0m[0m to_port                  = 6443 [90m-> null[0m[0m
+      [31m-[0m[0m type                     = "ingress" [90m-> null[0m[0m
+    }
+
+[1m  # module.eks.module.eks_cluster.aws_security_group_rule.node["ingress_cluster_8443_webhook"][0m will be [1m[31mdestroyed[0m
+[0m  [31m-[0m[0m resource "aws_security_group_rule" "node" {
+      [31m-[0m[0m description              = "Cluster API to node 8443/tcp webhook" [90m-> null[0m[0m
+      [31m-[0m[0m from_port                = 8443 [90m-> null[0m[0m
+      [31m-[0m[0m id                       = "sgrule-1177924501" [90m-> null[0m[0m
+      [31m-[0m[0m prefix_list_ids          = [] [90m-> null[0m[0m
+      [31m-[0m[0m protocol                 = "tcp" [90m-> null[0m[0m
+      [31m-[0m[0m security_group_id        = "sg-01a7b99636b07353e" [90m-> null[0m[0m
+      [31m-[0m[0m security_group_rule_id   = "sgr-02241fe7ddca02147" [90m-> null[0m[0m
+      [31m-[0m[0m self                     = false [90m-> null[0m[0m
+      [31m-[0m[0m source_security_group_id = "sg-02dbf0750d596a95f" [90m-> null[0m[0m
+      [31m-[0m[0m to_port                  = 8443 [90m-> null[0m[0m
+      [31m-[0m[0m type                     = "ingress" [90m-> null[0m[0m
+    }
+
+[1m  # module.eks.module.eks_cluster.aws_security_group_rule.node["ingress_cluster_9443_webhook"][0m will be [1m[31mdestroyed[0m
+[0m  [31m-[0m[0m resource "aws_security_group_rule" "node" {
+      [31m-[0m[0m description              = "Cluster API to node 9443/tcp webhook" [90m-> null[0m[0m
+      [31m-[0m[0m from_port                = 9443 [90m-> null[0m[0m
+      [31m-[0m[0m id                       = "sgrule-580157534" [90m-> null[0m[0m
+      [31m-[0m[0m prefix_list_ids          = [] [90m-> null[0m[0m
+      [31m-[0m[0m protocol                 = "tcp" [90m-> null[0m[0m
+      [31m-[0m[0m security_group_id        = "sg-01a7b99636b07353e" [90m-> null[0m[0m
+      [31m-[0m[0m security_group_rule_id   = "sgr-06d694db2fbe03119" [90m-> null[0m[0m
+      [31m-[0m[0m self                     = false [90m-> null[0m[0m
+      [31m-[0m[0m source_security_group_id = "sg-02dbf0750d596a95f" [90m-> null[0m[0m
+      [31m-[0m[0m to_port                  = 9443 [90m-> null[0m[0m
+      [31m-[0m[0m type                     = "ingress" [90m-> null[0m[0m
+    }
+
+[1m  # module.eks.module.eks_cluster.aws_security_group_rule.node["ingress_cluster_kubelet"][0m will be [1m[31mdestroyed[0m
+[0m  [31m-[0m[0m resource "aws_security_group_rule" "node" {
+      [31m-[0m[0m description              = "Cluster API to node kubelets" [90m-> null[0m[0m
+      [31m-[0m[0m from_port                = 10250 [90m-> null[0m[0m
+      [31m-[0m[0m id                       = "sgrule-3668161074" [90m-> null[0m[0m
+      [31m-[0m[0m prefix_list_ids          = [] [90m-> null[0m[0m
+      [31m-[0m[0m protocol                 = "tcp" [90m-> null[0m[0m
+      [31m-[0m[0m security_group_id        = "sg-01a7b99636b07353e" [90m-> null[0m[0m
+      [31m-[0m[0m security_group_rule_id   = "sgr-0e748a22889d93820" [90m-> null[0m[0m
+      [31m-[0m[0m self                     = false [90m-> null[0m[0m
+      [31m-[0m[0m source_security_group_id = "sg-02dbf0750d596a95f" [90m-> null[0m[0m
+      [31m-[0m[0m to_port                  = 10250 [90m-> null[0m[0m
+      [31m-[0m[0m type                     = "ingress" [90m-> null[0m[0m
+    }
+
+[1m  # module.eks.module.eks_cluster.aws_security_group_rule.node["ingress_nodes_ephemeral"][0m will be [1m[31mdestroyed[0m
+[0m  [31m-[0m[0m resource "aws_security_group_rule" "node" {
+      [31m-[0m[0m description            = "Node to node ingress on ephemeral ports" [90m-> null[0m[0m
+      [31m-[0m[0m from_port              = 1025 [90m-> null[0m[0m
+      [31m-[0m[0m id                     = "sgrule-4067186750" [90m-> null[0m[0m
+      [31m-[0m[0m prefix_list_ids        = [] [90m-> null[0m[0m
+      [31m-[0m[0m protocol               = "tcp" [90m-> null[0m[0m
+      [31m-[0m[0m security_group_id      = "sg-01a7b99636b07353e" [90m-> null[0m[0m
+      [31m-[0m[0m security_group_rule_id = "sgr-09c0e9295c5cea98f" [90m-> null[0m[0m
+      [31m-[0m[0m self                   = true [90m-> null[0m[0m
+      [31m-[0m[0m to_port                = 65535 [90m-> null[0m[0m
+      [31m-[0m[0m type                   = "ingress" [90m-> null[0m[0m
+    }
+
+[1m  # module.eks.module.eks_cluster.aws_security_group_rule.node["ingress_self_coredns_tcp"][0m will be [1m[31mdestroyed[0m
+[0m  [31m-[0m[0m resource "aws_security_group_rule" "node" {
+      [31m-[0m[0m description            = "Node to node CoreDNS" [90m-> null[0m[0m
+      [31m-[0m[0m from_port              = 53 [90m-> null[0m[0m
+      [31m-[0m[0m id                     = "sgrule-1330692797" [90m-> null[0m[0m
+      [31m-[0m[0m prefix_list_ids        = [] [90m-> null[0m[0m
+      [31m-[0m[0m protocol               = "tcp" [90m-> null[0m[0m
+      [31m-[0m[0m security_group_id      = "sg-01a7b99636b07353e" [90m-> null[0m[0m
+      [31m-[0m[0m security_group_rule_id = "sgr-0065fec3eb38be82c" [90m-> null[0m[0m
+      [31m-[0m[0m self                   = true [90m-> null[0m[0m
+      [31m-[0m[0m to_port                = 53 [90m-> null[0m[0m
+      [31m-[0m[0m type                   = "ingress" [90m-> null[0m[0m
+    }
+
+[1m  # module.eks.module.eks_cluster.aws_security_group_rule.node["ingress_self_coredns_udp"][0m will be [1m[31mdestroyed[0m
+[0m  [31m-[0m[0m resource "aws_security_group_rule" "node" {
+      [31m-[0m[0m description            = "Node to node CoreDNS UDP" [90m-> null[0m[0m
+      [31m-[0m[0m from_port              = 53 [90m-> null[0m[0m
+      [31m-[0m[0m id                     = "sgrule-3943653714" [90m-> null[0m[0m
+      [31m-[0m[0m prefix_list_ids        = [] [90m-> null[0m[0m
+      [31m-[0m[0m protocol               = "udp" [90m-> null[0m[0m
+      [31m-[0m[0m security_group_id      = "sg-01a7b99636b07353e" [90m-> null[0m[0m
+      [31m-[0m[0m security_group_rule_id = "sgr-0b1523982174c460f" [90m-> null[0m[0m
+      [31m-[0m[0m self                   = true [90m-> null[0m[0m
+      [31m-[0m[0m to_port                = 53 [90m-> null[0m[0m
+      [31m-[0m[0m type                   = "ingress" [90m-> null[0m[0m
+    }
+
+[1m  # module.eks.module.eks_cluster.time_sleep.this[0][0m will be [1m[31mdestroyed[0m
+[0m  [31m-[0m[0m resource "time_sleep" "this" {
+      [31m-[0m[0m create_duration = "30s" [90m-> null[0m[0m
+      [31m-[0m[0m id              = "2025-06-17T03:19:20Z" [90m-> null[0m[0m
+      [31m-[0m[0m triggers        = {
+          [31m-[0m[0m "cluster_certificate_authority_data" = "LS0tLS1CRUdJTiBDRVJUSUZJQ0FURS0tLS0tCk1JSURCVENDQWUyZ0F3SUJBZ0lJTlM4RzlpUEhHMm93RFFZSktvWklodmNOQVFFTEJRQXdGVEVUTUJFR0ExVUUKQXhNS2EzVmlaWEp1WlhSbGN6QWVGdzB5TlRBMk1UY3dNekE0TlRaYUZ3MHpOVEEyTVRVd016RXpOVFphTUJVeApFekFSQmdOVkJBTVRDbXQxWW1WeWJtVjBaWE13Z2dFaU1BMEdDU3FHU0liM0RRRUJBUVVBQTRJQkR3QXdnZ0VLCkFvSUJBUUNmVEhZaStUbWRIWVRmQkpUQnloU3R2MGorL1JwaldYbmJKR2lnOW12dm51RGRpc3l4Mkl2WGhWQTgKbHhXUk5qejhsODhKN2JGL3JqUG5rM213OWJ6MlFONTNEZFI3UmI2NUZCS0JDckhrTnkrSkxwZE1NV216cUdyWApFK3F4SEFKcEFBMnY4YXdqd2twTmJkQUFWbU5sUUkxZ0ZlcmNpV0xUaExzMW1KQldZQzBkbXVMZS9iR0tRU3hwCnVrejl6R0VLWjNUaTNidFVWaERLa2JMWDV2OUdSTU1TN3hESEZJSEZNcERsdHBrZEFKNTZVUnZXczNwM29mci8KZXNaQi9aNWs2WVJzb0VLV1pNSS9kRTFYTUVtbUtWcFp0NzQzdFlOaTVEVzVCb2lvcWc5TDhaazk5TWNtRmhuQQp5UWVSVEIvZEErTEVjbVNpaVl6MnRHTVlrREVMQWdNQkFBR2pXVEJYTUE0R0ExVWREd0VCL3dRRUF3SUNwREFQCkJnTlZIUk1CQWY4RUJUQURBUUgvTUIwR0ExVWREZ1FXQkJRR2t6WS9WOVZNTTA2aVRRTWJXKzRSa2lIenZqQVYKQmdOVkhSRUVEakFNZ2dwcmRXSmxjbTVsZEdWek1BMEdDU3FHU0liM0RRRUJDd1VBQTRJQkFRQWdZU3ZDRnRCcwpxZS9XZmh6Yk5sNXZydWU2djZqTjh6N0E4T3pqMjJ0RDU5Wk9EZ242WllUZHhxSTgxSkRyR09wYTJjSzlacDAzCmc2Vlo0WTN4SEN1NXRnUkJKYXdmMVk5THdkR294ajMxKzBEY0FaVmpuNVZYQmRmSE4vVEZ3T3JidzRUNVRGdEUKVWxYUVdHelpBN2tLQWNZM25pQS80a0x4b1VJejc3bnBJVlF0QkkxTUFCZ01WZkFNVDdkOG82eXVXclNEYkMxdgpvNlZibVJsVnZqbG13Nlhma3JwdGNKNEM3b1o4emRtY0NQU2FFMEFETGNOQ25hdStCNHdZNjBrZjR2QXdoL1R4CmlzYTRMZGVkYXYyKzdpb2xoNGY4OHhIaEhCVTNDL0p4aXZQZHJBOTl3dXNneXcrRGpQTWVYZmJiYmQ5MkRsWHkKNUhDWjVvS1lMSkxLCi0tLS0tRU5EIENFUlRJRklDQVRFLS0tLS0K"
+          [31m-[0m[0m "cluster_endpoint"                   = "https://FC49AAE7A7CFA542937387B2BEF92E22.gr7.us-east-1.eks.amazonaws.com"
+          [31m-[0m[0m "cluster_name"                       = "devops-eks-cluster"
+          [31m-[0m[0m "cluster_service_cidr"               = "10.100.0.0/16"
+          [31m-[0m[0m "cluster_version"                    = "1.29"
+        } [90m-> null[0m[0m
+    }
+
+[1m  # module.eks.module.eks_cluster.module.eks_managed_node_group["default"].aws_eks_node_group.this[0][0m will be [1m[31mdestroyed[0m
+[0m  [31m-[0m[0m resource "aws_eks_node_group" "this" {
+      [31m-[0m[0m ami_type               = "AL2_x86_64" [90m-> null[0m[0m
+      [31m-[0m[0m arn                    = "arn:aws:eks:us-east-1:679349556244:nodegroup/devops-eks-cluster/default-20250617031927135700000010/7ccbbdf3-0d8a-3f33-da0a-fa7f8739d078" [90m-> null[0m[0m
+      [31m-[0m[0m capacity_type          = "ON_DEMAND" [90m-> null[0m[0m
+      [31m-[0m[0m cluster_name           = "devops-eks-cluster" [90m-> null[0m[0m
+      [31m-[0m[0m disk_size              = 0 [90m-> null[0m[0m
+      [31m-[0m[0m id                     = "devops-eks-cluster:default-20250617031927135700000010" [90m-> null[0m[0m
+      [31m-[0m[0m instance_types         = [
+          [31m-[0m[0m "t3.medium",
+        ] [90m-> null[0m[0m
+      [31m-[0m[0m labels                 = {} [90m-> null[0m[0m
+      [31m-[0m[0m node_group_name        = "default-20250617031927135700000010" [90m-> null[0m[0m
+      [31m-[0m[0m node_group_name_prefix = "default-" [90m-> null[0m[0m
+      [31m-[0m[0m node_role_arn          = "arn:aws:iam::679349556244:role/default-eks-node-group-20250617030837119200000002" [90m-> null[0m[0m
+      [31m-[0m[0m release_version        = "1.29.15-20250610" [90m-> null[0m[0m
+      [31m-[0m[0m resources              = [
+          [31m-[0m[0m {
+              [31m-[0m[0m autoscaling_groups              = [
+                  [31m-[0m[0m {
+                      [31m-[0m[0m name = "eks-default-20250617031927135700000010-7ccbbdf3-0d8a-3f33-da0a-fa7f8739d078"
+                    },
+                ]
+                [90m# (1 unchanged attribute hidden)[0m[0m
+            },
+        ] [90m-> null[0m[0m
+      [31m-[0m[0m status                 = "ACTIVE" [90m-> null[0m[0m
+      [31m-[0m[0m subnet_ids             = [
+          [31m-[0m[0m "subnet-05388a2336534239f",
+          [31m-[0m[0m "subnet-0658ce955d8b30f64",
+          [31m-[0m[0m "subnet-06623675610abd37e",
+          [31m-[0m[0m "subnet-07dd6a30d288be705",
+          [31m-[0m[0m "subnet-0c371828f6ba359fb",
+        ] [90m-> null[0m[0m
+      [31m-[0m[0m tags                   = {
+          [31m-[0m[0m "Name" = "default"
+        } [90m-> null[0m[0m
+      [31m-[0m[0m tags_all               = {
+          [31m-[0m[0m "Name" = "default"
+        } [90m-> null[0m[0m
+      [31m-[0m[0m version                = "1.29" [90m-> null[0m[0m
+
+      [31m-[0m[0m launch_template {
+          [31m-[0m[0m id      = "lt-00c3c08353d58ebed" [90m-> null[0m[0m
+          [31m-[0m[0m name    = "default-2025061703192084500000000e" [90m-> null[0m[0m
+          [31m-[0m[0m version = "1" [90m-> null[0m[0m
+        }
+
+      [31m-[0m[0m scaling_config {
+          [31m-[0m[0m desired_size = 1 [90m-> null[0m[0m
+          [31m-[0m[0m max_size     = 3 [90m-> null[0m[0m
+          [31m-[0m[0m min_size     = 1 [90m-> null[0m[0m
+        }
+
+      [31m-[0m[0m timeouts {}
+
+      [31m-[0m[0m update_config {
+          [31m-[0m[0m max_unavailable            = 0 [90m-> null[0m[0m
+          [31m-[0m[0m max_unavailable_percentage = 33 [90m-> null[0m[0m
+        }
+    }
+
+[1m  # module.eks.module.eks_cluster.module.eks_managed_node_group["default"].aws_iam_role.this[0][0m will be [1m[31mdestroyed[0m
+[0m  [31m-[0m[0m resource "aws_iam_role" "this" {
+      [31m-[0m[0m arn                   = "arn:aws:iam::679349556244:role/default-eks-node-group-20250617030837119200000002" [90m-> null[0m[0m
+      [31m-[0m[0m assume_role_policy    = jsonencode(
+            {
+              [31m-[0m[0m Statement = [
+                  [31m-[0m[0m {
+                      [31m-[0m[0m Action    = "sts:AssumeRole"
+                      [31m-[0m[0m Effect    = "Allow"
+                      [31m-[0m[0m Principal = {
+                          [31m-[0m[0m Service = "ec2.amazonaws.com"
+                        }
+                      [31m-[0m[0m Sid       = "EKSNodeAssumeRole"
+                    },
+                ]
+              [31m-[0m[0m Version   = "2012-10-17"
+            }
+        ) [90m-> null[0m[0m
+      [31m-[0m[0m create_date           = "2025-06-17T03:08:37Z" [90m-> null[0m[0m
+      [31m-[0m[0m description           = "EKS managed node group IAM role" [90m-> null[0m[0m
+      [31m-[0m[0m force_detach_policies = true [90m-> null[0m[0m
+      [31m-[0m[0m id                    = "default-eks-node-group-20250617030837119200000002" [90m-> null[0m[0m
+      [31m-[0m[0m managed_policy_arns   = [
+          [31m-[0m[0m "arn:aws:iam::aws:policy/AmazonEC2ContainerRegistryReadOnly",
+          [31m-[0m[0m "arn:aws:iam::aws:policy/AmazonEKSWorkerNodePolicy",
+          [31m-[0m[0m "arn:aws:iam::aws:policy/AmazonEKS_CNI_Policy",
+        ] [90m-> null[0m[0m
+      [31m-[0m[0m max_session_duration  = 3600 [90m-> null[0m[0m
+      [31m-[0m[0m name                  = "default-eks-node-group-20250617030837119200000002" [90m-> null[0m[0m
+      [31m-[0m[0m name_prefix           = "default-eks-node-group-" [90m-> null[0m[0m
+      [31m-[0m[0m path                  = "/" [90m-> null[0m[0m
+      [31m-[0m[0m tags                  = {} [90m-> null[0m[0m
+      [31m-[0m[0m tags_all              = {} [90m-> null[0m[0m
+      [31m-[0m[0m unique_id             = "AROAZ4LDDSQKD5Q4LKDVV" [90m-> null[0m[0m
+        [90m# (1 unchanged attribute hidden)[0m[0m
+    }
+
+[1m  # module.eks.module.eks_cluster.module.eks_managed_node_group["default"].aws_iam_role_policy_attachment.this["AmazonEC2ContainerRegistryReadOnly"][0m will be [1m[31mdestroyed[0m
+[0m  [31m-[0m[0m resource "aws_iam_role_policy_attachment" "this" {
+      [31m-[0m[0m id         = "default-eks-node-group-20250617030837119200000002-20250617030838069400000007" [90m-> null[0m[0m
+      [31m-[0m[0m policy_arn = "arn:aws:iam::aws:policy/AmazonEC2ContainerRegistryReadOnly" [90m-> null[0m[0m
+      [31m-[0m[0m role       = "default-eks-node-group-20250617030837119200000002" [90m-> null[0m[0m
+    }
+
+[1m  # module.eks.module.eks_cluster.module.eks_managed_node_group["default"].aws_iam_role_policy_attachment.this["AmazonEKSWorkerNodePolicy"][0m will be [1m[31mdestroyed[0m
+[0m  [31m-[0m[0m resource "aws_iam_role_policy_attachment" "this" {
+      [31m-[0m[0m id         = "default-eks-node-group-20250617030837119200000002-20250617030838093600000008" [90m-> null[0m[0m
+      [31m-[0m[0m policy_arn = "arn:aws:iam::aws:policy/AmazonEKSWorkerNodePolicy" [90m-> null[0m[0m
+      [31m-[0m[0m role       = "default-eks-node-group-20250617030837119200000002" [90m-> null[0m[0m
+    }
+
+[1m  # module.eks.module.eks_cluster.module.eks_managed_node_group["default"].aws_iam_role_policy_attachment.this["AmazonEKS_CNI_Policy"][0m will be [1m[31mdestroyed[0m
+[0m  [31m-[0m[0m resource "aws_iam_role_policy_attachment" "this" {
+      [31m-[0m[0m id         = "default-eks-node-group-20250617030837119200000002-20250617030838050200000006" [90m-> null[0m[0m
+      [31m-[0m[0m policy_arn = "arn:aws:iam::aws:policy/AmazonEKS_CNI_Policy" [90m-> null[0m[0m
+      [31m-[0m[0m role       = "default-eks-node-group-20250617030837119200000002" [90m-> null[0m[0m
+    }
+
+[1m  # module.eks.module.eks_cluster.module.eks_managed_node_group["default"].aws_launch_template.this[0][0m will be [1m[31mdestroyed[0m
+[0m  [31m-[0m[0m resource "aws_launch_template" "this" {
+      [31m-[0m[0m arn                                  = "arn:aws:ec2:us-east-1:679349556244:launch-template/lt-00c3c08353d58ebed" [90m-> null[0m[0m
+      [31m-[0m[0m default_version                      = 1 [90m-> null[0m[0m
+      [31m-[0m[0m description                          = "Custom launch template for default EKS managed node group" [90m-> null[0m[0m
+      [31m-[0m[0m disable_api_stop                     = false [90m-> null[0m[0m
+      [31m-[0m[0m disable_api_termination              = false [90m-> null[0m[0m
+      [31m-[0m[0m id                                   = "lt-00c3c08353d58ebed" [90m-> null[0m[0m
+      [31m-[0m[0m latest_version                       = 1 [90m-> null[0m[0m
+      [31m-[0m[0m name                                 = "default-2025061703192084500000000e" [90m-> null[0m[0m
+      [31m-[0m[0m name_prefix                          = "default-" [90m-> null[0m[0m
+      [31m-[0m[0m security_group_names                 = [] [90m-> null[0m[0m
+      [31m-[0m[0m tags                                 = {} [90m-> null[0m[0m
+      [31m-[0m[0m tags_all                             = {} [90m-> null[0m[0m
+      [31m-[0m[0m update_default_version               = true [90m-> null[0m[0m
+      [31m-[0m[0m vpc_security_group_ids               = [
+          [31m-[0m[0m "sg-01a7b99636b07353e",
+        ] [90m-> null[0m[0m
+        [90m# (8 unchanged attributes hidden)[0m[0m
+
+      [31m-[0m[0m metadata_options {
+          [31m-[0m[0m http_endpoint               = "enabled" [90m-> null[0m[0m
+          [31m-[0m[0m http_put_response_hop_limit = 2 [90m-> null[0m[0m
+          [31m-[0m[0m http_tokens                 = "required" [90m-> null[0m[0m
+            [90m# (2 unchanged attributes hidden)[0m[0m
+        }
+
+      [31m-[0m[0m monitoring {
+          [31m-[0m[0m enabled = true [90m-> null[0m[0m
+        }
+
+      [31m-[0m[0m tag_specifications {
+          [31m-[0m[0m resource_type = "instance" [90m-> null[0m[0m
+          [31m-[0m[0m tags          = {
+              [31m-[0m[0m "Name" = "default"
+            } [90m-> null[0m[0m
+        }
+      [31m-[0m[0m tag_specifications {
+          [31m-[0m[0m resource_type = "network-interface" [90m-> null[0m[0m
+          [31m-[0m[0m tags          = {
+              [31m-[0m[0m "Name" = "default"
+            } [90m-> null[0m[0m
+        }
+      [31m-[0m[0m tag_specifications {
+          [31m-[0m[0m resource_type = "volume" [90m-> null[0m[0m
+          [31m-[0m[0m tags          = {
+              [31m-[0m[0m "Name" = "default"
+            } [90m-> null[0m[0m
+        }
+    }
+
+[1m  # module.eks.module.eks_cluster.module.kms.aws_kms_alias.this["cluster"][0m will be [1m[31mdestroyed[0m
+[0m  [31m-[0m[0m resource "aws_kms_alias" "this" {
+      [31m-[0m[0m arn            = "arn:aws:kms:us-east-1:679349556244:alias/eks/devops-eks-cluster" [90m-> null[0m[0m
+      [31m-[0m[0m id             = "alias/eks/devops-eks-cluster" [90m-> null[0m[0m
+      [31m-[0m[0m name           = "alias/eks/devops-eks-cluster" [90m-> null[0m[0m
+      [31m-[0m[0m target_key_arn = "arn:aws:kms:us-east-1:679349556244:key/38eae03f-136a-4cd3-9de3-ce1cb31aab4f" [90m-> null[0m[0m
+      [31m-[0m[0m target_key_id  = "38eae03f-136a-4cd3-9de3-ce1cb31aab4f" [90m-> null[0m[0m
+        [90m# (1 unchanged attribute hidden)[0m[0m
+    }
+
+[1m  # module.eks.module.eks_cluster.module.kms.aws_kms_key.this[0][0m will be [1m[31mdestroyed[0m
+[0m  [31m-[0m[0m resource "aws_kms_key" "this" {
+      [31m-[0m[0m arn                                = "arn:aws:kms:us-east-1:679349556244:key/38eae03f-136a-4cd3-9de3-ce1cb31aab4f" [90m-> null[0m[0m
+      [31m-[0m[0m bypass_policy_lockout_safety_check = false [90m-> null[0m[0m
+      [31m-[0m[0m customer_master_key_spec           = "SYMMETRIC_DEFAULT" [90m-> null[0m[0m
+      [31m-[0m[0m description                        = "devops-eks-cluster cluster encryption key" [90m-> null[0m[0m
+      [31m-[0m[0m enable_key_rotation                = true [90m-> null[0m[0m
+      [31m-[0m[0m id                                 = "38eae03f-136a-4cd3-9de3-ce1cb31aab4f" [90m-> null[0m[0m
+      [31m-[0m[0m is_enabled                         = true [90m-> null[0m[0m
+      [31m-[0m[0m key_id                             = "38eae03f-136a-4cd3-9de3-ce1cb31aab4f" [90m-> null[0m[0m
+      [31m-[0m[0m key_usage                          = "ENCRYPT_DECRYPT" [90m-> null[0m[0m
+      [31m-[0m[0m multi_region                       = false [90m-> null[0m[0m
+      [31m-[0m[0m policy                             = jsonencode(
+            {
+              [31m-[0m[0m Statement = [
+                  [31m-[0m[0m {
+                      [31m-[0m[0m Action    = "kms:*"
+                      [31m-[0m[0m Effect    = "Allow"
+                      [31m-[0m[0m Principal = {
+                          [31m-[0m[0m AWS = "arn:aws:iam::679349556244:root"
+                        }
+                      [31m-[0m[0m Resource  = "*"
+                      [31m-[0m[0m Sid       = "Default"
+                    },
+                  [31m-[0m[0m {
+                      [31m-[0m[0m Action    = [
+                          [31m-[0m[0m "kms:Update*",
+                          [31m-[0m[0m "kms:UntagResource",
+                          [31m-[0m[0m "kms:TagResource",
+                          [31m-[0m[0m "kms:ScheduleKeyDeletion",
+                          [31m-[0m[0m "kms:Revoke*",
+                          [31m-[0m[0m "kms:ReplicateKey",
+                          [31m-[0m[0m "kms:Put*",
+                          [31m-[0m[0m "kms:List*",
+                          [31m-[0m[0m "kms:ImportKeyMaterial",
+                          [31m-[0m[0m "kms:Get*",
+                          [31m-[0m[0m "kms:Enable*",
+                          [31m-[0m[0m "kms:Disable*",
+                          [31m-[0m[0m "kms:Describe*",
+                          [31m-[0m[0m "kms:Delete*",
+                          [31m-[0m[0m "kms:Create*",
+                          [31m-[0m[0m "kms:CancelKeyDeletion",
+                        ]
+                      [31m-[0m[0m Effect    = "Allow"
+                      [31m-[0m[0m Principal = {
+                          [31m-[0m[0m AWS = "arn:aws:iam::679349556244:role/TerraformDeploymentRole"
+                        }
+                      [31m-[0m[0m Resource  = "*"
+                      [31m-[0m[0m Sid       = "KeyAdministration"
+                    },
+                  [31m-[0m[0m {
+                      [31m-[0m[0m Action    = [
+                          [31m-[0m[0m "kms:ReEncrypt*",
+                          [31m-[0m[0m "kms:GenerateDataKey*",
+                          [31m-[0m[0m "kms:Encrypt",
+                          [31m-[0m[0m "kms:DescribeKey",
+                          [31m-[0m[0m "kms:Decrypt",
+                        ]
+                      [31m-[0m[0m Effect    = "Allow"
+                      [31m-[0m[0m Principal = {
+                          [31m-[0m[0m AWS = "arn:aws:iam::679349556244:role/devops-eks-cluster-cluster-20250617030837119400000004"
+                        }
+                      [31m-[0m[0m Resource  = "*"
+                      [31m-[0m[0m Sid       = "KeyUsage"
+                    },
+                ]
+              [31m-[0m[0m Version   = "2012-10-17"
+            }
+        ) [90m-> null[0m[0m
+      [31m-[0m[0m rotation_period_in_days            = 365 [90m-> null[0m[0m
+      [31m-[0m[0m tags                               = {
+          [31m-[0m[0m "terraform-aws-modules" = "eks"
+        } [90m-> null[0m[0m
+      [31m-[0m[0m tags_all                           = {
+          [31m-[0m[0m "terraform-aws-modules" = "eks"
+        } [90m-> null[0m[0m
+        [90m# (2 unchanged attributes hidden)[0m[0m
+    }
+
+[1m  # module.eks.module.eks_cluster.module.eks_managed_node_group["default"].module.user_data.null_resource.validate_cluster_service_cidr[0m will be [1m[31mdestroyed[0m
+[0m  [31m-[0m[0m resource "null_resource" "validate_cluster_service_cidr" {
+      [31m-[0m[0m id = "33728445465314180" [90m-> null[0m[0m
+    }
+
+[1mPlan:[0m 0 to add, 0 to change, 44 to destroy.
+[0m
+Changes to Outputs:
+  [31m-[0m[0m cluster_certificate_authority_data = "LS0tLS1CRUdJTiBDRVJUSUZJQ0FURS0tLS0tCk1JSURCVENDQWUyZ0F3SUJBZ0lJTlM4RzlpUEhHMm93RFFZSktvWklodmNOQVFFTEJRQXdGVEVUTUJFR0ExVUUKQXhNS2EzVmlaWEp1WlhSbGN6QWVGdzB5TlRBMk1UY3dNekE0TlRaYUZ3MHpOVEEyTVRVd016RXpOVFphTUJVeApFekFSQmdOVkJBTVRDbXQxWW1WeWJtVjBaWE13Z2dFaU1BMEdDU3FHU0liM0RRRUJBUVVBQTRJQkR3QXdnZ0VLCkFvSUJBUUNmVEhZaStUbWRIWVRmQkpUQnloU3R2MGorL1JwaldYbmJKR2lnOW12dm51RGRpc3l4Mkl2WGhWQTgKbHhXUk5qejhsODhKN2JGL3JqUG5rM213OWJ6MlFONTNEZFI3UmI2NUZCS0JDckhrTnkrSkxwZE1NV216cUdyWApFK3F4SEFKcEFBMnY4YXdqd2twTmJkQUFWbU5sUUkxZ0ZlcmNpV0xUaExzMW1KQldZQzBkbXVMZS9iR0tRU3hwCnVrejl6R0VLWjNUaTNidFVWaERLa2JMWDV2OUdSTU1TN3hESEZJSEZNcERsdHBrZEFKNTZVUnZXczNwM29mci8KZXNaQi9aNWs2WVJzb0VLV1pNSS9kRTFYTUVtbUtWcFp0NzQzdFlOaTVEVzVCb2lvcWc5TDhaazk5TWNtRmhuQQp5UWVSVEIvZEErTEVjbVNpaVl6MnRHTVlrREVMQWdNQkFBR2pXVEJYTUE0R0ExVWREd0VCL3dRRUF3SUNwREFQCkJnTlZIUk1CQWY4RUJUQURBUUgvTUIwR0ExVWREZ1FXQkJRR2t6WS9WOVZNTTA2aVRRTWJXKzRSa2lIenZqQVYKQmdOVkhSRUVEakFNZ2dwcmRXSmxjbTVsZEdWek1BMEdDU3FHU0liM0RRRUJDd1VBQTRJQkFRQWdZU3ZDRnRCcwpxZS9XZmh6Yk5sNXZydWU2djZqTjh6N0E4T3pqMjJ0RDU5Wk9EZ242WllUZHhxSTgxSkRyR09wYTJjSzlacDAzCmc2Vlo0WTN4SEN1NXRnUkJKYXdmMVk5THdkR294ajMxKzBEY0FaVmpuNVZYQmRmSE4vVEZ3T3JidzRUNVRGdEUKVWxYUVdHelpBN2tLQWNZM25pQS80a0x4b1VJejc3bnBJVlF0QkkxTUFCZ01WZkFNVDdkOG82eXVXclNEYkMxdgpvNlZibVJsVnZqbG13Nlhma3JwdGNKNEM3b1o4emRtY0NQU2FFMEFETGNOQ25hdStCNHdZNjBrZjR2QXdoL1R4CmlzYTRMZGVkYXYyKzdpb2xoNGY4OHhIaEhCVTNDL0p4aXZQZHJBOTl3dXNneXcrRGpQTWVYZmJiYmQ5MkRsWHkKNUhDWjVvS1lMSkxLCi0tLS0tRU5EIENFUlRJRklDQVRFLS0tLS0K" [90m-> null[0m[0m
+  [31m-[0m[0m cluster_endpoint                   = "https://FC49AAE7A7CFA542937387B2BEF92E22.gr7.us-east-1.eks.amazonaws.com" [90m-> null[0m[0m
+  [31m-[0m[0m cluster_name                       = "devops-eks-cluster" [90m-> null[0m[0m
+  [31m-[0m[0m ecr_repository_url                 = "679349556244.dkr.ecr.us-east-1.amazonaws.com/sample-node-app" [90m-> null[0m[0m
+[0m[1mmodule.eks.module.eks_cluster.module.eks_managed_node_group["default"].module.user_data.null_resource.validate_cluster_service_cidr: Destroying... [id=33728445465314180][0m[0m
+[0m[1mmodule.eks.module.eks_cluster.module.eks_managed_node_group["default"].module.user_data.null_resource.validate_cluster_service_cidr: Destruction complete after 0s[0m
+[0m[1mmodule.ecr.aws_ecr_lifecycle_policy.expire_untagged: Destroying... [id=sample-node-app][0m[0m
+[0m[1mmodule.eks.module.eks_cluster.aws_iam_role_policy_attachment.cluster_encryption[0]: Destroying... [id=devops-eks-cluster-cluster-20250617030837119400000004-2025061703090128120000000d][0m[0m
+[0m[1mmodule.eks.module.eks_cluster.aws_iam_role_policy_attachment.custom[0]: Destroying... [id=devops-eks-cluster-cluster-20250617030837119400000004-2025061703083823490000000a][0m[0m
+[0m[1mmodule.eks.module.eks_cluster.module.kms.aws_kms_alias.this["cluster"]: Destroying... [id=alias/eks/devops-eks-cluster][0m[0m
+[0m[1mmodule.aws_lb_controller.aws_iam_role_policy_attachment.lb_controller_attach: Destroying... [id=eks-lb-controller-irsa-20250617120107755000000001][0m[0m
+[0m[1mmodule.eks.module.eks_cluster.module.eks_managed_node_group["default"].aws_eks_node_group.this[0]: Destroying... [id=devops-eks-cluster:default-20250617031927135700000010][0m[0m
+[0m[1mmodule.aws_lb_controller.helm_release.aws_lb_controller: Destroying... [id=aws-load-balancer-controller][0m[0m
+[0m[1mmodule.eks.module.eks_cluster.module.kms.aws_kms_alias.this["cluster"]: Destruction complete after 1s[0m
+[0m[1mmodule.eks.module.eks_cluster.aws_iam_role_policy_attachment.custom[0]: Destruction complete after 1s[0m
+[0m[1mmodule.eks.module.eks_cluster.aws_iam_policy.custom[0]: Destroying... [id=arn:aws:iam::679349556244:policy/devops-eks-cluster-cluster-20250617030837119500000005][0m[0m
+[0m[1mmodule.eks.module.eks_cluster.aws_iam_role_policy_attachment.cluster_encryption[0]: Destruction complete after 1s[0m
+[0m[1mmodule.eks.module.eks_cluster.aws_iam_policy.cluster_encryption[0]: Destroying... [id=arn:aws:iam::679349556244:policy/devops-eks-cluster-cluster-ClusterEncryption2025061703090074450000000c][0m[0m
+[0m[1mmodule.aws_lb_controller.aws_iam_role_policy_attachment.lb_controller_attach: Destruction complete after 1s[0m
+[0m[1mmodule.aws_lb_controller.aws_iam_policy.lb_controller_policy: Destroying... [id=arn:aws:iam::679349556244:policy/AWSLoadBalancerControllerIAMPolicy][0m[0m
+[0m[1mmodule.ecr.aws_ecr_lifecycle_policy.expire_untagged: Destruction complete after 1s[0m
+[0m[1mmodule.ecr.aws_ecr_repository.app: Destroying... [id=sample-node-app][0m[0m
+[0m[1mmodule.eks.module.eks_cluster.aws_iam_policy.cluster_encryption[0]: Destruction complete after 0s[0m
+[0m[1mmodule.eks.module.eks_cluster.aws_iam_policy.custom[0]: Destruction complete after 0s[0m
+[0m[1mmodule.ecr.aws_ecr_repository.app: Destruction complete after 0s[0m
+[0m[1mmodule.aws_lb_controller.aws_iam_policy.lb_controller_policy: Destruction complete after 0s[0m
+[0m[1mmodule.aws_lb_controller.helm_release.aws_lb_controller: Destruction complete after 6s[0m
+[0m[1mmodule.aws_lb_controller.kubernetes_service_account.aws_lb_controller: Destroying... [id=kube-system/aws-load-balancer-controller][0m[0m
+[0m[1mmodule.aws_lb_controller.kubernetes_service_account.aws_lb_controller: Destruction complete after 0s[0m
+[0m[1mmodule.eks.module.eks_cluster.aws_eks_access_policy_association.this["cluster_creator_admin"]: Destroying... [id=devops-eks-cluster#arn:aws:iam::679349556244:role/TerraformDeploymentRole#arn:aws:eks::aws:cluster-access-policy/AmazonEKSClusterAdminPolicy][0m[0m
+[0m[1mmodule.eks.module.eks_cluster.aws_eks_access_policy_association.this["pablo_user_admin"]: Destroying... [id=devops-eks-cluster#arn:aws:iam::679349556244:user/pablo#arn:aws:eks::aws:cluster-access-policy/AmazonEKSClusterAdminPolicy][0m[0m
+[0m[1mmodule.aws_lb_controller.aws_iam_role.lb_controller_irsa: Destroying... [id=eks-lb-controller-irsa][0m[0m
+[0m[1mmodule.aws_lb_controller.aws_iam_role.lb_controller_irsa: Destruction complete after 1s[0m
+[0m[1mmodule.eks.module.eks_cluster.aws_iam_openid_connect_provider.oidc_provider[0]: Destroying... [id=arn:aws:iam::679349556244:oidc-provider/oidc.eks.us-east-1.amazonaws.com/id/FC49AAE7A7CFA542937387B2BEF92E22][0m[0m
+[0m[1mmodule.eks.module.eks_cluster.aws_eks_access_policy_association.this["cluster_creator_admin"]: Destruction complete after 1s[0m
+[0m[1mmodule.eks.module.eks_cluster.aws_iam_openid_connect_provider.oidc_provider[0]: Destruction complete after 0s[0m
+[0m[1mmodule.eks.module.eks_cluster.aws_eks_access_policy_association.this["pablo_user_admin"]: Destruction complete after 1s[0m
+[0m[1mmodule.eks.module.eks_cluster.aws_eks_access_entry.this["pablo_user"]: Destroying... [id=devops-eks-cluster:arn:aws:iam::679349556244:user/pablo][0m[0m
+[0m[1mmodule.eks.module.eks_cluster.aws_eks_access_entry.this["cluster_creator"]: Destroying... [id=devops-eks-cluster:arn:aws:iam::679349556244:role/TerraformDeploymentRole][0m[0m
+[0m[1mmodule.eks.module.eks_cluster.aws_eks_access_entry.this["pablo_user"]: Destruction complete after 1s[0m
+[0m[1mmodule.eks.module.eks_cluster.aws_eks_access_entry.this["cluster_creator"]: Destruction complete after 1s[0m
+[0m[1mmodule.eks.module.eks_cluster.module.eks_managed_node_group["default"].aws_eks_node_group.this[0]: Still destroying... [id=devops-eks-cluster:default-20250617031927135700000010, 10s elapsed][0m[0m
+[0m[1mmodule.eks.module.eks_cluster.module.eks_managed_node_group["default"].aws_eks_node_group.this[0]: Still destroying... [id=devops-eks-cluster:default-20250617031927135700000010, 20s elapsed][0m[0m
+[0m[1mmodule.eks.module.eks_cluster.module.eks_managed_node_group["default"].aws_eks_node_group.this[0]: Still destroying... [id=devops-eks-cluster:default-20250617031927135700000010, 30s elapsed][0m[0m
+[0m[1mmodule.eks.module.eks_cluster.module.eks_managed_node_group["default"].aws_eks_node_group.this[0]: Still destroying... [id=devops-eks-cluster:default-20250617031927135700000010, 40s elapsed][0m[0m
+[0m[1mmodule.eks.module.eks_cluster.module.eks_managed_node_group["default"].aws_eks_node_group.this[0]: Still destroying... [id=devops-eks-cluster:default-20250617031927135700000010, 50s elapsed][0m[0m
+[0m[1mmodule.eks.module.eks_cluster.module.eks_managed_node_group["default"].aws_eks_node_group.this[0]: Still destroying... [id=devops-eks-cluster:default-20250617031927135700000010, 1m0s elapsed][0m[0m
+[0m[1mmodule.eks.module.eks_cluster.module.eks_managed_node_group["default"].aws_eks_node_group.this[0]: Still destroying... [id=devops-eks-cluster:default-20250617031927135700000010, 1m10s elapsed][0m[0m
+[0m[1mmodule.eks.module.eks_cluster.module.eks_managed_node_group["default"].aws_eks_node_group.this[0]: Still destroying... [id=devops-eks-cluster:default-20250617031927135700000010, 1m20s elapsed][0m[0m
+[0m[1mmodule.eks.module.eks_cluster.module.eks_managed_node_group["default"].aws_eks_node_group.this[0]: Still destroying... [id=devops-eks-cluster:default-20250617031927135700000010, 1m30s elapsed][0m[0m
+[0m[1mmodule.eks.module.eks_cluster.module.eks_managed_node_group["default"].aws_eks_node_group.this[0]: Still destroying... [id=devops-eks-cluster:default-20250617031927135700000010, 1m40s elapsed][0m[0m
+[0m[1mmodule.eks.module.eks_cluster.module.eks_managed_node_group["default"].aws_eks_node_group.this[0]: Still destroying... [id=devops-eks-cluster:default-20250617031927135700000010, 1m50s elapsed][0m[0m
+[0m[1mmodule.eks.module.eks_cluster.module.eks_managed_node_group["default"].aws_eks_node_group.this[0]: Still destroying... [id=devops-eks-cluster:default-20250617031927135700000010, 2m0s elapsed][0m[0m
+[0m[1mmodule.eks.module.eks_cluster.module.eks_managed_node_group["default"].aws_eks_node_group.this[0]: Still destroying... [id=devops-eks-cluster:default-20250617031927135700000010, 2m10s elapsed][0m[0m
+[0m[1mmodule.eks.module.eks_cluster.module.eks_managed_node_group["default"].aws_eks_node_group.this[0]: Still destroying... [id=devops-eks-cluster:default-20250617031927135700000010, 2m20s elapsed][0m[0m
+[0m[1mmodule.eks.module.eks_cluster.module.eks_managed_node_group["default"].aws_eks_node_group.this[0]: Still destroying... [id=devops-eks-cluster:default-20250617031927135700000010, 2m30s elapsed][0m[0m
+[0m[1mmodule.eks.module.eks_cluster.module.eks_managed_node_group["default"].aws_eks_node_group.this[0]: Still destroying... [id=devops-eks-cluster:default-20250617031927135700000010, 2m40s elapsed][0m[0m
+[0m[1mmodule.eks.module.eks_cluster.module.eks_managed_node_group["default"].aws_eks_node_group.this[0]: Still destroying... [id=devops-eks-cluster:default-20250617031927135700000010, 2m50s elapsed][0m[0m
+[0m[1mmodule.eks.module.eks_cluster.module.eks_managed_node_group["default"].aws_eks_node_group.this[0]: Still destroying... [id=devops-eks-cluster:default-20250617031927135700000010, 3m0s elapsed][0m[0m
+[0m[1mmodule.eks.module.eks_cluster.module.eks_managed_node_group["default"].aws_eks_node_group.this[0]: Still destroying... [id=devops-eks-cluster:default-20250617031927135700000010, 3m10s elapsed][0m[0m
+[0m[1mmodule.eks.module.eks_cluster.module.eks_managed_node_group["default"].aws_eks_node_group.this[0]: Still destroying... [id=devops-eks-cluster:default-20250617031927135700000010, 3m20s elapsed][0m[0m
+[0m[1mmodule.eks.module.eks_cluster.module.eks_managed_node_group["default"].aws_eks_node_group.this[0]: Still destroying... [id=devops-eks-cluster:default-20250617031927135700000010, 3m30s elapsed][0m[0m
+[0m[1mmodule.eks.module.eks_cluster.module.eks_managed_node_group["default"].aws_eks_node_group.this[0]: Still destroying... [id=devops-eks-cluster:default-20250617031927135700000010, 3m40s elapsed][0m[0m
+[0m[1mmodule.eks.module.eks_cluster.module.eks_managed_node_group["default"].aws_eks_node_group.this[0]: Still destroying... [id=devops-eks-cluster:default-20250617031927135700000010, 3m50s elapsed][0m[0m
+[0m[1mmodule.eks.module.eks_cluster.module.eks_managed_node_group["default"].aws_eks_node_group.this[0]: Still destroying... [id=devops-eks-cluster:default-20250617031927135700000010, 4m0s elapsed][0m[0m
+[0m[1mmodule.eks.module.eks_cluster.module.eks_managed_node_group["default"].aws_eks_node_group.this[0]: Still destroying... [id=devops-eks-cluster:default-20250617031927135700000010, 4m10s elapsed][0m[0m
+[0m[1mmodule.eks.module.eks_cluster.module.eks_managed_node_group["default"].aws_eks_node_group.this[0]: Still destroying... [id=devops-eks-cluster:default-20250617031927135700000010, 4m20s elapsed][0m[0m
+[0m[1mmodule.eks.module.eks_cluster.module.eks_managed_node_group["default"].aws_eks_node_group.this[0]: Still destroying... [id=devops-eks-cluster:default-20250617031927135700000010, 4m30s elapsed][0m[0m
+[0m[1mmodule.eks.module.eks_cluster.module.eks_managed_node_group["default"].aws_eks_node_group.this[0]: Still destroying... [id=devops-eks-cluster:default-20250617031927135700000010, 4m40s elapsed][0m[0m
+[0m[1mmodule.eks.module.eks_cluster.module.eks_managed_node_group["default"].aws_eks_node_group.this[0]: Still destroying... [id=devops-eks-cluster:default-20250617031927135700000010, 4m50s elapsed][0m[0m
+[0m[1mmodule.eks.module.eks_cluster.module.eks_managed_node_group["default"].aws_eks_node_group.this[0]: Still destroying... [id=devops-eks-cluster:default-20250617031927135700000010, 5m0s elapsed][0m[0m
+[0m[1mmodule.eks.module.eks_cluster.module.eks_managed_node_group["default"].aws_eks_node_group.this[0]: Still destroying... [id=devops-eks-cluster:default-20250617031927135700000010, 5m10s elapsed][0m[0m
+[0m[1mmodule.eks.module.eks_cluster.module.eks_managed_node_group["default"].aws_eks_node_group.this[0]: Still destroying... [id=devops-eks-cluster:default-20250617031927135700000010, 5m20s elapsed][0m[0m
+[0m[1mmodule.eks.module.eks_cluster.module.eks_managed_node_group["default"].aws_eks_node_group.this[0]: Still destroying... [id=devops-eks-cluster:default-20250617031927135700000010, 5m30s elapsed][0m[0m
+[0m[1mmodule.eks.module.eks_cluster.module.eks_managed_node_group["default"].aws_eks_node_group.this[0]: Still destroying... [id=devops-eks-cluster:default-20250617031927135700000010, 5m40s elapsed][0m[0m
+[0m[1mmodule.eks.module.eks_cluster.module.eks_managed_node_group["default"].aws_eks_node_group.this[0]: Still destroying... [id=devops-eks-cluster:default-20250617031927135700000010, 5m50s elapsed][0m[0m
+[0m[1mmodule.eks.module.eks_cluster.module.eks_managed_node_group["default"].aws_eks_node_group.this[0]: Still destroying... [id=devops-eks-cluster:default-20250617031927135700000010, 6m0s elapsed][0m[0m
+[0m[1mmodule.eks.module.eks_cluster.module.eks_managed_node_group["default"].aws_eks_node_group.this[0]: Still destroying... [id=devops-eks-cluster:default-20250617031927135700000010, 6m10s elapsed][0m[0m
+[0m[1mmodule.eks.module.eks_cluster.module.eks_managed_node_group["default"].aws_eks_node_group.this[0]: Still destroying... [id=devops-eks-cluster:default-20250617031927135700000010, 6m20s elapsed][0m[0m
+[0m[1mmodule.eks.module.eks_cluster.module.eks_managed_node_group["default"].aws_eks_node_group.this[0]: Still destroying... [id=devops-eks-cluster:default-20250617031927135700000010, 6m30s elapsed][0m[0m
+[0m[1mmodule.eks.module.eks_cluster.module.eks_managed_node_group["default"].aws_eks_node_group.this[0]: Still destroying... [id=devops-eks-cluster:default-20250617031927135700000010, 6m40s elapsed][0m[0m
+[0m[1mmodule.eks.module.eks_cluster.module.eks_managed_node_group["default"].aws_eks_node_group.this[0]: Still destroying... [id=devops-eks-cluster:default-20250617031927135700000010, 6m51s elapsed][0m[0m
+[0m[1mmodule.eks.module.eks_cluster.module.eks_managed_node_group["default"].aws_eks_node_group.this[0]: Still destroying... [id=devops-eks-cluster:default-20250617031927135700000010, 7m1s elapsed][0m[0m
+[0m[1mmodule.eks.module.eks_cluster.module.eks_managed_node_group["default"].aws_eks_node_group.this[0]: Still destroying... [id=devops-eks-cluster:default-20250617031927135700000010, 7m11s elapsed][0m[0m
+[0m[1mmodule.eks.module.eks_cluster.module.eks_managed_node_group["default"].aws_eks_node_group.this[0]: Still destroying... [id=devops-eks-cluster:default-20250617031927135700000010, 7m21s elapsed][0m[0m
+[0m[1mmodule.eks.module.eks_cluster.module.eks_managed_node_group["default"].aws_eks_node_group.this[0]: Still destroying... [id=devops-eks-cluster:default-20250617031927135700000010, 7m31s elapsed][0m[0m
+[0m[1mmodule.eks.module.eks_cluster.module.eks_managed_node_group["default"].aws_eks_node_group.this[0]: Still destroying... [id=devops-eks-cluster:default-20250617031927135700000010, 7m41s elapsed][0m[0m
+[0m[1mmodule.eks.module.eks_cluster.module.eks_managed_node_group["default"].aws_eks_node_group.this[0]: Still destroying... [id=devops-eks-cluster:default-20250617031927135700000010, 7m51s elapsed][0m[0m
+[0m[1mmodule.eks.module.eks_cluster.module.eks_managed_node_group["default"].aws_eks_node_group.this[0]: Still destroying... [id=devops-eks-cluster:default-20250617031927135700000010, 8m1s elapsed][0m[0m
+[0m[1mmodule.eks.module.eks_cluster.module.eks_managed_node_group["default"].aws_eks_node_group.this[0]: Still destroying... [id=devops-eks-cluster:default-20250617031927135700000010, 8m11s elapsed][0m[0m
+[0m[1mmodule.eks.module.eks_cluster.module.eks_managed_node_group["default"].aws_eks_node_group.this[0]: Destruction complete after 8m16s[0m
+[0m[1mmodule.eks.module.eks_cluster.module.eks_managed_node_group["default"].aws_launch_template.this[0]: Destroying... [id=lt-00c3c08353d58ebed][0m[0m
+[0m[1mmodule.eks.module.eks_cluster.module.eks_managed_node_group["default"].aws_launch_template.this[0]: Destruction complete after 0s[0m
+[0m[1mmodule.eks.module.eks_cluster.module.eks_managed_node_group["default"].aws_iam_role_policy_attachment.this["AmazonEKSWorkerNodePolicy"]: Destroying... [id=default-eks-node-group-20250617030837119200000002-20250617030838093600000008][0m[0m
+[0m[1mmodule.eks.module.eks_cluster.module.eks_managed_node_group["default"].aws_iam_role_policy_attachment.this["AmazonEC2ContainerRegistryReadOnly"]: Destroying... [id=default-eks-node-group-20250617030837119200000002-20250617030838069400000007][0m[0m
+[0m[1mmodule.eks.module.eks_cluster.module.eks_managed_node_group["default"].aws_iam_role_policy_attachment.this["AmazonEKS_CNI_Policy"]: Destroying... [id=default-eks-node-group-20250617030837119200000002-20250617030838050200000006][0m[0m
+[0m[1mmodule.eks.module.eks_cluster.time_sleep.this[0]: Destroying... [id=2025-06-17T03:19:20Z][0m[0m
+[0m[1mmodule.eks.module.eks_cluster.time_sleep.this[0]: Destruction complete after 0s[0m
+[0m[1mmodule.eks.module.eks_cluster.aws_eks_cluster.this[0]: Destroying... [id=devops-eks-cluster][0m[0m
+[0m[1mmodule.eks.module.eks_cluster.module.eks_managed_node_group["default"].aws_iam_role_policy_attachment.this["AmazonEKSWorkerNodePolicy"]: Destruction complete after 1s[0m
+[0m[1mmodule.eks.module.eks_cluster.module.eks_managed_node_group["default"].aws_iam_role_policy_attachment.this["AmazonEC2ContainerRegistryReadOnly"]: Destruction complete after 1s[0m
+[0m[1mmodule.eks.module.eks_cluster.module.eks_managed_node_group["default"].aws_iam_role_policy_attachment.this["AmazonEKS_CNI_Policy"]: Destruction complete after 1s[0m
+[0m[1mmodule.eks.module.eks_cluster.module.eks_managed_node_group["default"].aws_iam_role.this[0]: Destroying... [id=default-eks-node-group-20250617030837119200000002][0m[0m
+[0m[1mmodule.eks.module.eks_cluster.module.eks_managed_node_group["default"].aws_iam_role.this[0]: Destruction complete after 0s[0m
+[0m[1mmodule.eks.module.eks_cluster.aws_eks_cluster.this[0]: Still destroying... [id=devops-eks-cluster, 10s elapsed][0m[0m
+[0m[1mmodule.eks.module.eks_cluster.aws_eks_cluster.this[0]: Still destroying... [id=devops-eks-cluster, 20s elapsed][0m[0m
+[0m[1mmodule.eks.module.eks_cluster.aws_eks_cluster.this[0]: Still destroying... [id=devops-eks-cluster, 30s elapsed][0m[0m
+[0m[1mmodule.eks.module.eks_cluster.aws_eks_cluster.this[0]: Still destroying... [id=devops-eks-cluster, 40s elapsed][0m[0m
+[0m[1mmodule.eks.module.eks_cluster.aws_eks_cluster.this[0]: Still destroying... [id=devops-eks-cluster, 50s elapsed][0m[0m
+[0m[1mmodule.eks.module.eks_cluster.aws_eks_cluster.this[0]: Still destroying... [id=devops-eks-cluster, 1m0s elapsed][0m[0m
+[0m[1mmodule.eks.module.eks_cluster.aws_eks_cluster.this[0]: Still destroying... [id=devops-eks-cluster, 1m10s elapsed][0m[0m
+[0m[1mmodule.eks.module.eks_cluster.aws_eks_cluster.this[0]: Still destroying... [id=devops-eks-cluster, 1m20s elapsed][0m[0m
+[0m[1mmodule.eks.module.eks_cluster.aws_eks_cluster.this[0]: Still destroying... [id=devops-eks-cluster, 1m30s elapsed][0m[0m
+[0m[1mmodule.eks.module.eks_cluster.aws_eks_cluster.this[0]: Still destroying... [id=devops-eks-cluster, 1m40s elapsed][0m[0m
+[0m[1mmodule.eks.module.eks_cluster.aws_eks_cluster.this[0]: Still destroying... [id=devops-eks-cluster, 1m50s elapsed][0m[0m
+[0m[1mmodule.eks.module.eks_cluster.aws_eks_cluster.this[0]: Still destroying... [id=devops-eks-cluster, 2m0s elapsed][0m[0m
+[0m[1mmodule.eks.module.eks_cluster.aws_eks_cluster.this[0]: Still destroying... [id=devops-eks-cluster, 2m10s elapsed][0m[0m
+[0m[1mmodule.eks.module.eks_cluster.aws_eks_cluster.this[0]: Still destroying... [id=devops-eks-cluster, 2m20s elapsed][0m[0m
+[0m[1mmodule.eks.module.eks_cluster.aws_eks_cluster.this[0]: Still destroying... [id=devops-eks-cluster, 2m30s elapsed][0m[0m
+[0m[1mmodule.eks.module.eks_cluster.aws_eks_cluster.this[0]: Still destroying... [id=devops-eks-cluster, 2m40s elapsed][0m[0m
+[0m[1mmodule.eks.module.eks_cluster.aws_eks_cluster.this[0]: Still destroying... [id=devops-eks-cluster, 2m50s elapsed][0m[0m
+[0m[1mmodule.eks.module.eks_cluster.aws_eks_cluster.this[0]: Still destroying... [id=devops-eks-cluster, 3m0s elapsed][0m[0m
+[0m[1mmodule.eks.module.eks_cluster.aws_eks_cluster.this[0]: Destruction complete after 3m10s[0m
+[0m[1mmodule.eks.module.eks_cluster.aws_security_group_rule.node["ingress_cluster_9443_webhook"]: Destroying... [id=sgrule-580157534][0m[0m
+[0m[1mmodule.eks.module.eks_cluster.aws_security_group_rule.node["ingress_nodes_ephemeral"]: Destroying... [id=sgrule-4067186750][0m[0m
+[0m[1mmodule.eks.module.eks_cluster.aws_iam_role_policy_attachment.this["AmazonEKSVPCResourceController"]: Destroying... [id=devops-eks-cluster-cluster-20250617030837119400000004-20250617030838203600000009][0m[0m
+[0m[1mmodule.eks.module.eks_cluster.aws_security_group_rule.node["ingress_cluster_443"]: Destroying... [id=sgrule-1001587068][0m[0m
+[0m[1mmodule.eks.module.eks_cluster.aws_security_group_rule.node["ingress_cluster_4443_webhook"]: Destroying... [id=sgrule-2620123170][0m[0m
+[0m[1mmodule.eks.module.eks_cluster.aws_iam_role_policy_attachment.this["AmazonEKSClusterPolicy"]: Destroying... [id=devops-eks-cluster-cluster-20250617030837119400000004-2025061703083825380000000b][0m[0m
+[0m[1mmodule.eks.module.eks_cluster.aws_security_group_rule.node["ingress_self_coredns_udp"]: Destroying... [id=sgrule-3943653714][0m[0m
+[0m[1mmodule.eks.module.eks_cluster.aws_security_group_rule.cluster["ingress_nodes_443"]: Destroying... [id=sgrule-3063195394][0m[0m
+[0m[1mmodule.eks.module.eks_cluster.aws_security_group_rule.node["ingress_cluster_8443_webhook"]: Destroying... [id=sgrule-1177924501][0m[0m
+[0m[1mmodule.eks.module.eks_cluster.aws_security_group_rule.node["egress_all"]: Destroying... [id=sgrule-3345504949][0m[0m
+[0m[1mmodule.eks.module.eks_cluster.aws_iam_role_policy_attachment.this["AmazonEKSClusterPolicy"]: Destruction complete after 0s[0m
+[0m[1mmodule.eks.module.eks_cluster.module.kms.aws_kms_key.this[0]: Destroying... [id=38eae03f-136a-4cd3-9de3-ce1cb31aab4f][0m[0m
+[0m[1mmodule.eks.module.eks_cluster.aws_iam_role_policy_attachment.this["AmazonEKSVPCResourceController"]: Destruction complete after 0s[0m
+[0m[1mmodule.eks.module.eks_cluster.aws_security_group_rule.node["ingress_self_coredns_tcp"]: Destroying... [id=sgrule-1330692797][0m[0m
+[0m[1mmodule.eks.module.eks_cluster.module.kms.aws_kms_key.this[0]: Destruction complete after 1s[0m
+[0m[1mmodule.eks.module.eks_cluster.aws_cloudwatch_log_group.this[0]: Destroying... [id=/aws/eks/devops-eks-cluster/cluster][0m[0m
+[0m[1mmodule.eks.module.eks_cluster.aws_security_group_rule.cluster["ingress_nodes_443"]: Destruction complete after 1s[0m
+[0m[1mmodule.eks.module.eks_cluster.aws_security_group_rule.node["ingress_cluster_kubelet"]: Destroying... [id=sgrule-3668161074][0m[0m
+[0m[1mmodule.eks.module.eks_cluster.aws_security_group_rule.node["ingress_cluster_443"]: Destruction complete after 1s[0m
+[0m[1mmodule.eks.module.eks_cluster.aws_security_group_rule.node["ingress_cluster_6443_webhook"]: Destroying... [id=sgrule-1432981428][0m[0m
+[0m[1mmodule.eks.module.eks_cluster.aws_cloudwatch_log_group.this[0]: Destruction complete after 0s[0m
+[0m[1mmodule.eks.module.eks_cluster.aws_iam_role.this[0]: Destroying... [id=devops-eks-cluster-cluster-20250617030837119400000004][0m[0m
+[0m[1mmodule.eks.module.eks_cluster.aws_security_group_rule.node["egress_all"]: Destruction complete after 1s[0m
+[0m[1mmodule.eks.module.eks_cluster.aws_iam_role.this[0]: Destruction complete after 1s[0m
+[0m[1mmodule.eks.module.eks_cluster.aws_security_group_rule.node["ingress_cluster_9443_webhook"]: Destruction complete after 2s[0m
+[0m[1mmodule.eks.module.eks_cluster.aws_security_group_rule.node["ingress_cluster_4443_webhook"]: Destruction complete after 3s[0m
+[0m[1mmodule.eks.module.eks_cluster.aws_security_group_rule.node["ingress_cluster_8443_webhook"]: Destruction complete after 4s[0m
+[0m[1mmodule.eks.module.eks_cluster.aws_security_group_rule.node["ingress_nodes_ephemeral"]: Destruction complete after 4s[0m
+[0m[1mmodule.eks.module.eks_cluster.aws_security_group_rule.node["ingress_self_coredns_udp"]: Destruction complete after 5s[0m
+[0m[1mmodule.eks.module.eks_cluster.aws_security_group_rule.node["ingress_self_coredns_tcp"]: Destruction complete after 6s[0m
+[0m[1mmodule.eks.module.eks_cluster.aws_security_group_rule.node["ingress_cluster_kubelet"]: Destruction complete after 5s[0m
+[0m[1mmodule.eks.module.eks_cluster.aws_security_group_rule.node["ingress_cluster_6443_webhook"]: Destruction complete after 6s[0m
+[0m[1mmodule.eks.module.eks_cluster.aws_security_group.cluster[0]: Destroying... [id=sg-02dbf0750d596a95f][0m[0m
+[0m[1mmodule.eks.module.eks_cluster.aws_security_group.node[0]: Destroying... [id=sg-01a7b99636b07353e][0m[0m
+[0m[1mmodule.eks.module.eks_cluster.aws_security_group.cluster[0]: Destruction complete after 1s[0m
+[0m[1mmodule.eks.module.eks_cluster.aws_security_group.node[0]: Destruction complete after 1s[0m
+[0m[1m[32m
+Destroy complete! Resources: 44 destroyed.
+[0m
+[Pipeline] }
+[Pipeline] // dir
+[Pipeline] }
+[Pipeline] // withEnv
+[Pipeline] }
+[Pipeline] // stage
+[Pipeline] stage
+[Pipeline] { (Stop after Destroy)
+[Pipeline] echo
+Stack destroyed , finishing pipeline.
+[Pipeline] }
+[Pipeline] // stage
+[Pipeline] stage
+[Pipeline] { (Set Image Tag)
+Stage "Set Image Tag" skipped due to when conditional
+[Pipeline] getContext
+[Pipeline] }
+[Pipeline] // stage
+[Pipeline] stage
+[Pipeline] { (Terraform Init / Plan / Apply)
+Stage "Terraform Init / Plan / Apply" skipped due to when conditional
+[Pipeline] getContext
+[Pipeline] }
+[Pipeline] // stage
+[Pipeline] stage
+[Pipeline] { (Lint & Test)
+Stage "Lint & Test" skipped due to when conditional
+[Pipeline] getContext
+[Pipeline] }
+[Pipeline] // stage
+[Pipeline] stage
+[Pipeline] { (Build image)
+Stage "Build image" skipped due to when conditional
+[Pipeline] getContext
+[Pipeline] }
+[Pipeline] // stage
+[Pipeline] stage
+[Pipeline] { (Login & Push to ECR)
+Stage "Login & Push to ECR" skipped due to when conditional
+[Pipeline] getContext
+[Pipeline] }
+[Pipeline] // stage
+[Pipeline] stage
+[Pipeline] { (Configure kubectl)
+Stage "Configure kubectl" skipped due to when conditional
+[Pipeline] getContext
+[Pipeline] }
+[Pipeline] // stage
+[Pipeline] stage
+[Pipeline] { (Helm Upgrade / Install)
+Stage "Helm Upgrade / Install" skipped due to when conditional
+[Pipeline] getContext
+[Pipeline] }
+[Pipeline] // stage
+[Pipeline] stage
+[Pipeline] { (Declarative: Post Actions)
+[Pipeline] cleanWs
+[WS-CLEANUP] Deleting project workspace...
+[WS-CLEANUP] Deferred wipeout is used...
+[WS-CLEANUP] done
+[Pipeline] echo
+Pipeline finished.
+[Pipeline] }
+[Pipeline] // stage
+[Pipeline] }
+[Pipeline] // withEnv
+[Pipeline] }
+[Pipeline] // withEnv
+[Pipeline] }
+[Pipeline] // node
+[Pipeline] End of Pipeline
+Finished: SUCCESS

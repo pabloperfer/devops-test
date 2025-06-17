@@ -1,0 +1,40 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  annotations:
+    alb.ingress.kubernetes.io/listen-ports: '[{"HTTP":80}]'
+    alb.ingress.kubernetes.io/load-balancer-name: sample-node-app
+    alb.ingress.kubernetes.io/scheme: internet-facing
+    alb.ingress.kubernetes.io/target-type: ip
+    meta.helm.sh/release-name: sample-node-app
+    meta.helm.sh/release-namespace: default
+  creationTimestamp: "2025-06-17T14:16:50Z"
+  finalizers:
+  - ingress.k8s.aws/resources
+  generation: 2
+  labels:
+    app.kubernetes.io/instance: sample-node-app
+    app.kubernetes.io/managed-by: Helm
+    app.kubernetes.io/name: sample-node-app
+    app.kubernetes.io/version: 1.0.0
+  name: sample-node-app
+  namespace: default
+  resourceVersion: "113371"
+  uid: ae384557-c599-4fe1-ac3c-2575d9b67a1d
+spec:
+  ingressClassName: alb
+  rules:
+  - host: sample-app.example.com
+    http:
+      paths:
+      - backend:
+          service:
+            name: sample-node-app
+            port:
+              number: 80
+        path: /
+        pathType: Prefix
+status:
+  loadBalancer:
+    ingress:
+    - hostname: sample-node-app-1106964310.us-east-1.elb.amazonaws.com

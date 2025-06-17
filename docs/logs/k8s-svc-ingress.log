@@ -1,0 +1,6 @@
+NAME              TYPE        CLUSTER-IP      EXTERNAL-IP   PORT(S)   AGE   SELECTOR
+sample-node-app   ClusterIP   10.100.86.135   <none>        80/TCP    40m   app.kubernetes.io/instance=sample-node-app,app.kubernetes.io/name=sample-node-app
+
+➜  devops-test git:(main) ✗ kubectl -n default get ingress sample-node-app -o wide
+NAME              CLASS   HOSTS                    ADDRESS                                                 PORTS   AGE
+sample-node-app   alb     sample-app.example.com   sample-node-app-936107629.us-east-1.elb.amazonaws.com   80      5m59s
