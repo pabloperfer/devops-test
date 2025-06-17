@@ -6,6 +6,7 @@ service.
 * **Local path** – run everything on your laptop with Docker, kind and Helm  
 * **Cloud path** – build, test and deploy the same service to AWS through a
   Jenkins pipeline that orchestrates **Terraform → ECR → EKS → Helm**
+  check logs folder for proof of execution.
 
 ---
 ## 1 Local deployment with kind (optional)
