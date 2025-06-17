@@ -3,40 +3,40 @@
 This repository demonstrates a complete delivery workflow for a small Node.js
 service.
 
-* **Local path** – run everything on your laptop with Docker, kind and Helm  
+* **Local path** – run everything on your laptop with Docker, minikube and Helm  
 * **Cloud path** – build, test and deploy the same service to AWS through a
   Jenkins pipeline that orchestrates **Terraform → ECR → EKS → Helm**
   
   check logs folder for proof of execution.
 
 ---
-## 1 Local deployment with kind (optional)
+## 1 Local deployment with minikube (optional)
 
 Skip this section if you only need the AWS/Jenkins flow.
 
 ### 1.1 Requirements
 
-| Tool    | Tested version                                 |
-|---------|-------------------------------------------------|
-| Docker  | 24.x                                            |
-| kind    | latest (`go install sigs.k8s.io/kind@latest`)  |
-| kubectl | 1.29                                            |
-| Helm    | ≥ 3.14                                          |
+| Tool      | Tested version                                 |
+|-----------|-------------------------------------------------|
+| Docker    | 24.x                                            |
+| minikube  | ≥ 1.30                                         |
+| kubectl   | 1.29                                            |
+| Helm      | ≥ 3.14                                          |
 
 ### 1.2 Steps
 
-1. **Create a local cluster** (if you don’t have one already):
+1. **Start a local cluster** (if you don’t have one already):
 
-   kind create cluster --name dev
+   minikube start --driver=docker
 
 2. **Run the helper script** – it will:
    - build the Docker image  
-   - load it into kind  
-   - install / upgrade the Helm chart
+   - load it into minikube  
+   - install / upgrade the Helm chart (ingress disabled for local)
 
    ./scripts/deploy.sh
 
-3. **Verify locally:**
+3. **Verify locally**:
 
    - Forward the service:
 
@@ -83,6 +83,25 @@ Trust policy so Jenkins can assume the role:
   }]
 }
 
+** AWS CLI **
+
+This pipeline assumes your local machine (the Jenkins agent) has an AWS CLI profile named `terraform-assume-role`, which in turn uses a “base” profile (`default`) with long-lived keys.
+We wouldn't use these keys in production, just iam roles IRSA approach with eks.
+
+
+** ~/.aws/credentials **
+
+[default]
+
+aws_access_key_id     = XXXXXXXXXXXXXXXXXXXX
+
+aws_secret_access_key = XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+
+[terraform-assume-role]
+
+role_arn       = arn:aws:iam::xxxxxxxxx:role/TerraformDeploymentRole
+
+source_profile = default
 
 ---
 
@@ -115,17 +134,6 @@ kubernetes.io/role/elb               = 1
 
 ---
 
-### 2.4 Configure Jenkins
-
-1. **AWS credentials**  
-   *Kind*: Secret text  
-   *ID*: `aws-profile-terraform`
-
-    
-   [terraform-assume-role]
-   role_arn       = arn:aws:iam::<ACCOUNT_ID>:role/TerraformDeploymentRole
-   source_profile = default
-    
 
 2. **Tools** — make sure `terraform`, `helm`, `aws` and `docker` are in the agent’s `PATH`.
 
@@ -140,7 +148,7 @@ kubernetes.io/role/elb               = 1
 
 ---
 
-### 2.5 First build
+### 2.4 First build
 
 Trigger **Build Now**. The pipeline performs:
 
@@ -165,7 +173,7 @@ checks pass (≈ 15 s).
 
 ---
 
-### 2.6 Tear‑down
+### 2.5 Tear‑down
 
 *With Jenkins* — build with parameter **`DESTROY=true`**.  
 *Manually*:
