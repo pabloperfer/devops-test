@@ -81,6 +81,17 @@ terraform/
 * Parameter `DESTROY=true` fully tears down both Helm release and
   Terraform stack.
 
+### Shared Library Design
+
+The pipeline uses a Jenkins Shared Library defined in `shared-lib/vars/` to separate key CI/CD logic 
+into reusable steps.
+
+Each core stage (e.g., Docker build, Terraform apply, Helm deploy) is implemented as a Groovy script. 
+This helps maintain a clean Jenkinsfile and enables better reuse across pipelines.
+
+In production scenarios, the shared library would likely be extracted into a standalone Git repository 
+and versioned independently.
+
 ---
 
 ## 6  Ingress & AWS Load Balancer Controller
