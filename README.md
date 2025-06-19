@@ -50,6 +50,28 @@ Skip this section if you only need the AWS/Jenkins flow.
 ---
 
 ## 2 Full Jenkins → AWS deployment
+Note on Shared Libraries
+
+This Jenkins pipeline uses a custom shared library to modularize common CI/CD logic 
+(e.g., Docker build, Terraform, Helm deploy).
+
+Jenkins must be configured to load the shared library from the `shared-lib/` folder in this repository.
+
+To configure it:
+
+1. Go to Manage Jenkins → Configure System → Global Pipeline Libraries.
+2. Add a new library:
+   - Name: `shared-lib`
+   - Default version: `main`
+   - Retrieval method: Modern SCM
+   - SCM: Git
+   - Project Repository: https://github.com/pabloperfer/devops-test.git
+   - Library path: `shared-lib`
+
+3. In your `Jenkinsfile`, reference it at the top:
+
+
+@Library('shared-lib') _
 
 ### 2.1 Prerequisites
 
