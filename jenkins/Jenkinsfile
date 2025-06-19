@@ -1,75 +1,42 @@
-/*
-  Jenkins Declarative Pipeline – Helm-first workflow                         
-  - Creates / detroys infra with Terraform (EKS --> ECR)          
-  - Builds and push image to ECR                                     
-  - Deploys to EKS vía Helm (helm-chart/)                                   
-*/
+// Jenkinsfile (refactored using shared libraries)
+@Library('shared-lib') _
 
 pipeline {
-
-  // ───────────── Build-time flag ───────────── 
   parameters {
-    booleanParam(
-      name:          'DESTROY',
-      defaultValue:  false,
-      description:   'Destroy the entire EKS stack instead of deploying'
-    )
+    booleanParam(name: 'DESTROY', defaultValue: false, description: 'Destroy the entire EKS stack instead of deploying')
   }
 
-  // ───────────── Agent / global env ───────────── 
   agent any
 
   environment {
     AWS_REGION  = 'us-east-1'
     ACCOUNT_ID  = '679349556244'
     ECR_REPO    = 'sample-node-app'
-
-    AWS_PROFILE = 'terraform-assume-role'               // assumes TerraformDeploymentRole
-    KUBECONFIG  = "${env.WORKSPACE}/.kubeconfig"        // written by aws eks update-kubeconfig
-    CHART_DIR   = 'helm-chart'                          // path to the chart
-    RELEASE     = 'sample-node-app'                     // Helm release name
+    AWS_PROFILE = 'terraform-assume-role'
+    KUBECONFIG  = "${env.WORKSPACE}/.kubeconfig"
+    CHART_DIR   = 'helm-chart'
+    RELEASE     = 'sample-node-app'
   }
 
   stages {
-
-
     stage('Cleanup workspace') {
-          steps {
-            // Delete everything in $WORKSPACE
-            cleanWs()
-          }
-        }
+      steps { cleanWs() }
+    }
 
     stage('Checkout') {
       steps { checkout scm }
     }
 
-    stage('Destroy stack (Helm + Terraform)') {
+    stage('Destroy stack') {
       when { expression { params.DESTROY } }
-      steps {
-        withEnv(["AWS_PROFILE=${AWS_PROFILE}"]) {
-
-          //helm uninstall
-          sh """
-            aws eks update-kubeconfig --region $AWS_REGION --name devops-eks-cluster --kubeconfig $KUBECONFIG || true
-            helm uninstall $RELEASE -n default || true
-          """
-
-          //Terraform destroy
-          dir('terraform') {
-            sh 'terraform init'
-            sh 'terraform destroy -auto-approve -var-file=dev.tfvars'
-          }
-        }
-      }
+      steps { destroyStack(env.RELEASE, env.KUBECONFIG, env.AWS_REGION) }
     }
 
     stage('Stop after Destroy') {
       when { expression { params.DESTROY } }
-      steps  { echo 'Stack destroyed , finishing pipeline.' }
+      steps { echo 'Stack destroyed , finishing pipeline.' }
     }
 
-    //———————————— Compute image tag ————————————
     stage('Set Image Tag') {
       when { not { expression { params.DESTROY } } }
       steps {
@@ -83,100 +50,47 @@ pipeline {
       }
     }
 
-    //———————————— Terraform infra (EKS/ECR) ————————————
-    stage('Terraform Init / Plan / Apply') {
+    stage('Terraform Apply') {
       when { not { expression { params.DESTROY } } }
-      steps {
-        dir('terraform') {
-          sh 'terraform init'
-          sh 'terraform plan   -var-file=dev.tfvars'
-          sh 'terraform apply  -auto-approve -var-file=dev.tfvars'
-        }
-      }
+      steps { terraformApply('terraform', 'dev.tfvars') }
     }
 
-    //———————————— Lint & unit-test App ————————————
     stage('Lint & Test') {
       when { not { expression { params.DESTROY } } }
-      steps {
-        sh 'yamllint helm-chart/'                  // linta los manifests del chart
-        dir('app')  {
-          sh 'npm install'
-          sh 'npm test'
-        }
-        sh "helm lint ${CHART_DIR}"
-      }
+      steps { lintAndTest(env.CHART_DIR) }
     }
 
-    //———————————— Build & push Docker ————————————
-    stage('Build image') {
+    stage('Build Image') {
       when { not { expression { params.DESTROY } } }
-      steps {
-        dir('app') {
-          sh "docker build --build-arg BUILDKIT_INLINE_CACHE=1 --platform linux/amd64 --provenance=false -t ${FULL_IMAGE} ."
-        }
-      }
+      steps { buildDockerImage('app', env.FULL_IMAGE) }
     }
 
-    stage('Login & Push to ECR') {
+    stage('Push to ECR') {
       when { not { expression { params.DESTROY } } }
-      steps {
-        sh """
-          aws ecr get-login-password --region $AWS_REGION | \
-          docker login --username AWS --password-stdin $ECR_URI
-          docker push ${FULL_IMAGE}
-        """
-      }
+      steps { pushDockerImage(env.ECR_URI, env.FULL_IMAGE, env.AWS_REGION) }
     }
 
-    //———————————— Configure kubectl (EKS) ————————————
     stage('Configure kubectl') {
       when { not { expression { params.DESTROY } } }
+      steps { configureKubectl(env.AWS_REGION, env.KUBECONFIG) }
+    }
+
+    stage('Helm Deploy') {
+      when { not { expression { params.DESTROY } } }
       steps {
-        withEnv(["AWS_PROFILE=${AWS_PROFILE}"]) {
-          sh """
-            aws eks update-kubeconfig \
-              --region $AWS_REGION \
-              --name   devops-eks-cluster \
-              --kubeconfig $KUBECONFIG
-          """
-        }
-      }
-    }
-
-    //———————————— Helm deploy ————————————
-    
-    stage('Helm Upgrade / Install') {
-    when { not { expression { params.DESTROY } } }
-    steps {
-      withEnv(["AWS_PROFILE=${AWS_PROFILE}", "KUBECONFIG=${KUBECONFIG}"]) {
-
-      sh """
-      helm dependency update ${CHART_DIR} || true
-
-      helm upgrade --install ${RELEASE} ${CHART_DIR} \
-        --namespace default --create-namespace \
-        --set image.repository=${ECR_URI} \
-        --set image.tag=${IMAGE_TAG} \
-        --wait \
-        --timeout 5m \
-        --atomic
-      """
+        helmDeploy(env.RELEASE, env.CHART_DIR, env.ECR_URI, env.IMAGE_TAG, env.KUBECONFIG)
       }
     }
   }
-  }
 
-  // ───────────── Post actions ───────────── 
   post {
-     always {
-      /* Final cleanup so the agent is left pristine */
+    always {
       cleanWs(deleteDirs: true)
       echo 'Pipeline finished.'
     }
-    failure { 
+    failure {
       cleanWs(deleteDirs: true)
       echo ' Pipeline failed check logs!'
-       }
+    }
   }
 }
