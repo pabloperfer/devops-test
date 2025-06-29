@@ -204,32 +204,39 @@ pipeline {
     }
 
   stage('Create RunnerDeployment') {
-    when { not { expression { params.DESTROY } } }
-    steps {
-      sh '''
-        set -euo pipefail
+  when { not { expression { params.DESTROY } } }
+  steps {
+    sh '''
+      set -euo pipefail
 
-        # This manifest uses the 'RunnerDeployment' kind, which is compatible
-        # with the stable chart version (0.23.x) you have installed.
-        cat <<EOF | kubectl apply -f -
-        apiVersion: actions.summerwind.dev/v1alpha1
-        kind: RunnerDeployment
-        metadata:
-          name: gha-runner-deployment
-          namespace: actions-runner-system
-        spec:
-          replicas: 1
-          template:
-            spec:
-              repository: pabloperfer/nodejs_microservice
-              labels:
-                - self-hosted
-        EOF
+      ############
+      # MANIFIESTO
+      ############
+      # Usamos <<'EOF' (comillas simples) para que _nada_ se expanda
+      # y colocamos el YAML pegado al margen izquierdo, como recomienda kubectl.
+      cat <<'EOF' | kubectl apply -f -
+apiVersion: actions.summerwind.dev/v1alpha1
+kind: RunnerDeployment
+metadata:
+  name: gha-runner-deployment
+  namespace: actions-runner-system
+spec:
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        runner-type: self-hosted   # Etiquetas del Pod (clave-valor)
+    spec:
+      repository: pabloperfer/nodejs_microservice
+      # Etiquetas internas del runner (array):
+      labels:
+        - self-hosted
+EOF
 
-        echo "--- RunnerDeployment manifest applied. ---"
-      '''
-    }
+      echo '--- RunnerDeployment manifest applied correctamente ---'
+    '''
   }
+}
     
     /* ================= Application Deploy ================= */
 
