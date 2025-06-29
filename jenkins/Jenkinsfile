@@ -173,7 +173,8 @@ pipeline {
     }
 
     // Installs the Actions Runner Controller (ARC) to enable self-hosted GitHub Actions runners.
-   stage('Install Actions Runner Controller') {
+   // This stage installs the latest chart version available in your repository.
+    stage('Install Actions Runner Controller') {
       when { not { expression { params.DESTROY } } }
       steps {
         withCredentials([
@@ -184,23 +185,50 @@ pipeline {
           sh '''
             set -euo pipefail
 
-            # Add the official public Helm repository for the controller.
             helm repo add actions-runner-controller https://actions-runner-controller.github.io/actions-runner-controller
             helm repo update
 
-            # Install the chart from the public repository.
-            # This method does not require ghcr.io login.
+            # Install version 0.23.7, which is the latest available to you.
             helm upgrade --install arc actions-runner-controller/actions-runner-controller \
               --namespace actions-runner-system \
               --create-namespace \
               --wait \
-              --version 1.5.0 \
+              --version 0.23.7 \
               --set authSecret.create=true \
               --set authSecret.github_app_id=${GITHUB_APP_ID} \
               --set authSecret.github_app_installation_id=${GITHUB_APP_INSTALLATION_ID} \
               --set-file authSecret.github_app_private_key=${GITHUB_APP_PEM_PATH}
           '''
         }
+      }
+    }
+
+    // This stage creates a 'RunnerDeployment'.
+    stage('Create RunnerDeployment') {
+      when { not { expression { params.DESTROY } } }
+      steps {
+        sh '''
+          set -euo pipefail
+
+          # This manifest uses the older 'RunnerDeployment' kind, which is supported by chart 0.23.7.
+          # Note the different apiVersion: actions.summerwind.dev/v1alpha1
+          cat <<EOF | kubectl apply -f -
+          apiVersion: actions.summerwind.dev/v1alpha1
+          kind: RunnerDeployment
+          metadata:
+            name: gha-runner-deployment
+            namespace: actions-runner-system
+          spec:
+            replicas: 1
+            template:
+              spec:
+                repository: pabloperfer/nodejs_microservice
+                image: summerwind/actions-runner:latest
+                dockerdWithinRunnerContainer: false
+          EOF
+
+          echo "--- RunnerDeployment manifest applied. ---"
+        '''
       }
     }
 
