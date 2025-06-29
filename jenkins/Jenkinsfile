@@ -174,45 +174,34 @@ pipeline {
 
     // Installs the Actions Runner Controller (ARC) to enable self-hosted GitHub Actions runners.
     stage('Install Actions Runner Controller (Unified)') {
-      when { not { expression { params.DESTROY } } }
-      steps {
-        // Securely loads the GitHub App credentials from the Jenkins credential store.
-        // 'file' is used for the PEM key to avoid formatting issues with copy-paste.
-        // The variable 'GITHUB_APP_PEM_PATH' will contain the path to the temporary secret file.
-        withCredentials([
-          file  (credentialsId: 'GITHUB_APP_PRIVATE_KEY',        variable: 'GITHUB_APP_PEM_PATH'),
-          string(credentialsId: 'github_app_id',                 variable: 'GITHUB_APP_ID'),
-          string(credentialsId: 'github_app_installation_id',    variable: 'GITHUB_APP_INSTALLATION_ID')
-        ]) {
-          sh '''
-            set -euo pipefail
+  when { not { expression { params.DESTROY } } }
+  steps {
+    withCredentials([
+      file(credentialsId: 'GITHUB_APP_PRIVATE_KEY', variable: 'GITHUB_APP_PEM_PATH'),
+      string(credentialsId: 'github_app_id', variable: 'GITHUB_APP_ID'),
+      string(credentialsId: 'github_app_installation_id', variable: 'GITHUB_APP_INSTALLATION_ID')
+    ]) {
+      sh '''
+        set -euo pipefail
 
-            # Create the namespace for ARC idempotently (it won't fail if it already exists).
-            kubectl create namespace actions-runner-system --dry-run=client -o yaml | kubectl apply -f -
+        kubectl delete secret controller-manager -n actions-runner-system --ignore-not-found=true
 
-            # Add and update the official ARC Helm repository.
-            helm repo add actions-runner-controller https://actions-runner-controller.github.io/actions-runner-controller || true
-            helm repo update
+        # NOTA: Ya no necesitamos 'helm repo add' ni 'helm repo update'.
+        # installing directly from OCI registry
 
-            # Install or upgrade ARC using the unified Helm chart, which manages CRDs and the controller together.
-            # --set-file is used here as a secure and direct way to pass the private key content
-            # without needing to manually base64 encode it. Helm reads the file content directly.
-            helm upgrade --install arc actions-runner-controller/actions-runner-controller \
-              --namespace actions-runner-system \
-              --create-namespace \
-              --version 0.23.7 \
-              --wait \
-              --set authSecret.create=true \
-              --set authSecret.github_app_id=${GITHUB_APP_ID} \
-              --set authSecret.github_app_installation_id=${GITHUB_APP_INSTALLATION_ID} \
-              --set-file authSecret.github_app_private_key=${GITHUB_APP_PEM_PATH}
-
-            # Wait for the controller's deployment to be fully rolled out and ready.
-            kubectl rollout status deployment/arc-actions-runner-controller -n actions-runner-system --timeout=180s
-          '''
-        }
-      }
+        helm upgrade --install arc oci://ghcr.io/actions/actions-runner-controller-charts/actions-runner-controller \
+          --namespace actions-runner-system \
+          --create-namespace \
+          --wait \
+          --version 1.4.1 \
+          --set authSecret.create=true \
+          --set authSecret.github_app_id=${GITHUB_APP_ID} \
+          --set authSecret.github_app_installation_id=${GITHUB_APP_INSTALLATION_ID} \
+          --set-file authSecret.github_app_private_key=${GITHUB_APP_PEM_PATH}
+      '''
     }
+  }
+}
 
     // Applies a Kubernetes manifest to create the self-hosted runner pool.
     stage('Create GitHub RunnerDeployment') {
