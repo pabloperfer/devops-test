@@ -173,34 +173,36 @@ pipeline {
     }
 
     // Installs the Actions Runner Controller (ARC) to enable self-hosted GitHub Actions runners.
-   stage('Install Actions Runner Controller (Unified)') {
-  when { not { expression { params.DESTROY } } }
-  steps {
-    withCredentials([
-      file(credentialsId: 'GITHUB_APP_PRIVATE_KEY', variable: 'GITHUB_APP_PEM_PATH'),
-      string(credentialsId: 'github_app_id', variable: 'GITHUB_APP_ID'),
-      string(credentialsId: 'github_app_installation_id', variable: 'GITHUB_APP_INSTALLATION_ID'),
-      string(credentialsId: 'ghcr_token', variable: 'GITHUB_PACKAGES_TOKEN')
-    ]) {
-      sh '''
-        set -euo pipefail
+   stage('Install Actions Runner Controller') {
+      when { not { expression { params.DESTROY } } }
+      steps {
+        withCredentials([
+          file(credentialsId: 'GITHUB_APP_PRIVATE_KEY', variable: 'GITHUB_APP_PEM_PATH'),
+          string(credentialsId: 'github_app_id', variable: 'GITHUB_APP_ID'),
+          string(credentialsId: 'github_app_installation_id', variable: 'GITHUB_APP_INSTALLATION_ID')
+        ]) {
+          sh '''
+            set -euo pipefail
 
-        # Login to GitHub's container registry (ghcr.io)
-        echo "${GITHUB_PACKAGES_TOKEN}" | helm registry login ghcr.io -u pabloperfer --password-stdin
+            # Add the official public Helm repository for the controller.
+            helm repo add actions-runner-controller https://actions-runner-controller.github.io/actions-runner-controller
+            helm repo update
 
-        # Install the chart from the correct OCI path, letting Helm find the latest version.
-        helm upgrade --install arc oci://ghcr.io/actions/actions-runner-controller \
-          --namespace actions-runner-system \
-          --create-namespace \
-          --wait \
-          --set authSecret.create=true \
-          --set authSecret.github_app_id=${GITHUB_APP_ID} \
-          --set authSecret.github_app_installation_id=${GITHUB_APP_INSTALLATION_ID} \
-          --set-file authSecret.github_app_private_key=${GITHUB_APP_PEM_PATH}
-      '''
+            # Install the chart from the public repository.
+            # This method does not require ghcr.io login.
+            helm upgrade --install arc actions-runner-controller/actions-runner-controller \
+              --namespace actions-runner-system \
+              --create-namespace \
+              --wait \
+              --version 1.5.0 \
+              --set authSecret.create=true \
+              --set authSecret.github_app_id=${GITHUB_APP_ID} \
+              --set authSecret.github_app_installation_id=${GITHUB_APP_INSTALLATION_ID} \
+              --set-file authSecret.github_app_private_key=${GITHUB_APP_PEM_PATH}
+          '''
+        }
+      }
     }
-  }
-}
 
     // Applies a Kubernetes manifest to create the self-hosted runner pool.
     stage('Create GitHub RunnerDeployment') {
