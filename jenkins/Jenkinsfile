@@ -203,37 +203,7 @@ pipeline {
       }
     }
 
-    // This stage creates a 'RunnerDeployment'.
-    stage('Create RunnerDeployment') {
-      when { not { expression { params.DESTROY } } }
-      steps {
-        sh '''
-          set -euo pipefail
-
-          # This manifest uses the older 'RunnerDeployment' kind, which is supported by chart 0.23.7.
-          # Note the different apiVersion: actions.summerwind.dev/v1alpha1
-          cat <<EOF | kubectl apply -f -
-          apiVersion: actions.summerwind.dev/v1alpha1
-          kind: RunnerDeployment
-          metadata:
-            name: gha-runner-deployment
-            namespace: actions-runner-system
-          spec:
-            replicas: 1
-            template:
-              spec:
-                repository: pabloperfer/nodejs_microservice
-                image: summerwind/actions-runner:latest
-                dockerdWithinRunnerContainer: false
-          EOF
-
-          echo "--- RunnerDeployment manifest applied. ---"
-        '''
-      }
-    }
-
-    // Applies a Kubernetes manifest to create the self-hosted runner pool.
-    stage('Create RunnerDeployment') {
+  stage('Create RunnerDeployment') {
       when { not { expression { params.DESTROY } } }
       steps {
         sh '''
