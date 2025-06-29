@@ -188,8 +188,8 @@ pipeline {
         # Login to GitHub's container registry (ghcr.io)
         echo "${GITHUB_PACKAGES_TOKEN}" | helm registry login ghcr.io -u pabloperfer --password-stdin
 
-        # Install the chart without a specific version to pull the latest.
-        helm upgrade --install arc oci://ghcr.io/actions/actions-runner-controller-charts/actions-runner-controller \
+        # Install the chart from the correct OCI path, letting Helm find the latest version.
+        helm upgrade --install arc oci://ghcr.io/actions/actions-runner-controller \
           --namespace actions-runner-system \
           --create-namespace \
           --wait \
