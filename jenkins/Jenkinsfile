@@ -187,7 +187,7 @@ pipeline {
             set -euo pipefail
 
             # Login to GitHub's container registry (ghcr.io) using the PAT
-            echo "${GITHUB_PACKAGES_TOKEN}" | helm registry login ghcr.io -u <YOUR_GITHUB_USERNAME> --password-stdin
+            echo "${GITHUB_PACKAGES_TOKEN}" | helm registry login ghcr.io -u paperfer --password-stdin
 
             # Now that we are logged in, we can install the chart
             helm upgrade --install arc oci://ghcr.io/actions/actions-runner-controller-charts/actions-runner-controller \
