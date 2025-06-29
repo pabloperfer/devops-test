@@ -233,41 +233,30 @@ pipeline {
     }
 
     // Applies a Kubernetes manifest to create the self-hosted runner pool.
-    stage('Create GitHub RunnerDeployment') {
+    stage('Create RunnerDeployment') {
       when { not { expression { params.DESTROY } } }
       steps {
         sh '''
           set -euo pipefail
 
-          # Using a "heredoc" (cat <<EOF) to create the YAML manifest inline.
-          # This manifest defines a RunnerScaleSet, which automatically scales runners
-          # up and down based on demand from GitHub Actions workflows.
-          cat <<EOF > runner-scaleset.yaml
-          apiVersion: actions.github.com/v1alpha1
-          kind: RunnerScaleSet
+          # This manifest uses the 'RunnerDeployment' kind, which is compatible
+          # with the older (0.23.x) but stable chart version you have installed.
+          cat <<EOF | kubectl apply -f -
+          apiVersion: actions.summerwind.dev/v1alpha1
+          kind: RunnerDeployment
           metadata:
-            name: gha-runners
+            name: gha-runner-deployment
             namespace: actions-runner-system
           spec:
-            githubConfigUrl: https://github.com/pabloperfer/nodejs_microservice
-            # This references the secret created by the Helm chart for authentication.
-            githubConfigSecret: controller-manager
+            replicas: 1
             template:
               spec:
-                containers:
-                - name: runner
-                  image: ghcr.io/actions/runner:latest
-                serviceAccountName: default
-            minRunners: 1
-            maxRunners: 1
+                repository: pabloperfer/nodejs_microservice
+                image: summerwind/actions-runner:latest
+                dockerdWithinRunnerContainer: false
           EOF
 
-          echo "--- Applying GitHub RunnerScaleSet manifest: ---"
-          cat runner-scaleset.yaml
-          echo "------------------------------------"
-
-          # Apply the manifest to the cluster.
-          kubectl apply -f runner-scaleset.yaml
+          echo "--- RunnerDeployment manifest applied. ---"
         '''
       }
     }
