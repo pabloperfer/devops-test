@@ -26,7 +26,7 @@ env:
   EKS_CLUSTER_NAME: devops-eks-cluster
   # The ARN of the IAM Role that this workflow will assume to get AWS credentials.
   # This role must have a trust relationship with GitHub's OIDC provider.
-  IAM_ROLE_ARN: arn:aws:iam::679349556244:role/eks-github-actions-role
+  IAM_ROLE_ARN: arn:aws:iam::679349556244:role/TerraformDeploymentRole
 
 # Defines the sequence of jobs to be executed.
 jobs:
