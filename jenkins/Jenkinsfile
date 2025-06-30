@@ -188,7 +188,7 @@ pipeline {
             helm repo add actions-runner-controller https://actions-runner-controller.github.io/actions-runner-controller
             helm repo update
 
-            # Install version 0.23.7, which is the latest available to you.
+            # Install version 0.23.7
             helm upgrade --install arc actions-runner-controller/actions-runner-controller \
               --namespace actions-runner-system \
               --create-namespace \
