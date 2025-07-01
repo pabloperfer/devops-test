@@ -273,7 +273,8 @@ For production, the recommended approach is to leverage OIDC-assumed roles withi
 | Cost           | Use AWS Budgets & SCPs to limit instance / ALB types in non‑prod        |
 | Observability  | Send ALB + pod metrics to CloudWatch / Prometheus                       |
 | Hardening      | Make the EKS API private, run Jenkins inside the VPC                    |
-
+| Github Actions | move from runner deployment to the new runner scaleset                  |
+ 
 ---
 
 _Last updated: 2025‑06‑30_
