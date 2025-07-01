@@ -1,0 +1,55 @@
+# -------------------------------------------------------------------------------
+#  Deployment replicas
+# -------------------------------------------------------------------------------
+replicaCount: 3
+
+# -------------------------------------------------------------------------------
+# container image
+#  • pipeline will overwrite .image.tag
+# -------------------------------------------------------------------------------
+image:
+  repository: 679349556244.dkr.ecr.us-east-1.amazonaws.com/sample-node-app
+  tag: "dev"                 # will be replaced eg build-123-YYYYmmddHHMMSS
+  pullPolicy: IfNotPresent
+
+# -------------------------------------------------------------------------------
+# Service
+# -------------------------------------------------------------------------------
+service:
+  type: ClusterIP            # ClusterIP | LoadBalancer | NodePort
+  port: 80
+  targetPort: 3000
+
+
+# -------------------------------------------------------------------------------
+# Ingress (AWS Load Balancer Controller)
+# -------------------------------------------------------------------------------
+
+ingress:
+  enabled: true
+  className: alb
+  scheme: internet-facing
+  targetType: ip
+  listenPorts: '[{"HTTP":80}]'
+  loadBalancerName: sample-node-app
+  extraAnnotations: {}
+  hosts:
+    - host: sample-app.example.com
+      paths:
+        - path: /
+          pathType: Prefix
+  tls: []
+
+# -------------------------------------------------------------------------------
+# vars exposed to the app via ConfigMap / Secret
+# -------------------------------------------------------------------------------
+env:
+  PORT: "3000"
+  APP_ENV: production
+secret:
+  DB_PASSWORD:  # to be injected at runtime via CI/CD
+
+
+config:
+  appEnv: production
+  extra: {}

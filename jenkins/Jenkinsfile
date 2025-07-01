@@ -1,0 +1,215 @@
+// Imports a custom shared library named 'shared-lib'.
+// This allows the pipeline to use reusable functions like terraformApply, buildDockerImage, etc.,
+// promoting DRY (Don't Repeat Yourself) principles.
+@Library('shared-lib') _
+
+pipeline {
+  // Defines parameters that can be set when the pipeline is manually triggered.
+  parameters {
+    // A boolean parameter to switch the pipeline's mode between deploying and destroying.
+    // This provides a safe, integrated way to manage the infrastructure's lifecycle.
+    booleanParam(name: 'DESTROY', defaultValue: false, description: 'Destroy the entire EKS stack instead of deploying')
+  }
+
+  // Specifies that the pipeline can run on any available Jenkins agent.
+  agent any
+
+  // Defines environment variables available to all stages of the pipeline.
+  environment {
+    // Standard configuration for AWS and application deployment.
+    AWS_REGION  = 'us-east-1'
+    ACCOUNT_ID  = '679349556244'
+    ECR_REPO    = 'sample-node-app'
+    AWS_PROFILE = 'terraform-assume-role'
+
+    // The KUBECONFIG path is set within the workspace to ensure it's isolated to this job.
+    KUBECONFIG  = "${env.WORKSPACE}/.kubeconfig"
+
+    // Variables for the application's Helm chart.
+    CHART_DIR   = 'helm-chart'
+    RELEASE     = 'sample-node-app'
+
+    // Securely loads the database password from the Jenkins credential store.
+    // This prevents storing secrets directly in the Jenkinsfile.
+    // The 'db-pass-secret' is the ID of the credential in Jenkins.
+    DB_PASSWORD = credentials('db-pass-secret')
+  }
+
+  stages {
+    // The first stage ensures a clean environment by deleting the workspace from previous runs.
+    stage('Cleanup workspace') {
+      steps {
+        cleanWs()
+      }
+    }
+
+    // Checks out the source code from the configured SCM (Source Code Management), like Git.
+    stage('Checkout') {
+      steps {
+        checkout scm
+      }
+    }
+
+    /* ================= Infrastructure Destroy ================= */
+
+    // This block contains stages for tearing down the infrastructure.
+    // It only runs if the 'DESTROY' parameter is set to true.
+    stage('Destroy stack') {
+      when { expression { params.DESTROY } }
+      steps {
+        // Calls a shared library function to run 'terraform destroy' and clean up resources.
+        destroyStack(env.RELEASE, env.KUBECONFIG, env.AWS_REGION)
+      }
+    }
+
+    // This stage provides a clear confirmation message after the destroy process is complete.
+    stage('Stop after Destroy') {
+      when { expression { params.DESTROY } }
+      steps {
+        echo 'Stack destroyed, finishing pipeline.'
+      }
+    }
+
+    /* ================= Build & Push Image ================= */
+
+    // This block contains stages for the standard build and deploy workflow.
+    // It only runs if the 'DESTROY' parameter is false.
+    stage('Set Image Tag') {
+      when { not { expression { params.DESTROY } } }
+      steps {
+        script {
+          // Generates a unique image tag using a timestamp and the build number.
+          // This ensures every image is traceable and immutable.
+          def ts        = sh(script: 'date +%Y%m%d%H%M%S', returnStdout: true).trim()
+          env.IMAGE_TAG = "build-${BUILD_NUMBER}-${ts}"
+          env.ECR_URI   = "${ACCOUNT_ID}.dkr.ecr.${AWS_REGION}.amazonaws.com/${ECR_REPO}"
+          env.APP_IMAGE= "${env.ECR_URI}:${env.IMAGE_TAG}"
+          env.RUNNER_IMAGE = "${ECR_URI}:custom-runner-${BUILD_NUMBER}"
+          echo "Image to build →  ${env.APP_IMAGE}"
+        }
+      }
+    }
+  
+   
+   stage('Terraform Apply: Infrastructure') {
+      when { not { expression { params.DESTROY } } }
+      steps {
+        // This runs Project 1 to build the EKS cluster
+        terraformApply('terraform', 'dev.tfvars')
+      }
+    }
+
+    stage('Configure kubectl') {
+      when { not { expression { params.DESTROY } } }
+      steps {
+        configureKubectl(env.AWS_REGION, env.KUBECONFIG)
+      }
+    }
+    
+    stage('Terraform Apply: Addons') {
+      when { not { expression { params.DESTROY } } }
+      steps {
+        // This runs Project 2 to install addons into the cluster
+        terraformApply('terraform-addons', 'dev.tfvars')
+      }
+    }
+
+    // A quality gate stage to run static analysis and tests on the Helm chart.
+    stage('Lint & Test') {
+      when { not { expression { params.DESTROY } } }
+      steps {
+        // Calls a shared library function, likely wrapping 'helm lint' and 'helm test'.
+        lintAndTest(env.CHART_DIR)
+      }
+    }
+
+    
+
+    stage('Build and Push Custom Runner Image') {
+      when { not { expression { params.DESTROY } } }
+      steps {
+        script {
+ 
+          def runnerImageUri = "${env.ECR_URI}:custom-runner-${env.BUILD_NUMBER}"
+
+          echo "Building Custom Runner image: ${RUNNER_IMAGE}"
+
+          buildDockerImage('.', runnerImageUri, 'app/Dockerfile.runner')
+
+          echo "Pushing Custom Runner image to ECR: ${RUNNER_IMAGE}"
+
+          // Push the image using your shared library
+          pushDockerImage(ECR_URI, RUNNER_IMAGE, AWS_REGION)
+        }
+      }
+    }
+
+
+    /* ================= Enabling EKS for Github runners by means of ARC controller ================= */
+
+    // Installs cert-manager to automatically provide and manage TLS certificates.
+    // These certificates are required to secure the admission webhooks for the Actions Runner Controller (ARC).
+    stage('Install cert-manager') {
+            when { not { expression { params.DESTROY } } }  //  same logic as before
+            steps {
+                //  our reusable step
+                installCertManager(
+                    version: 'v1.18.1',     // pin for determinism
+                    namespace: 'cert-manager',
+                    helmTimeout: '5m',
+                    rolloutTimeout: '120s'
+                )
+            }
+        }
+
+    // Installs the Actions Runner Controller (ARC) to enable self-hosted GitHub Actions runners.
+    stage('Install Actions Runner Controller') {
+            when { not { expression { params.DESTROY } } }
+            steps {
+                installActionsRunnerController(
+                    version: '0.23.7',               
+                    namespace: 'actions-runner-system',
+                    helmTimeout: '5m',
+                    githubAppCertId: 'GITHUB_APP_PRIVATE_KEY',
+                    githubAppIdId: 'github_app_id',
+                    githubAppInstallationId: 'github_app_installation_id'
+                )
+            }
+        }
+
+    stage('Create RunnerDeployment') {
+        when { not { expression { params.DESTROY } } }
+        steps {
+          script {
+            // Define the image URI from the environment variable
+            def runnerImageUri = "${env.ECR_URI}:custom-runner-${env.BUILD_NUMBER}"
+            
+            echo "--- Applying RunnerDeployment with image: ${runnerImageUri} ---"
+            
+            // Call the new shared library function
+            createRunnerDeployment(
+              repository: 'pabloperfer/nodejs_microservice',
+              imageUri: runnerImageUri
+            )
+          }
+        }
+      }
+  }
+
+  /* ================= Notifications & Cleanup ================= */
+
+  // The 'post' block defines actions that run at the end of the pipeline.
+  post {
+    // 'always' runs regardless of the pipeline's success or failure.
+    // It's used here for guaranteed workspace cleanup.
+    always {
+      cleanWs(deleteDirs: true)
+      echo 'Pipeline finished.'
+    }
+    // 'failure' runs only if any stage in the pipeline fails.
+    failure {
+      // The workspace is already cleaned by 'always', but this provides a clear failure message.
+      echo 'Pipeline failed – check logs!'
+    }
+  }
+}

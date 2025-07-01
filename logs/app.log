@@ -1,0 +1,5 @@
+ devops-test git:(main) ✗ DNS=$(kubectl -n default get ingress sample-node-app \
+      -o jsonpath='{.status.loadBalancer.ingress[0].hostname}')
+
+curl -H "Host: sample-app.example.com" "http://$DNS/"
+Hello from the Node.js app!%

@@ -1,0 +1,14 @@
+NAME                               READY   STATUS    RESTARTS   AGE     IP              NODE                            NOMINATED NODE   READINESS GATES
+sample-node-app-5fc7795665-7xwn6   1/1     Running   0          6m43s   172.31.94.101   ip-172-31-92-193.ec2.internal   <none>           <none>
+sample-node-app-5fc7795665-fhfp9   1/1     Running   0          6m40s   172.31.84.99    ip-172-31-92-193.ec2.internal   <none>           <none>
+sample-node-app-5fc7795665-s9wd2   1/1     Running   0          6m41s   172.31.86.128   ip-172-31-92-193.ec2.internal   <none>           <none>
+
+
+✗ POD=$(kubectl -n default get pods -l app.kubernetes.io/instance=sample-node-app \
+       -o jsonpath='{.items[0].metadata.name}')
+kubectl -n default logs -f $POD --tail=20
+
+> sample-node-app@1.0.0 start
+> node server.js
+
+Server running on port 3000

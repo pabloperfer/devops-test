@@ -1,0 +1,33 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: sample-node-app
+  labels:
+    app: sample-node-app
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: sample-node-app
+  template:
+    metadata:
+      labels:
+        app: sample-node-app
+    spec:
+      containers:
+        - name: sample-node-app
+          image: __ECR_IMAGE__
+          ports:
+            - containerPort: 3000
+          env:
+            - name: PORT
+              value: "3000"
+            - name: APP_ENV
+              valueFrom:
+                configMapKeyRef:
+                  name: sample-config
+                  key: app_env
+          envFrom:
+            - secretRef:
+                name: sample-secret
+          imagePullPolicy: Always

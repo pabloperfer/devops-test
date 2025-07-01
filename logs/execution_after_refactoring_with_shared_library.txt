@@ -1,0 +1,546 @@
+Started by user admin
+Obtained jenkins/Jenkinsfile from git https://github.com/pabloperfer/devops-test.git
+Loading library shared-lib@main
+Attempting to resolve main from remote references...
+ > git --version # timeout=10
+ > git --version # 'git version 2.39.5 (Apple Git-154)'
+ > git ls-remote -h -- https://github.com/pabloperfer/devops-test/ # timeout=10
+Found match: refs/heads/main revision 67158cf31262ccf1ee5ac40b42cb37bd714a1407
+Selected Git installation does not exist. Using Default
+The recommended git tool is: NONE
+No credentials specified
+ > git rev-parse --resolve-git-dir /Users/pabloperez/.jenkins/workspace/devops-pipeline@libs/49e9b7bd93ae21b55de9a6eea091609d2716fc0be2beb9c9554d96b939f3ddaa/.git # timeout=10
+Fetching changes from the remote Git repository
+ > git config remote.origin.url https://github.com/pabloperfer/devops-test/ # timeout=10
+Fetching without tags
+Fetching upstream changes from https://github.com/pabloperfer/devops-test/
+ > git --version # timeout=10
+ > git --version # 'git version 2.39.5 (Apple Git-154)'
+ > git fetch --no-tags --force --progress -- https://github.com/pabloperfer/devops-test/ +refs/heads/*:refs/remotes/origin/* # timeout=10
+Checking out Revision 67158cf31262ccf1ee5ac40b42cb37bd714a1407 (main)
+ > git config core.sparsecheckout # timeout=10
+ > git checkout -f 67158cf31262ccf1ee5ac40b42cb37bd714a1407 # timeout=10
+Commit message: "Update architecture.md"
+ > git rev-list --no-walk aafb209db012b6a06d4a308c746e7c889bf38d93 # timeout=10
+[Pipeline] Start of Pipeline
+[Pipeline] node
+Running on Jenkins in /Users/pabloperez/.jenkins/workspace/devops-pipeline
+[Pipeline] {
+[Pipeline] stage
+[Pipeline] { (Declarative: Checkout SCM)
+[Pipeline] checkout
+Selected Git installation does not exist. Using Default
+The recommended git tool is: NONE
+No credentials specified
+Cloning the remote Git repository
+Cloning repository https://github.com/pabloperfer/devops-test.git
+ > git init /Users/pabloperez/.jenkins/workspace/devops-pipeline # timeout=10
+Fetching upstream changes from https://github.com/pabloperfer/devops-test.git
+ > git --version # timeout=10
+ > git --version # 'git version 2.39.5 (Apple Git-154)'
+ > git fetch --tags --force --progress -- https://github.com/pabloperfer/devops-test.git +refs/heads/*:refs/remotes/origin/* # timeout=10
+ > git config remote.origin.url https://github.com/pabloperfer/devops-test.git # timeout=10
+ > git config --add remote.origin.fetch +refs/heads/*:refs/remotes/origin/* # timeout=10
+Avoid second fetch
+ > git rev-parse refs/remotes/origin/main^{commit} # timeout=10
+Checking out Revision 67158cf31262ccf1ee5ac40b42cb37bd714a1407 (refs/remotes/origin/main)
+ > git config core.sparsecheckout # timeout=10
+ > git checkout -f 67158cf31262ccf1ee5ac40b42cb37bd714a1407 # timeout=10
+Commit message: "Update architecture.md"
+[Pipeline] }
+[Pipeline] // stage
+[Pipeline] withEnv
+[Pipeline] {
+[Pipeline] withEnv
+[Pipeline] {
+[Pipeline] stage
+[Pipeline] { (Cleanup workspace)
+[Pipeline] cleanWs
+[WS-CLEANUP] Deleting project workspace...
+[WS-CLEANUP] Deferred wipeout is used...
+[WS-CLEANUP] done
+[Pipeline] }
+[Pipeline] // stage
+[Pipeline] stage
+[Pipeline] { (Checkout)
+[Pipeline] checkout
+Selected Git installation does not exist. Using Default
+The recommended git tool is: NONE
+No credentials specified
+Cloning the remote Git repository
+Cloning repository https://github.com/pabloperfer/devops-test.git
+ > git init /Users/pabloperez/.jenkins/workspace/devops-pipeline # timeout=10
+Fetching upstream changes from https://github.com/pabloperfer/devops-test.git
+ > git --version # timeout=10
+ > git --version # 'git version 2.39.5 (Apple Git-154)'
+ > git fetch --tags --force --progress -- https://github.com/pabloperfer/devops-test.git +refs/heads/*:refs/remotes/origin/* # timeout=10
+ > git config remote.origin.url https://github.com/pabloperfer/devops-test.git # timeout=10
+ > git config --add remote.origin.fetch +refs/heads/*:refs/remotes/origin/* # timeout=10
+Avoid second fetch
+ > git rev-parse refs/remotes/origin/main^{commit} # timeout=10
+Checking out Revision 67158cf31262ccf1ee5ac40b42cb37bd714a1407 (refs/remotes/origin/main)
+ > git config core.sparsecheckout # timeout=10
+ > git checkout -f 67158cf31262ccf1ee5ac40b42cb37bd714a1407 # timeout=10
+Commit message: "Update architecture.md"
+[Pipeline] }
+[Pipeline] // stage
+[Pipeline] stage
+[Pipeline] { (Destroy stack)
+Stage "Destroy stack" skipped due to when conditional
+[Pipeline] getContext
+[Pipeline] }
+[Pipeline] // stage
+[Pipeline] stage
+[Pipeline] { (Stop after Destroy)
+Stage "Stop after Destroy" skipped due to when conditional
+[Pipeline] getContext
+[Pipeline] }
+[Pipeline] // stage
+[Pipeline] stage
+[Pipeline] { (Set Image Tag)
+[Pipeline] script
+[Pipeline] {
+[Pipeline] sh
++ date +%Y%m%d%H%M%S
+[Pipeline] echo
+Image to build →  679349556244.dkr.ecr.us-east-1.amazonaws.com/sample-node-app:build-15-20250619143019
+[Pipeline] }
+[Pipeline] // script
+[Pipeline] }
+[Pipeline] // stage
+[Pipeline] stage
+[Pipeline] { (Terraform Apply)
+[Pipeline] dir
+Running in /Users/pabloperez/.jenkins/workspace/devops-pipeline/terraform
+[Pipeline] {
+[Pipeline] sh
++ terraform init
+[0m[1mInitializing the backend...[0m
+[0m[32m
+Successfully configured the backend "s3"! Terraform will automatically
+use this backend unless the backend configuration changes.[0m
+[0m[1mInitializing modules...[0m
+- aws_lb_controller in modules/aws_lb_controller
+- ecr in modules/ecr
+- eks in modules/eks
+Downloading registry.terraform.io/terraform-aws-modules/eks/aws 20.37.0 for eks.eks_cluster...
+- eks.eks_cluster in .terraform/modules/eks.eks_cluster
+- eks.eks_cluster.eks_managed_node_group in .terraform/modules/eks.eks_cluster/modules/eks-managed-node-group
+- eks.eks_cluster.eks_managed_node_group.user_data in .terraform/modules/eks.eks_cluster/modules/_user_data
+- eks.eks_cluster.fargate_profile in .terraform/modules/eks.eks_cluster/modules/fargate-profile
+Downloading registry.terraform.io/terraform-aws-modules/kms/aws 2.1.0 for eks.eks_cluster.kms...
+- eks.eks_cluster.kms in .terraform/modules/eks.eks_cluster.kms
+- eks.eks_cluster.self_managed_node_group in .terraform/modules/eks.eks_cluster/modules/self-managed-node-group
+- eks.eks_cluster.self_managed_node_group.user_data in .terraform/modules/eks.eks_cluster/modules/_user_data
+[0m[1mInitializing provider plugins...[0m
+- Finding hashicorp/kubernetes versions matching "~> 2.0"...
+- Finding hashicorp/helm versions matching "~> 2.0"...
+- Reusing previous version of hashicorp/tls from the dependency lock file
+- Reusing previous version of hashicorp/time from the dependency lock file
+- Reusing previous version of hashicorp/cloudinit from the dependency lock file
+- Reusing previous version of hashicorp/null from the dependency lock file
+- Reusing previous version of hashicorp/aws from the dependency lock file
+- Installing hashicorp/null v3.2.4...
+- Installed hashicorp/null v3.2.4 (signed by HashiCorp)
+- Installing hashicorp/aws v5.100.0...
+- Installed hashicorp/aws v5.100.0 (signed by HashiCorp)
+- Installing hashicorp/kubernetes v2.37.1...
+- Installed hashicorp/kubernetes v2.37.1 (signed by HashiCorp)
+- Installing hashicorp/helm v2.17.0...
+- Installed hashicorp/helm v2.17.0 (signed by HashiCorp)
+- Installing hashicorp/tls v4.1.0...
+- Installed hashicorp/tls v4.1.0 (signed by HashiCorp)
+- Installing hashicorp/time v0.13.1...
+- Installed hashicorp/time v0.13.1 (signed by HashiCorp)
+- Installing hashicorp/cloudinit v2.3.7...
+- Installed hashicorp/cloudinit v2.3.7 (signed by HashiCorp)
+Terraform has made some changes to the provider dependency selections recorded
+in the .terraform.lock.hcl file. Review those changes and commit them to your
+version control system if they represent changes you intended to make.
+
+[0m[1m[32mTerraform has been successfully initialized![0m[32m[0m
+[0m[32m
+You may now begin working with Terraform. Try running "terraform plan" to see
+any changes that are required for your infrastructure. All Terraform commands
+should now work.
+
+If you ever set or change modules or backend configuration for Terraform,
+rerun this command to reinitialize your working directory. If you forget, other
+commands will detect it and remind you to do so if necessary.[0m
+[Pipeline] sh
++ terraform plan -var-file=dev.tfvars
+[0m[1mmodule.eks.module.eks_cluster.data.aws_partition.current[0]: Reading...[0m[0m
+[0m[1mmodule.eks.module.eks_cluster.module.kms.data.aws_partition.current[0]: Reading...[0m[0m
+[0m[1mmodule.eks.module.eks_cluster.module.eks_managed_node_group["default"].data.aws_caller_identity.current: Reading...[0m[0m
+[0m[1mmodule.eks.module.eks_cluster.module.kms.data.aws_caller_identity.current[0]: Reading...[0m[0m
+[0m[1mmodule.eks.module.eks_cluster.aws_cloudwatch_log_group.this[0]: Refreshing state... [id=/aws/eks/devops-eks-cluster/cluster][0m
+[0m[1mmodule.eks.module.eks_cluster.aws_security_group.node[0]: Refreshing state... [id=sg-05d5b3584f4f5db6a][0m
+[0m[1mmodule.eks.module.eks_cluster.aws_security_group.cluster[0]: Refreshing state... [id=sg-01caec595d2d3f3f7][0m
+[0m[1mmodule.aws_lb_controller.aws_iam_policy.lb_controller_policy: Refreshing state... [id=arn:aws:iam::679349556244:policy/AWSLoadBalancerControllerIAMPolicy][0m
+[0m[1mmodule.eks.module.eks_cluster.module.eks_managed_node_group["default"].data.aws_partition.current: Reading...[0m[0m
+[0m[1mmodule.ecr.aws_ecr_repository.app: Refreshing state... [id=sample-node-app][0m
+[0m[1mmodule.eks.module.eks_cluster.module.eks_managed_node_group["default"].data.aws_partition.current: Read complete after 0s [id=aws][0m
+[0m[1mmodule.eks.module.eks_cluster.module.kms.data.aws_partition.current[0]: Read complete after 0s [id=aws][0m
+[0m[1mmodule.eks.module.eks_cluster.data.aws_partition.current[0]: Read complete after 0s [id=aws][0m
+[0m[1mmodule.eks.module.eks_cluster.data.aws_caller_identity.current[0]: Reading...[0m[0m
+[0m[1mmodule.eks.module.eks_cluster.module.eks_managed_node_group["default"].data.aws_iam_policy_document.assume_role_policy[0]: Reading...[0m[0m
+[0m[1mmodule.eks.module.eks_cluster.module.eks_managed_node_group["default"].data.aws_iam_policy_document.assume_role_policy[0]: Read complete after 0s [id=2560088296][0m
+[0m[1mmodule.eks.module.eks_cluster.data.aws_iam_policy_document.assume_role_policy[0]: Reading...[0m[0m
+[0m[1mmodule.eks.module.eks_cluster.data.aws_iam_policy_document.assume_role_policy[0]: Read complete after 0s [id=2830595799][0m
+[0m[1mmodule.eks.module.eks_cluster.module.eks_managed_node_group["default"].aws_iam_role.this[0]: Refreshing state... [id=default-eks-node-group-20250619131319668900000001][0m
+[0m[1mmodule.eks.module.eks_cluster.data.aws_iam_policy_document.custom[0]: Reading...[0m[0m
+[0m[1mmodule.eks.module.eks_cluster.data.aws_iam_policy_document.custom[0]: Read complete after 0s [id=513122117][0m
+[0m[1mmodule.eks.module.eks_cluster.aws_iam_role.this[0]: Refreshing state... [id=devops-eks-cluster-cluster-20250619131319668900000002][0m
+[0m[1mmodule.eks.module.eks_cluster.module.eks_managed_node_group["default"].data.aws_caller_identity.current: Read complete after 0s [id=679349556244][0m
+[0m[1mmodule.eks.module.eks_cluster.aws_iam_policy.custom[0]: Refreshing state... [id=arn:aws:iam::679349556244:policy/devops-eks-cluster-cluster-20250619131319669000000003][0m
+[0m[1mmodule.eks.module.eks_cluster.module.kms.data.aws_caller_identity.current[0]: Read complete after 0s [id=679349556244][0m
+[0m[1mmodule.eks.module.eks_cluster.data.aws_caller_identity.current[0]: Read complete after 0s [id=679349556244][0m
+[0m[1mmodule.eks.module.eks_cluster.data.aws_iam_session_context.current[0]: Reading...[0m[0m
+[0m[1mmodule.eks.module.eks_cluster.data.aws_iam_session_context.current[0]: Read complete after 0s [id=arn:aws:sts::679349556244:assumed-role/TerraformDeploymentRole/aws-go-sdk-1750339844859221000][0m
+[0m[1mmodule.ecr.aws_ecr_lifecycle_policy.expire_untagged: Refreshing state... [id=sample-node-app][0m
+[0m[1mmodule.eks.module.eks_cluster.aws_security_group_rule.node["ingress_nodes_ephemeral"]: Refreshing state... [id=sgrule-1552556664][0m
+[0m[1mmodule.eks.module.eks_cluster.aws_security_group_rule.node["ingress_cluster_4443_webhook"]: Refreshing state... [id=sgrule-1900608515][0m
+[0m[1mmodule.eks.module.eks_cluster.aws_security_group_rule.node["ingress_self_coredns_udp"]: Refreshing state... [id=sgrule-1901412706][0m
+[0m[1mmodule.eks.module.eks_cluster.aws_security_group_rule.node["ingress_cluster_8443_webhook"]: Refreshing state... [id=sgrule-2874582964][0m
+[0m[1mmodule.eks.module.eks_cluster.aws_security_group_rule.node["egress_all"]: Refreshing state... [id=sgrule-1676651949][0m
+[0m[1mmodule.eks.module.eks_cluster.aws_security_group_rule.node["ingress_self_coredns_tcp"]: Refreshing state... [id=sgrule-3574260365][0m
+[0m[1mmodule.eks.module.eks_cluster.aws_security_group_rule.node["ingress_cluster_6443_webhook"]: Refreshing state... [id=sgrule-3087702933][0m
+[0m[1mmodule.eks.module.eks_cluster.aws_security_group_rule.node["ingress_cluster_443"]: Refreshing state... [id=sgrule-555082973][0m
+[0m[1mmodule.eks.module.eks_cluster.aws_security_group_rule.node["ingress_cluster_9443_webhook"]: Refreshing state... [id=sgrule-3489109119][0m
+[0m[1mmodule.eks.module.eks_cluster.aws_security_group_rule.node["ingress_cluster_kubelet"]: Refreshing state... [id=sgrule-3338210071][0m
+[0m[1mmodule.eks.module.eks_cluster.aws_security_group_rule.cluster["ingress_nodes_443"]: Refreshing state... [id=sgrule-2390625968][0m
+[0m[1mmodule.eks.module.eks_cluster.aws_iam_role_policy_attachment.this["AmazonEKSClusterPolicy"]: Refreshing state... [id=devops-eks-cluster-cluster-20250619131319668900000002-20250619131320608700000006][0m
+[0m[1mmodule.eks.module.eks_cluster.aws_iam_role_policy_attachment.this["AmazonEKSVPCResourceController"]: Refreshing state... [id=devops-eks-cluster-cluster-20250619131319668900000002-20250619131320625400000008][0m
+[0m[1mmodule.eks.module.eks_cluster.aws_iam_role_policy_attachment.custom[0]: Refreshing state... [id=devops-eks-cluster-cluster-20250619131319668900000002-20250619131320609500000007][0m
+[0m[1mmodule.eks.module.eks_cluster.module.eks_managed_node_group["default"].aws_iam_role_policy_attachment.this["AmazonEKS_CNI_Policy"]: Refreshing state... [id=default-eks-node-group-20250619131319668900000001-20250619131320671500000009][0m
+[0m[1mmodule.eks.module.eks_cluster.module.eks_managed_node_group["default"].aws_iam_role_policy_attachment.this["AmazonEC2ContainerRegistryReadOnly"]: Refreshing state... [id=default-eks-node-group-20250619131319668900000001-2025061913132075650000000a][0m
+[0m[1mmodule.eks.module.eks_cluster.module.eks_managed_node_group["default"].aws_iam_role_policy_attachment.this["AmazonEKSWorkerNodePolicy"]: Refreshing state... [id=default-eks-node-group-20250619131319668900000001-2025061913132076910000000b][0m
+[0m[1mmodule.eks.module.eks_cluster.module.kms.data.aws_iam_policy_document.this[0]: Reading...[0m[0m
+[0m[1mmodule.eks.module.eks_cluster.module.kms.data.aws_iam_policy_document.this[0]: Read complete after 0s [id=2458129551][0m
+[0m[1mmodule.eks.module.eks_cluster.module.kms.aws_kms_key.this[0]: Refreshing state... [id=26a1b5ca-9c08-4936-b50d-7b22c5140d3a][0m
+[0m[1mmodule.eks.module.eks_cluster.module.kms.aws_kms_alias.this["cluster"]: Refreshing state... [id=alias/eks/devops-eks-cluster][0m
+[0m[1mmodule.eks.module.eks_cluster.aws_iam_policy.cluster_encryption[0]: Refreshing state... [id=arn:aws:iam::679349556244:policy/devops-eks-cluster-cluster-ClusterEncryption2025061913134333250000000c][0m
+[0m[1mmodule.eks.module.eks_cluster.aws_eks_cluster.this[0]: Refreshing state... [id=devops-eks-cluster][0m
+[0m[1mmodule.eks.module.eks_cluster.aws_iam_role_policy_attachment.cluster_encryption[0]: Refreshing state... [id=devops-eks-cluster-cluster-20250619131319668900000002-2025061913134388310000000d][0m
+[0m[1mmodule.eks.module.eks_cluster.data.tls_certificate.this[0]: Reading...[0m[0m
+[0m[1mmodule.eks.module.eks_cluster.aws_eks_access_entry.this["pablo_user"]: Refreshing state... [id=devops-eks-cluster:arn:aws:iam::679349556244:user/pablo][0m
+[0m[1mmodule.eks.module.eks_cluster.time_sleep.this[0]: Refreshing state... [id=2025-06-19T13:23:21Z][0m
+[0m[1mmodule.eks.module.eks_cluster.aws_eks_access_entry.this["cluster_creator"]: Refreshing state... [id=devops-eks-cluster:arn:aws:iam::679349556244:role/TerraformDeploymentRole][0m
+[0m[1mmodule.eks.module.eks_cluster.module.eks_managed_node_group["default"].module.user_data.null_resource.validate_cluster_service_cidr: Refreshing state... [id=4827249783527722198][0m
+[0m[1mmodule.eks.module.eks_cluster.module.eks_managed_node_group["default"].aws_launch_template.this[0]: Refreshing state... [id=lt-0935bfd0444306f85][0m
+[0m[1mmodule.eks.module.eks_cluster.module.eks_managed_node_group["default"].aws_eks_node_group.this[0]: Refreshing state... [id=devops-eks-cluster:default-20250619132328858900000011][0m
+[0m[1mmodule.eks.module.eks_cluster.data.tls_certificate.this[0]: Read complete after 0s [id=922877a0975ad078a65b8ff11ebc47b8311945c7][0m
+[0m[1mmodule.eks.module.eks_cluster.aws_iam_openid_connect_provider.oidc_provider[0]: Refreshing state... [id=arn:aws:iam::679349556244:oidc-provider/oidc.eks.us-east-1.amazonaws.com/id/D96C41CB8E8CA5BFD4143D08AFB9F24B][0m
+[0m[1mmodule.eks.module.eks_cluster.aws_eks_access_policy_association.this["cluster_creator_admin"]: Refreshing state... [id=devops-eks-cluster#arn:aws:iam::679349556244:role/TerraformDeploymentRole#arn:aws:eks::aws:cluster-access-policy/AmazonEKSClusterAdminPolicy][0m
+[0m[1mmodule.eks.module.eks_cluster.aws_eks_access_policy_association.this["pablo_user_admin"]: Refreshing state... [id=devops-eks-cluster#arn:aws:iam::679349556244:user/pablo#arn:aws:eks::aws:cluster-access-policy/AmazonEKSClusterAdminPolicy][0m
+[0m[1mmodule.aws_lb_controller.aws_iam_role.lb_controller_irsa: Refreshing state... [id=eks-lb-controller-irsa][0m
+[0m[1mdata.aws_eks_cluster_auth.default: Reading...[0m[0m
+[0m[1mdata.aws_eks_cluster.default: Reading...[0m[0m
+[0m[1mdata.aws_eks_cluster_auth.default: Read complete after 0s [id=devops-eks-cluster][0m
+[0m[1mmodule.aws_lb_controller.aws_iam_role_policy_attachment.lb_controller_attach: Refreshing state... [id=eks-lb-controller-irsa-2025061913225345390000000e][0m
+[0m[1mmodule.aws_lb_controller.kubernetes_service_account.aws_lb_controller: Refreshing state... [id=kube-system/aws-load-balancer-controller][0m
+[0m[1mdata.aws_eks_cluster.default: Read complete after 0s [id=devops-eks-cluster][0m
+[0m[1mmodule.aws_lb_controller.helm_release.aws_lb_controller: Refreshing state... [id=aws-load-balancer-controller][0m
+
+[0m[1m[32mNo changes.[0m[1m Your infrastructure matches the configuration.[0m
+
+[0mTerraform has compared your real infrastructure against your configuration
+and found no differences, so no changes are needed.
+[Pipeline] sh
++ terraform apply -auto-approve -var-file=dev.tfvars
+[0m[1mmodule.eks.module.eks_cluster.module.eks_managed_node_group["default"].data.aws_iam_policy_document.assume_role_policy[0]: Reading...[0m[0m
+[0m[1mmodule.eks.module.eks_cluster.module.eks_managed_node_group["default"].data.aws_partition.current: Reading...[0m[0m
+[0m[1mmodule.eks.module.eks_cluster.module.kms.data.aws_partition.current[0]: Reading...[0m[0m
+[0m[1mmodule.eks.module.eks_cluster.module.eks_managed_node_group["default"].data.aws_caller_identity.current: Reading...[0m[0m
+[0m[1mmodule.eks.module.eks_cluster.data.aws_caller_identity.current[0]: Reading...[0m[0m
+[0m[1mmodule.eks.module.eks_cluster.aws_security_group.node[0]: Refreshing state... [id=sg-05d5b3584f4f5db6a][0m
+[0m[1mmodule.eks.module.eks_cluster.aws_security_group.cluster[0]: Refreshing state... [id=sg-01caec595d2d3f3f7][0m
+[0m[1mmodule.eks.module.eks_cluster.data.aws_iam_policy_document.assume_role_policy[0]: Reading...[0m[0m
+[0m[1mmodule.aws_lb_controller.aws_iam_policy.lb_controller_policy: Refreshing state... [id=arn:aws:iam::679349556244:policy/AWSLoadBalancerControllerIAMPolicy][0m
+[0m[1mmodule.ecr.aws_ecr_repository.app: Refreshing state... [id=sample-node-app][0m
+[0m[1mmodule.eks.module.eks_cluster.module.eks_managed_node_group["default"].data.aws_partition.current: Read complete after 0s [id=aws][0m
+[0m[1mmodule.eks.module.eks_cluster.module.eks_managed_node_group["default"].data.aws_iam_policy_document.assume_role_policy[0]: Read complete after 0s [id=2560088296][0m
+[0m[1mmodule.eks.module.eks_cluster.module.kms.data.aws_partition.current[0]: Read complete after 0s [id=aws][0m
+[0m[1mmodule.eks.module.eks_cluster.data.aws_iam_policy_document.assume_role_policy[0]: Read complete after 0s [id=2830595799][0m
+[0m[1mmodule.eks.module.eks_cluster.module.kms.data.aws_caller_identity.current[0]: Reading...[0m[0m
+[0m[1mmodule.eks.module.eks_cluster.data.aws_partition.current[0]: Reading...[0m[0m
+[0m[1mmodule.eks.module.eks_cluster.data.aws_partition.current[0]: Read complete after 0s [id=aws][0m
+[0m[1mmodule.eks.module.eks_cluster.aws_cloudwatch_log_group.this[0]: Refreshing state... [id=/aws/eks/devops-eks-cluster/cluster][0m
+[0m[1mmodule.eks.module.eks_cluster.module.eks_managed_node_group["default"].aws_iam_role.this[0]: Refreshing state... [id=default-eks-node-group-20250619131319668900000001][0m
+[0m[1mmodule.eks.module.eks_cluster.aws_iam_role.this[0]: Refreshing state... [id=devops-eks-cluster-cluster-20250619131319668900000002][0m
+[0m[1mmodule.eks.module.eks_cluster.data.aws_caller_identity.current[0]: Read complete after 0s [id=679349556244][0m
+[0m[1mmodule.eks.module.eks_cluster.data.aws_iam_session_context.current[0]: Reading...[0m[0m
+[0m[1mmodule.eks.module.eks_cluster.module.eks_managed_node_group["default"].data.aws_caller_identity.current: Read complete after 0s [id=679349556244][0m
+[0m[1mmodule.eks.module.eks_cluster.data.aws_iam_policy_document.custom[0]: Reading...[0m[0m
+[0m[1mmodule.eks.module.eks_cluster.data.aws_iam_policy_document.custom[0]: Read complete after 0s [id=513122117][0m
+[0m[1mmodule.eks.module.eks_cluster.aws_iam_policy.custom[0]: Refreshing state... [id=arn:aws:iam::679349556244:policy/devops-eks-cluster-cluster-20250619131319669000000003][0m
+[0m[1mmodule.eks.module.eks_cluster.module.kms.data.aws_caller_identity.current[0]: Read complete after 0s [id=679349556244][0m
+[0m[1mmodule.eks.module.eks_cluster.aws_security_group_rule.node["ingress_cluster_6443_webhook"]: Refreshing state... [id=sgrule-3087702933][0m
+[0m[1mmodule.eks.module.eks_cluster.aws_security_group_rule.node["ingress_nodes_ephemeral"]: Refreshing state... [id=sgrule-1552556664][0m
+[0m[1mmodule.eks.module.eks_cluster.aws_security_group_rule.node["ingress_cluster_kubelet"]: Refreshing state... [id=sgrule-3338210071][0m
+[0m[1mmodule.eks.module.eks_cluster.data.aws_iam_session_context.current[0]: Read complete after 0s [id=arn:aws:sts::679349556244:assumed-role/TerraformDeploymentRole/aws-go-sdk-1750339855023206000][0m
+[0m[1mmodule.eks.module.eks_cluster.aws_security_group_rule.node["ingress_self_coredns_udp"]: Refreshing state... [id=sgrule-1901412706][0m
+[0m[1mmodule.eks.module.eks_cluster.aws_security_group_rule.node["ingress_cluster_4443_webhook"]: Refreshing state... [id=sgrule-1900608515][0m
+[0m[1mmodule.eks.module.eks_cluster.aws_security_group_rule.node["egress_all"]: Refreshing state... [id=sgrule-1676651949][0m
+[0m[1mmodule.eks.module.eks_cluster.aws_security_group_rule.node["ingress_cluster_443"]: Refreshing state... [id=sgrule-555082973][0m
+[0m[1mmodule.eks.module.eks_cluster.aws_security_group_rule.cluster["ingress_nodes_443"]: Refreshing state... [id=sgrule-2390625968][0m
+[0m[1mmodule.eks.module.eks_cluster.aws_security_group_rule.node["ingress_cluster_8443_webhook"]: Refreshing state... [id=sgrule-2874582964][0m
+[0m[1mmodule.eks.module.eks_cluster.aws_security_group_rule.node["ingress_self_coredns_tcp"]: Refreshing state... [id=sgrule-3574260365][0m
+[0m[1mmodule.eks.module.eks_cluster.aws_security_group_rule.node["ingress_cluster_9443_webhook"]: Refreshing state... [id=sgrule-3489109119][0m
+[0m[1mmodule.ecr.aws_ecr_lifecycle_policy.expire_untagged: Refreshing state... [id=sample-node-app][0m
+[0m[1mmodule.eks.module.eks_cluster.aws_iam_role_policy_attachment.this["AmazonEKSClusterPolicy"]: Refreshing state... [id=devops-eks-cluster-cluster-20250619131319668900000002-20250619131320608700000006][0m
+[0m[1mmodule.eks.module.eks_cluster.aws_iam_role_policy_attachment.this["AmazonEKSVPCResourceController"]: Refreshing state... [id=devops-eks-cluster-cluster-20250619131319668900000002-20250619131320625400000008][0m
+[0m[1mmodule.eks.module.eks_cluster.module.eks_managed_node_group["default"].aws_iam_role_policy_attachment.this["AmazonEC2ContainerRegistryReadOnly"]: Refreshing state... [id=default-eks-node-group-20250619131319668900000001-2025061913132075650000000a][0m
+[0m[1mmodule.eks.module.eks_cluster.module.eks_managed_node_group["default"].aws_iam_role_policy_attachment.this["AmazonEKSWorkerNodePolicy"]: Refreshing state... [id=default-eks-node-group-20250619131319668900000001-2025061913132076910000000b][0m
+[0m[1mmodule.eks.module.eks_cluster.module.eks_managed_node_group["default"].aws_iam_role_policy_attachment.this["AmazonEKS_CNI_Policy"]: Refreshing state... [id=default-eks-node-group-20250619131319668900000001-20250619131320671500000009][0m
+[0m[1mmodule.eks.module.eks_cluster.aws_iam_role_policy_attachment.custom[0]: Refreshing state... [id=devops-eks-cluster-cluster-20250619131319668900000002-20250619131320609500000007][0m
+[0m[1mmodule.eks.module.eks_cluster.module.kms.data.aws_iam_policy_document.this[0]: Reading...[0m[0m
+[0m[1mmodule.eks.module.eks_cluster.module.kms.data.aws_iam_policy_document.this[0]: Read complete after 0s [id=2458129551][0m
+[0m[1mmodule.eks.module.eks_cluster.module.kms.aws_kms_key.this[0]: Refreshing state... [id=26a1b5ca-9c08-4936-b50d-7b22c5140d3a][0m
+[0m[1mmodule.eks.module.eks_cluster.module.kms.aws_kms_alias.this["cluster"]: Refreshing state... [id=alias/eks/devops-eks-cluster][0m
+[0m[1mmodule.eks.module.eks_cluster.aws_iam_policy.cluster_encryption[0]: Refreshing state... [id=arn:aws:iam::679349556244:policy/devops-eks-cluster-cluster-ClusterEncryption2025061913134333250000000c][0m
+[0m[1mmodule.eks.module.eks_cluster.aws_eks_cluster.this[0]: Refreshing state... [id=devops-eks-cluster][0m
+[0m[1mmodule.eks.module.eks_cluster.aws_iam_role_policy_attachment.cluster_encryption[0]: Refreshing state... [id=devops-eks-cluster-cluster-20250619131319668900000002-2025061913134388310000000d][0m
+[0m[1mmodule.eks.module.eks_cluster.data.tls_certificate.this[0]: Reading...[0m[0m
+[0m[1mmodule.eks.module.eks_cluster.aws_eks_access_entry.this["cluster_creator"]: Refreshing state... [id=devops-eks-cluster:arn:aws:iam::679349556244:role/TerraformDeploymentRole][0m
+[0m[1mmodule.eks.module.eks_cluster.aws_eks_access_entry.this["pablo_user"]: Refreshing state... [id=devops-eks-cluster:arn:aws:iam::679349556244:user/pablo][0m
+[0m[1mmodule.eks.module.eks_cluster.time_sleep.this[0]: Refreshing state... [id=2025-06-19T13:23:21Z][0m
+[0m[1mmodule.eks.module.eks_cluster.module.eks_managed_node_group["default"].module.user_data.null_resource.validate_cluster_service_cidr: Refreshing state... [id=4827249783527722198][0m
+[0m[1mmodule.eks.module.eks_cluster.module.eks_managed_node_group["default"].aws_launch_template.this[0]: Refreshing state... [id=lt-0935bfd0444306f85][0m
+[0m[1mmodule.eks.module.eks_cluster.module.eks_managed_node_group["default"].aws_eks_node_group.this[0]: Refreshing state... [id=devops-eks-cluster:default-20250619132328858900000011][0m
+[0m[1mmodule.eks.module.eks_cluster.data.tls_certificate.this[0]: Read complete after 0s [id=922877a0975ad078a65b8ff11ebc47b8311945c7][0m
+[0m[1mmodule.eks.module.eks_cluster.aws_iam_openid_connect_provider.oidc_provider[0]: Refreshing state... [id=arn:aws:iam::679349556244:oidc-provider/oidc.eks.us-east-1.amazonaws.com/id/D96C41CB8E8CA5BFD4143D08AFB9F24B][0m
+[0m[1mmodule.eks.module.eks_cluster.aws_eks_access_policy_association.this["pablo_user_admin"]: Refreshing state... [id=devops-eks-cluster#arn:aws:iam::679349556244:user/pablo#arn:aws:eks::aws:cluster-access-policy/AmazonEKSClusterAdminPolicy][0m
+[0m[1mmodule.eks.module.eks_cluster.aws_eks_access_policy_association.this["cluster_creator_admin"]: Refreshing state... [id=devops-eks-cluster#arn:aws:iam::679349556244:role/TerraformDeploymentRole#arn:aws:eks::aws:cluster-access-policy/AmazonEKSClusterAdminPolicy][0m
+[0m[1mmodule.aws_lb_controller.aws_iam_role.lb_controller_irsa: Refreshing state... [id=eks-lb-controller-irsa][0m
+[0m[1mmodule.aws_lb_controller.aws_iam_role_policy_attachment.lb_controller_attach: Refreshing state... [id=eks-lb-controller-irsa-2025061913225345390000000e][0m
+[0m[1mdata.aws_eks_cluster_auth.default: Reading...[0m[0m
+[0m[1mdata.aws_eks_cluster.default: Reading...[0m[0m
+[0m[1mdata.aws_eks_cluster_auth.default: Read complete after 0s [id=devops-eks-cluster][0m
+[0m[1mmodule.aws_lb_controller.kubernetes_service_account.aws_lb_controller: Refreshing state... [id=kube-system/aws-load-balancer-controller][0m
+[0m[1mdata.aws_eks_cluster.default: Read complete after 0s [id=devops-eks-cluster][0m
+[0m[1mmodule.aws_lb_controller.helm_release.aws_lb_controller: Refreshing state... [id=aws-load-balancer-controller][0m
+
+[0m[1m[32mNo changes.[0m[1m Your infrastructure matches the configuration.[0m
+
+[0mTerraform has compared your real infrastructure against your configuration
+and found no differences, so no changes are needed.
+[0m[1m[32m
+Apply complete! Resources: 0 added, 0 changed, 0 destroyed.
+[0m[0m[1m[32m
+Outputs:
+
+[0mcluster_certificate_authority_data = "LS0tLS1CRUdJTiBDRVJUSUZJQ0FURS0tLS0tCk1JSURCVENDQWUyZ0F3SUJBZ0lJWEFnL25rc0R2YTB3RFFZSktvWklodmNOQVFFTEJRQXdGVEVUTUJFR0ExVUUKQXhNS2EzVmlaWEp1WlhSbGN6QWVGdzB5TlRBMk1Ua3hNekV6TWpCYUZ3MHpOVEEyTVRjeE16RTRNakJhTUJVeApFekFSQmdOVkJBTVRDbXQxWW1WeWJtVjBaWE13Z2dFaU1BMEdDU3FHU0liM0RRRUJBUVVBQTRJQkR3QXdnZ0VLCkFvSUJBUURQRm5pSmt5QS9FV0crTHNJQlRHMk1tU1phcGlZS2I1NVgwWENzdVJ1WWZodXpSdUdEMkZxcThZU1oKSDVDUXJiVzh5L1BlNysvektSelQwQUNrMHE1UEVBNlFxWUx0MkRaMFd1Z29MSnoyNzcvSU1kSnNYajVkOEpBSgovS0pLYmhnSm4zMVAyaHZzUUtaWjBUbGp0TzkyZ250WVh1L3dpODZhSGNRTTZ3aVdnUllWakZGSFZuR09nSXpRCjE2QVJyU1hNNGVFRXV6TUpWTTFOOUJaOGhHaUdjeVJSb3lTdGJBVkNyQUpzb1pmZE5JWmllVW5sdFJIdStqUWoKTklMYTRpeUhyaGZ1dWNZRjBKTisxZHgxMUVYTTZYcVNUNGNBM0VUemsyVko1VmI5endLZlhnbURaOFpFTFNZUQpuTXE4NFd6czFvZFl6bUcwc1I4YUswb3o2T2VuQWdNQkFBR2pXVEJYTUE0R0ExVWREd0VCL3dRRUF3SUNwREFQCkJnTlZIUk1CQWY4RUJUQURBUUgvTUIwR0ExVWREZ1FXQkJUbjZIZXVQYVR3azJ5MGZWV1Bxd0tNenJFdzZEQVYKQmdOVkhSRUVEakFNZ2dwcmRXSmxjbTVsZEdWek1BMEdDU3FHU0liM0RRRUJDd1VBQTRJQkFRQkUzdU40cEVHRAp5b0Z5cWpTc0xtczkyVXpHQWdFc1l1QlhjMjRhc1ZSc0Zmc2VPN09XN1FnOWZITVQvVzdhc1JuQmcvbUFmcHFCCkNGUG1WS055ajJYWE0vbFJvQ29CRVpoY0VWMjJLbHdab1JiYUlvTCtkQWNzOU83ODF2aU8vaXFVNW1jRGhRTXUKdEVuOWorUU5veGZTYjhlcnUwTXYyK0tVN0xLNGFZWUlTYkNIWXJ0b29BejRYZmxKZWExM2RidXdSK0NKSHlueQpiT1hzaG9GM1hwLy9NQ3ZPbUFtOUVIQ3hRYitObUdzOWdpQmhTVnUzbHpnRjFBVFNsVDNYb1RTTFY3bWMyTGNoCkJmVUVDVWdMdmpCZ1hWa2VVODBwQXp0eVNJL1Nsd1pvMlB2VERsZmlXRjBjOWtMOWdiN1ROWnNZdHNXTjMyUWEKQ0hzTE9jeUNwUmNhCi0tLS0tRU5EIENFUlRJRklDQVRFLS0tLS0K"
+cluster_endpoint = "https://D96C41CB8E8CA5BFD4143D08AFB9F24B.gr7.us-east-1.eks.amazonaws.com"
+cluster_name = "devops-eks-cluster"
+ecr_repository_url = "679349556244.dkr.ecr.us-east-1.amazonaws.com/sample-node-app"
+[Pipeline] }
+[Pipeline] // dir
+[Pipeline] }
+[Pipeline] // stage
+[Pipeline] stage
+[Pipeline] { (Lint & Test)
+[Pipeline] sh
++ yamllint helm-chart
+[Pipeline] dir
+Running in /Users/pabloperez/.jenkins/workspace/devops-pipeline/app
+[Pipeline] {
+[Pipeline] sh
++ npm install
+
+added 69 packages, and audited 70 packages in 1s
+
+14 packages are looking for funding
+  run `npm fund` for details
+
+found 0 vulnerabilities
+[Pipeline] sh
++ npm test
+
+> sample-node-app@1.0.0 test
+> echo "No tests yet" && exit 0
+
+No tests yet
+[Pipeline] }
+[Pipeline] // dir
+[Pipeline] sh
++ helm lint helm-chart
+==> Linting helm-chart
+[INFO] Chart.yaml: icon is recommended
+
+1 chart(s) linted, 0 chart(s) failed
+[Pipeline] }
+[Pipeline] // stage
+[Pipeline] stage
+[Pipeline] { (Build Image)
+[Pipeline] dir
+Running in /Users/pabloperez/.jenkins/workspace/devops-pipeline/app
+[Pipeline] {
+[Pipeline] sh
++ docker build --build-arg BUILDKIT_INLINE_CACHE=1 --platform linux/amd64 --provenance=false -t 679349556244.dkr.ecr.us-east-1.amazonaws.com/sample-node-app:build-15-20250619143019 .
+#0 building with "desktop-linux" instance using docker driver
+
+#1 [internal] load build definition from Dockerfile
+#1 transferring dockerfile: 188B done
+#1 DONE 0.0s
+
+#2 [internal] load metadata for docker.io/library/node:18-alpine
+#2 DONE 0.0s
+
+#3 [internal] load .dockerignore
+#3 transferring context: 2B done
+#3 DONE 0.0s
+
+#4 [internal] load build context
+#4 transferring context: 2.34MB 0.1s done
+#4 DONE 0.1s
+
+#5 [1/5] FROM docker.io/library/node:18-alpine@sha256:8d6421d663b4c28fd3ebc498332f249011d118945588d0a35cb9bc4b8ca09d9e
+#5 resolve docker.io/library/node:18-alpine@sha256:8d6421d663b4c28fd3ebc498332f249011d118945588d0a35cb9bc4b8ca09d9e
+#5 resolve docker.io/library/node:18-alpine@sha256:8d6421d663b4c28fd3ebc498332f249011d118945588d0a35cb9bc4b8ca09d9e 1.0s done
+#5 DONE 1.0s
+
+#6 [2/5] WORKDIR /app
+#6 CACHED
+
+#7 [3/5] COPY package*.json ./
+#7 CACHED
+
+#8 [4/5] RUN npm install
+#8 CACHED
+
+#9 [5/5] COPY . .
+#9 CACHED
+
+#10 exporting to image
+#10 exporting layers done
+#10 preparing layers for inline cache 0.0s done
+#10 exporting manifest sha256:1bc7cecd36c8ced12661d8f506bb2f217b5956ce3f5c83575607845cf586d36c done
+#10 exporting config sha256:98c0b9c582ce79e71187d4476dba80c59e1e14ca1f9284e0335592d20a44c5ae done
+#10 naming to 679349556244.dkr.ecr.us-east-1.amazonaws.com/sample-node-app:build-15-20250619143019 done
+#10 DONE 0.0s
+[Pipeline] }
+[Pipeline] // dir
+[Pipeline] }
+[Pipeline] // stage
+[Pipeline] stage
+[Pipeline] { (Push to ECR)
+[Pipeline] sh
++ aws ecr get-login-password --region us-east-1
++ docker login --username AWS --password-stdin 679349556244.dkr.ecr.us-east-1.amazonaws.com/sample-node-app
+Login Succeeded
++ docker push 679349556244.dkr.ecr.us-east-1.amazonaws.com/sample-node-app:build-15-20250619143019
+The push refers to repository [679349556244.dkr.ecr.us-east-1.amazonaws.com/sample-node-app]
+d9274aaec28c: Waiting
+9b4ba623848b: Waiting
+1e5a4c89cee5: Waiting
+43ebb3624be4: Waiting
+83ab9145a571: Waiting
+f18232174bc9: Waiting
+25ff2da83641: Waiting
+dd71dde834b5: Waiting
+43ebb3624be4: Waiting
+83ab9145a571: Waiting
+f18232174bc9: Waiting
+25ff2da83641: Waiting
+dd71dde834b5: Waiting
+d9274aaec28c: Waiting
+9b4ba623848b: Waiting
+1e5a4c89cee5: Waiting
+43ebb3624be4: Waiting
+83ab9145a571: Waiting
+f18232174bc9: Waiting
+25ff2da83641: Waiting
+dd71dde834b5: Waiting
+d9274aaec28c: Waiting
+9b4ba623848b: Waiting
+1e5a4c89cee5: Waiting
+83ab9145a571: Waiting
+f18232174bc9: Waiting
+25ff2da83641: Waiting
+dd71dde834b5: Waiting
+d9274aaec28c: Waiting
+9b4ba623848b: Waiting
+1e5a4c89cee5: Waiting
+43ebb3624be4: Waiting
+43ebb3624be4: Waiting
+83ab9145a571: Waiting
+f18232174bc9: Waiting
+25ff2da83641: Waiting
+dd71dde834b5: Waiting
+d9274aaec28c: Waiting
+9b4ba623848b: Waiting
+1e5a4c89cee5: Waiting
+d9274aaec28c: Waiting
+9b4ba623848b: Waiting
+1e5a4c89cee5: Waiting
+43ebb3624be4: Waiting
+83ab9145a571: Waiting
+f18232174bc9: Waiting
+25ff2da83641: Waiting
+dd71dde834b5: Waiting
+dd71dde834b5: Waiting
+d9274aaec28c: Waiting
+9b4ba623848b: Waiting
+43ebb3624be4: Waiting
+83ab9145a571: Waiting
+dd71dde834b5: Waiting
+83ab9145a571: Waiting
+25ff2da83641: Pushed
+d9274aaec28c: Pushed
+43ebb3624be4: Pushed
+83ab9145a571: Pushed
+9b4ba623848b: Pushed
+1e5a4c89cee5: Pushed
+f18232174bc9: Pushed
+dd71dde834b5: Pushed
+build-15-20250619143019: digest: sha256:1bc7cecd36c8ced12661d8f506bb2f217b5956ce3f5c83575607845cf586d36c size: 1877
+[Pipeline] }
+[Pipeline] // stage
+[Pipeline] stage
+[Pipeline] { (Configure kubectl)
+[Pipeline] withEnv
+[Pipeline] {
+[Pipeline] sh
++ aws eks update-kubeconfig --region us-east-1 --name devops-eks-cluster --kubeconfig /Users/pabloperez/.jenkins/workspace/devops-pipeline/.kubeconfig
+Added new context arn:aws:eks:us-east-1:679349556244:cluster/devops-eks-cluster to /Users/pabloperez/.jenkins/workspace/devops-pipeline/.kubeconfig
+[Pipeline] }
+[Pipeline] // withEnv
+[Pipeline] }
+[Pipeline] // stage
+[Pipeline] stage
+[Pipeline] { (Helm Deploy)
+[Pipeline] withEnv
+[Pipeline] {
+[Pipeline] sh
++ helm dependency update helm-chart
++ helm upgrade --install sample-node-app helm-chart --namespace default --create-namespace --set image.repository=679349556244.dkr.ecr.us-east-1.amazonaws.com/sample-node-app --set image.tag=build-15-20250619143019 --wait --timeout 5m --atomic
+Release "sample-node-app" does not exist. Installing it now.
+NAME: sample-node-app
+LAST DEPLOYED: Thu Jun 19 14:31:28 2025
+NAMESPACE: default
+STATUS: deployed
+REVISION: 1
+TEST SUITE: None
+[Pipeline] }
+[Pipeline] // withEnv
+[Pipeline] }
+[Pipeline] // stage
+[Pipeline] stage
+[Pipeline] { (Declarative: Post Actions)
+[Pipeline] cleanWs
+[WS-CLEANUP] Deleting project workspace...
+[WS-CLEANUP] Deferred wipeout is used...
+[WS-CLEANUP] done
+[Pipeline] echo
+Pipeline finished.
+[Pipeline] }
+[Pipeline] // stage
+[Pipeline] }
+[Pipeline] // withEnv
+[Pipeline] }
+[Pipeline] // withEnv
+[Pipeline] }
+[Pipeline] // node
+[Pipeline] End of Pipeline
+Finished: SUCCESS

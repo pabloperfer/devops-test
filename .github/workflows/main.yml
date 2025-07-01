@@ -1,0 +1,121 @@
+# The display name for the workflow, which appears in the GitHub Actions UI.
+name: Deploy Application to EKS
+
+# Defines the trigger for this workflow. 'workflow_dispatch' allows for manual execution
+# from the GitHub UI, providing control over when deployments occur.
+on:
+  workflow_dispatch:
+
+# Defines default permissions for the GITHUB_TOKEN. This is crucial for security.
+permissions:
+  # 'id-token: write' is required to allow the workflow to request a JSON Web Token (JWT)
+  # from GitHub's OIDC provider. This token is then used to securely authenticate with AWS.
+  id-token: write
+  # 'contents: read' is the standard permission to allow actions to check out the repository code.
+  contents: read
+
+# Sets up environment variables that are available to all jobs and steps in the workflow.
+# This promotes consistency and avoids hardcoding values within the script logic.
+env:
+  AWS_REGION: us-east-1
+  ACCOUNT_ID: '679349556244'
+  ECR_REPO: sample-node-app
+  CHART_DIR: helm-chart
+  RELEASE: sample-node-app
+  # The name of the target EKS cluster for deployment.
+  EKS_CLUSTER_NAME: devops-eks-cluster
+  # The ARN of the IAM Role that this workflow will assume to get AWS credentials.
+  # This role must have a trust relationship with GitHub's OIDC provider.
+  IAM_ROLE_ARN: arn:aws:iam::679349556244:role/TerraformDeploymentRole
+
+# Defines the sequence of jobs to be executed.
+jobs:
+  # The primary job for building, testing, and deploying the application.
+  deploy:
+    # This is a critical configuration. 'self-hosted' directs the job to run on the custom
+    # runners managed by the Actions Runner Controller (ARC) in our EKS cluster,
+    # rather than using standard GitHub-hosted runners.
+    runs-on: self-hosted
+    defaults:
+      run:
+        # Sets the default shell for all 'run' steps to bash for consistent scripting.
+        shell: bash
+
+    steps:
+      # Step 1: Check out the source code from the repository.
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      # Step 2: Securely configure AWS credentials for the runner.
+      - name: Configure AWS Credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          # Assumes the IAM role defined in the environment variables using OIDC.
+          # This is the recommended best practice for authenticating to AWS from GitHub Actions,
+          # as it provides short-lived, temporary credentials without storing long-term secrets.
+          role-to-assume: ${{ env.IAM_ROLE_ARN }}
+          aws-region: ${{ env.AWS_REGION }}
+
+      # Step 3: Dynamically generate a unique image tag and construct the full ECR path.
+      - name: Set Image Tag and ECR URI
+        run: |
+          TIMESTAMP=$(date +%Y%m%d%H%M%S)
+          # Creates an immutable and traceable tag using the GitHub run number and a timestamp.
+          IMAGE_TAG="build-${{ github.run_number }}-${TIMESTAMP}"
+          ECR_URI="${{ env.ACCOUNT_ID }}.dkr.ecr.${{ env.AWS_REGION }}.amazonaws.com/${{ env.ECR_REPO }}"
+          FULL_IMAGE="${ECR_URI}:${IMAGE_TAG}"
+
+          # Exports these variables to the GitHub Actions environment for use in subsequent steps.
+          echo "IMAGE_TAG=${IMAGE_TAG}" >> $GITHUB_ENV
+          echo "ECR_URI=${ECR_URI}" >> $GITHUB_ENV
+          echo "FULL_IMAGE=${FULL_IMAGE}" >> $GITHUB_ENV
+
+      # Step 4: A crucial quality gate. This step runs linting and tests before building the image.
+      - name: Lint and Test Application
+        run: |
+          # Lint the Helm chart and YAML files to catch syntax errors.
+          yamllint $CHART_DIR
+          # Install application dependencies and run unit tests.
+          cd app
+          npm install
+          npm test
+          cd ..
+          helm lint $CHART_DIR
+
+      # Step 5: Build the application's Docker image and push it to Amazon ECR.
+      - name: Build and Push Docker Image to ECR
+        run: |
+          # Authenticate the Docker client with the Amazon ECR registry.
+          aws ecr get-login-password --region $AWS_REGION | \
+            docker login --username AWS --password-stdin $ECR_URI
+
+          # Build and push the image.
+          cd app
+          docker build -t $FULL_IMAGE .
+          docker push $FULL_IMAGE
+
+      # Step 6: Configure the kubectl client on the runner to communicate with our EKS cluster.
+      - name: Configure kubectl for EKS
+        run: |
+          aws eks update-kubeconfig \
+            --region $AWS_REGION \
+            --name $EKS_CLUSTER_NAME
+
+      # Step 7: Deploy the application to the EKS cluster using Helm.
+      - name: Deploy Application with Helm
+        env:
+          # Securely injects the database password from GitHub repository secrets.
+          # The secret value is never exposed in the workflow logs.
+          DB_PASSWORD: ${{ secrets.DB_PASS_SECRET }}
+        run: |
+          # Ensure Helm chart dependencies are up to date.
+          helm dependency update $CHART_DIR || true
+
+          # The 'helm upgrade --install' command is idempotent. It will install the chart if
+          # it doesn't exist, or upgrade it if it's already deployed.
+          helm upgrade --install $RELEASE $CHART_DIR \
+            --namespace default \
+            --set image.repository=$ECR_URI \
+            --set image.tag=$IMAGE_TAG \
+            --set-string secret.DB_PASSWORD=$DB_PASSWORD \
+            --wait --timeout 5m --atomic

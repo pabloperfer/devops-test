@@ -1,0 +1,34 @@
+# Start from the official base image for the ARC runner
+FROM summerwind/actions-runner:latest
+
+# Switch to the root user to install packages
+USER root
+
+# Install dependencies: Python/pip for yamllint, and curl/gpg for Node.js
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    python3-pip \
+    curl \
+    unzip \
+    gnupg \
+    && rm -rf /var/lib/apt/lists/*
+
+# Install AWS CLI v2
+RUN curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip" && \
+unzip awscliv2.zip && \
+./aws/install && \
+rm awscliv2.zip && \
+rm -rf aws
+# --- Fin de la adición para AWS CLI ---
+
+# Install yamllint
+RUN pip3 install yamllint
+
+# Install Node.js and npm (example for Node.js 20.x)
+RUN curl -sL https://deb.nodesource.com/setup_20.x | bash -
+RUN apt-get install -y --no-install-recommends nodejs && rm -rf /var/lib/apt/lists/*
+
+# Install Helm
+RUN curl https://raw.githubusercontent.com/helm/helm/main/scripts/get-helm-3 | bash
+
+# Switch back to the non-privileged 'runner' user
+USER runner
